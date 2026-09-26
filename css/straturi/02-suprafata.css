@@ -34,11 +34,7 @@
   z-index: 2;
   top: 1rem;
   left: 1rem;
-  width: max-content;
   margin: 1rem;
-  padding: 0.25rem 0.75rem;
-  background: rgb(24 20 37 / 0.6);
-  font-size: 1.25rem;
 }
 
 /* .sup__scutura primește tremuratul exploziei, .sup__lume primește zoom-ul în crater. */

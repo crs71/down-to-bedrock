@@ -12,6 +12,7 @@
   <!-- Fiecare strat adaugă aici css/straturi/NN-nume.css, după base.css. -->
   <link rel="stylesheet" href="css/straturi/01-cer.css">
   <link rel="stylesheet" href="css/straturi/02-suprafata.css">
+  <link rel="stylesheet" href="css/straturi/03-piatra.css">
 
   <!-- GSAP + ScrollTrigger (versiune fixată, cu SRI). Fără ele, pagina rămâne pe varianta statică. -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous" defer></script>
@@ -21,6 +22,7 @@
   <script src="js/util/particule.js" defer></script>
   <script src="js/straturi/01-cer.js" defer></script>
   <script src="js/straturi/02-suprafata.js" defer></script>
+  <script src="js/straturi/03-piatra.js" defer></script>
 </head>
 <body>
   <!-- Sprite-uri pixel art. Culorile vin din variabilele CSS (paleta din base.css).
@@ -47,6 +49,13 @@
       <path style="fill:var(--piatra-1)" d="M2 1h1v1h-1zM11 1h2v1h-2zM7 3h1v1h-1zM4 4h2v1h-2zM0 6h1v1h-1zM15 6h1v1h-1zM14 7h1v1h-1zM8 8h2v1h-2zM2 10h2v1h-2zM12 11h3v1h-3zM5 12h2v1h-2zM14 13h1v1h-1zM2 15h1v1h-1zM9 15h1v1h-1z"/>
       <path style="fill:var(--piatra-3)" d="M5 0h1v1h-1zM14 0h1v1h-1zM5 1h2v1h-2zM1 3h2v1h-2zM12 3h2v1h-2zM13 4h1v1h-1zM8 5h2v1h-2zM3 7h2v1h-2zM14 8h1v1h-1zM13 9h2v1h-2zM8 10h2v1h-2zM0 12h1v1h-1zM15 12h1v1h-1zM1 13h2v1h-2zM10 13h2v1h-2zM12 15h1v1h-1z"/>
       <path style="fill:var(--piatra-4)" d="M9 6h1v1h-1zM4 8h1v1h-1zM9 11h1v1h-1zM6 14h1v1h-1z"/>
+    </symbol>
+    <symbol id="bloc-pietris" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--piatra-3)" d="M0 0h16v16h-16z"/>
+      <path style="fill:var(--pamant-3)" d="M12 5h2v1h-2zM6 14h2v1h-2z"/>
+      <path style="fill:var(--piatra-1)" d="M7 0h1v1h-1zM9 0h1v1h-1zM4 2h1v1h-1zM13 2h1v1h-1zM3 3h1v1h-1zM7 3h3v1h-3zM3 4h3v1h-3zM7 4h3v1h-3zM3 5h2v1h-2zM7 5h2v1h-2zM4 6h1v1h-1zM6 6h1v1h-1zM11 6h1v1h-1zM1 7h1v1h-1zM3 7h3v1h-3zM8 7h1v1h-1zM3 8h2v1h-2zM8 10h1v1h-1zM12 10h2v1h-2zM5 11h3v1h-3zM12 11h2v1h-2zM3 12h1v1h-1zM5 12h3v1h-3zM12 12h1v1h-1zM5 13h2v1h-2zM8 13h2v1h-2zM5 14h1v1h-1zM7 15h2v1h-2z"/>
+      <path style="fill:var(--piatra-2)" d="M8 1h1v1h-1zM5 2h2v1h-2zM12 2h1v1h-1zM4 3h2v1h-2zM10 3h3v1h-3zM10 4h2v1h-2zM10 5h2v1h-2zM7 6h2v1h-2zM10 6h1v1h-1zM2 7h1v1h-1zM6 7h2v1h-2zM9 7h2v1h-2zM1 8h2v1h-2zM8 8h3v1h-3zM8 9h2v1h-2zM14 11h1v1h-1zM4 12h1v1h-1zM3 13h1v1h-1zM10 13h1v1h-1zM8 14h2v1h-2zM9 15h1v1h-1z"/>
+      <path style="fill:var(--piatra-4)" d="M8 0h1v1h-1zM10 0h2v1h-2zM9 1h3v1h-3zM9 2h3v1h-3zM14 2h1v1h-1zM6 3h1v1h-1zM13 3h2v1h-2zM12 4h1v1h-1zM5 5h1v1h-1zM9 5h1v1h-1zM5 6h1v1h-1zM12 6h2v1h-2zM11 7h3v1h-3zM5 8h1v1h-1zM10 9h1v1h-1zM9 10h2v1h-2zM8 11h3v1h-3zM8 12h3v1h-3zM13 12h2v1h-2zM4 13h1v1h-1zM7 13h1v1h-1zM10 14h1v1h-1zM5 15h2v1h-2zM10 15h1v1h-1z"/>
     </symbol>
     <symbol id="copac-0" viewBox="0 0 32 48" shape-rendering="crispEdges">
       <path style="fill:var(--iarba-1)" d="M15 36h1v1h-1zM17 37h1v1h-1zM17 38h1v1h-1zM13 39h1v1h-1zM13 40h1v1h-1z"/>
@@ -89,6 +98,9 @@
       <path style="fill:var(--iarba-3)" d="M0 8h1v1h-1zM2 8h1v1h-1zM5 8h1v1h-1zM7 8h1v1h-1zM7 9h1v1h-1zM7 10h1v1h-1zM7 11h1v1h-1zM7 12h1v1h-1zM7 13h1v1h-1zM7 14h1v1h-1zM7 15h1v1h-1zM7 16h1v1h-1zM7 17h1v1h-1zM7 18h1v1h-1zM6 19h2v1h-2zM3 20h1v1h-1zM7 20h1v1h-1zM3 21h1v1h-1zM7 21h1v1h-1zM3 22h1v1h-1zM7 22h1v1h-1zM3 23h1v1h-1zM7 23h1v1h-1zM3 24h1v1h-1zM7 24h1v1h-1z"/>
       <path style="fill:var(--iarba-4)" d="M0 25h8v1h-8z"/>
       <path style="fill:var(--pestera-3)" d="M1 2h2v1h-2zM5 2h2v1h-2zM1 3h2v1h-2zM5 3h2v1h-2zM3 4h2v1h-2zM2 5h4v1h-4zM2 6h4v1h-4zM2 7h1v1h-1zM5 7h1v1h-1z"/>
+    </symbol>
+    <symbol id="fisuri" viewBox="0 0 160 16" shape-rendering="crispEdges">
+      <path style="fill:var(--pestera-3)" d="M132 0h1v1h-1zM148 0h1v1h-1zM116 1h1v1h-1zM132 1h1v1h-1zM148 1h1v1h-1zM86 2h2v1h-2zM101 2h3v1h-3zM117 2h3v1h-3zM133 2h3v1h-3zM149 2h3v1h-3zM157 2h3v1h-3zM71 3h1v1h-1zM87 3h1v1h-1zM103 3h1v1h-1zM119 3h1v1h-1zM135 3h1v1h-1zM141 3h1v1h-1zM151 3h1v1h-1zM157 3h2v1h-2zM55 4h1v1h-1zM71 4h1v1h-1zM87 4h1v1h-1zM103 4h1v1h-1zM107 4h1v1h-1zM119 4h1v1h-1zM123 4h2v1h-2zM135 4h1v1h-1zM139 4h3v1h-3zM151 4h1v1h-1zM155 4h3v1h-3zM39 5h1v1h-1zM54 5h2v1h-2zM69 5h3v1h-3zM85 5h3v1h-3zM90 5h2v1h-2zM101 5h3v1h-3zM106 5h2v1h-2zM117 5h3v1h-3zM122 5h2v1h-2zM133 5h3v1h-3zM138 5h2v1h-2zM149 5h3v1h-3zM154 5h2v1h-2zM39 6h1v1h-1zM55 6h1v1h-1zM57 6h1v1h-1zM71 6h1v1h-1zM73 6h2v1h-2zM85 6h1v1h-1zM87 6h4v1h-4zM99 6h8v1h-8zM115 6h8v1h-8zM131 6h8v1h-8zM147 6h8v1h-8zM23 7h2v1h-2zM39 7h3v1h-3zM55 7h3v1h-3zM71 7h4v1h-4zM87 7h4v1h-4zM103 7h4v1h-4zM115 7h1v1h-1zM119 7h4v1h-4zM131 7h1v1h-1zM133 7h1v1h-1zM135 7h4v1h-4zM147 7h3v1h-3zM151 7h4v1h-4zM23 8h2v1h-2zM39 8h3v1h-3zM55 8h4v1h-4zM71 8h4v1h-4zM87 8h4v1h-4zM103 8h4v1h-4zM119 8h4v1h-4zM131 8h1v1h-1zM135 8h4v1h-4zM147 8h2v1h-2zM151 8h4v1h-4zM24 9h1v1h-1zM40 9h2v1h-2zM56 9h2v1h-2zM72 9h2v1h-2zM88 9h2v1h-2zM104 9h2v1h-2zM120 9h2v1h-2zM131 9h1v1h-1zM136 9h2v1h-2zM145 9h3v1h-3zM152 9h2v1h-2zM39 10h1v1h-1zM55 10h1v1h-1zM57 10h1v1h-1zM71 10h1v1h-1zM73 10h1v1h-1zM87 10h1v1h-1zM89 10h1v1h-1zM103 10h1v1h-1zM105 10h1v1h-1zM119 10h1v1h-1zM121 10h1v1h-1zM135 10h1v1h-1zM137 10h1v1h-1zM151 10h1v1h-1zM153 10h1v1h-1zM38 11h1v1h-1zM54 11h1v1h-1zM57 11h1v1h-1zM70 11h2v1h-2zM73 11h1v1h-1zM86 11h2v1h-2zM89 11h1v1h-1zM102 11h2v1h-2zM105 11h1v1h-1zM118 11h2v1h-2zM121 11h1v1h-1zM134 11h2v1h-2zM137 11h1v1h-1zM150 11h2v1h-2zM153 11h1v1h-1zM54 12h1v1h-1zM69 12h2v1h-2zM73 12h1v1h-1zM84 12h4v1h-4zM89 12h1v1h-1zM100 12h4v1h-4zM105 12h1v1h-1zM116 12h4v1h-4zM121 12h1v1h-1zM132 12h4v1h-4zM137 12h1v1h-1zM148 12h4v1h-4zM153 12h1v1h-1zM89 13h1v1h-1zM99 13h1v1h-1zM104 13h2v1h-2zM115 13h2v1h-2zM120 13h2v1h-2zM131 13h2v1h-2zM136 13h2v1h-2zM147 13h2v1h-2zM152 13h2v1h-2zM106 14h1v1h-1zM115 14h1v1h-1zM120 14h3v1h-3zM131 14h2v1h-2zM136 14h4v1h-4zM147 14h2v1h-2zM152 14h4v1h-4zM119 15h1v1h-1zM123 15h1v1h-1zM131 15h1v1h-1zM135 15h1v1h-1zM139 15h1v1h-1zM147 15h1v1h-1zM149 15h1v1h-1zM151 15h1v1h-1zM155 15h1v1h-1z"/>
     </symbol>
     <symbol id="litera-a" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <use href="#bloc-piatra" width="16" height="16"/>
@@ -144,9 +156,10 @@
     </symbol>
     <!-- sprite:sfarsit -->
     <defs>
-      <!-- Modele pentru solul din stratul 2: câte un bloc pe o celulă de 16×16. -->
+      <!-- Modele de blocuri pentru sol și ziduri: câte un bloc pe o celulă de 16×16. -->
       <pattern id="model-iarba" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-iarba" width="16" height="16"/></pattern>
       <pattern id="model-pamant" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-pamant" width="16" height="16"/></pattern>
+      <pattern id="model-piatra" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-piatra" width="16" height="16"/></pattern>
     </defs>
   </svg>
 
@@ -219,7 +232,7 @@
     <section class="strat strat--suprafata" id="suprafata">
       <!-- Fără animație, fereastra se derulează orizontal manual (de aceea tabindex); cu GSAP, e fixată și se mișcă singură. -->
       <div class="sup__fereastra" role="region" aria-label="Peisajul suprafeței" tabindex="0">
-        <h2 class="sup__titlu">Suprafața</h2>
+        <h2 class="eticheta sup__titlu">Suprafața</h2>
 
         <div class="sup__scutura">
           <div class="sup__lume">
@@ -278,7 +291,82 @@
     </section>
 
     <section class="strat strat--piatra" id="piatra">
-      <h2>Pământ și piatră</h2>
+      <!-- Mineritul: scenă fixată (sticky) în care se sparg pe rând 3 blocuri, cu fisuri legate de scroll. -->
+      <div class="piatra__minerit">
+        <div class="piatra__scena">
+          <div class="piatra__ziduri" aria-hidden="true">
+            <svg class="zid piatra__zid piatra__zid--pamant" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet">
+              <rect width="100000" height="960" fill="url(#model-pamant)"/>
+            </svg>
+            <svg class="zid piatra__zid piatra__zid--piatra" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet">
+              <rect width="100000" height="960" fill="url(#model-piatra)"/>
+            </svg>
+            <div class="piatra__umbra"></div>
+          </div>
+
+          <h2 class="eticheta piatra__titlu">Pământ și piatră</h2>
+
+          <div class="piatra__atelier">
+            <!-- data-culori: paleta particulelor la spargere (js/straturi/03-piatra.js). -->
+            <div class="piatra__blocuri" aria-hidden="true">
+              <div class="piatra__bloc piatra__bloc--1" data-culori="--pamant-1 --pamant-2 --pamant-3 --pamant-4">
+                <svg class="piatra__textura"><use href="#bloc-pamant"/></svg>
+                <div class="piatra__fisuri"><svg class="piatra__foaie"><use href="#fisuri"/></svg></div>
+              </div>
+              <div class="piatra__bloc piatra__bloc--2" data-culori="--piatra-1 --piatra-2 --piatra-3 --pamant-3">
+                <svg class="piatra__textura"><use href="#bloc-pietris"/></svg>
+                <div class="piatra__fisuri"><svg class="piatra__foaie"><use href="#fisuri"/></svg></div>
+              </div>
+              <div class="piatra__bloc piatra__bloc--3" data-culori="--piatra-1 --piatra-2 --piatra-3 --piatra-4">
+                <svg class="piatra__textura"><use href="#bloc-piatra"/></svg>
+                <div class="piatra__fisuri"><svg class="piatra__foaie"><use href="#fisuri"/></svg></div>
+              </div>
+              <div class="piatra__obiect">
+                <svg><use href="#bloc-piatra"/></svg>
+                <span>+1 Piatră</span>
+              </div>
+            </div>
+            <div class="piatra__bara" aria-hidden="true"><i></i></div>
+            <p class="piatra__indiciu">Derulează ca să spargi blocurile</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cardurile cad cu gravitație când intră în ecran. -->
+      <div class="piatra__carduri">
+        <div class="piatra__ziduri" aria-hidden="true">
+          <svg class="zid" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet">
+            <rect width="100000" height="960" fill="url(#model-piatra)"/>
+          </svg>
+          <div class="piatra__umbra"></div>
+        </div>
+
+        <div class="piatra__carduri-continut">
+          <h3 class="eticheta">Cum e făcut site-ul</h3>
+          <ul class="carduri">
+            <li class="card">
+              <svg class="card__icon soare--zi" aria-hidden="true"><use href="#soare"/></svg>
+              <h4 class="card__titlu">Animații CSS legate de scroll</h4>
+              <p>Cerul, fisurile și bara de minerit se mișcă doar din CSS, cu <code>animation-timeline</code>. Browserele care nu îl suportă primesc o variantă statică, completă.</p>
+            </li>
+            <li class="card">
+              <svg class="card__icon" aria-hidden="true"><use href="#creeper"/></svg>
+              <h4 class="card__titlu">Scene fixate cu GSAP</h4>
+              <p>Suprafața folosește GSAP ScrollTrigger: secțiunea se fixează, peisajul merge orizontal, iar explozia pornește o singură dată, în timp real.</p>
+            </li>
+            <li class="card">
+              <svg class="card__icon" aria-hidden="true"><use href="#bloc-iarba"/></svg>
+              <h4 class="card__titlu">Pixel art scris ca text</h4>
+              <p>Fiecare sprite e o grilă de caractere, transformată în SVG de un script PowerShell. Culorile vin din variabile CSS, deci paleta întregii pagini se schimbă dintr-un singur loc.</p>
+            </li>
+            <li class="card">
+              <svg class="card__icon" aria-hidden="true"><use href="#litera-a"/></svg>
+              <h4 class="card__titlu">Accesibil din start</h4>
+              <p>Cu „reducerea mișcării” activată în sistem, pagina devine statică. Titlurile rămân text real, iar animațiile folosesc doar <code>transform</code> și <code>opacity</code>.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
     </section>
 
     <section class="strat strat--pestera" id="pestera">
@@ -298,5 +386,9 @@
       <a class="respawn" href="#cer">Respawn</a>
     </section>
   </main>
+
+  <footer class="subsol">
+    <p>Coborârea e un proiect fan, neafiliat cu Mojang Studios sau Microsoft. Minecraft este o marcă înregistrată a Mojang Synergies AB. Grafica e desenată de la zero.</p>
+  </footer>
 </body>
 </html>

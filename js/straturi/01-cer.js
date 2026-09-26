@@ -17,10 +17,14 @@
 
     blocuri.forEach((bloc, i) => {
       const start = i * 0.12;
-      const saritura = bloc.getBoundingClientRect().height / 10;
+      const r = bloc.getBoundingClientRect();
+      const saritura = r.height / 10;
+      // Distanța se măsoară acum, o singură dată: o funcție ar fi reevaluată de GSAP
+      // la prima redare, când blocul e deja mutat în sus, și căderea ar ieși de câțiva pixeli.
+      const inaltime = r.bottom + 20;
 
       tl.fromTo(bloc,
-        { y: () => -(bloc.getBoundingClientRect().bottom + 20), autoAlpha: 1 },
+        { y: -inaltime, autoAlpha: 1 },
         { y: 0, duration: cadere, ease: 'power2.in' },
         start)
         .to(bloc, { y: -saritura, duration: 0.09, ease: 'power1.out' }, start + cadere)

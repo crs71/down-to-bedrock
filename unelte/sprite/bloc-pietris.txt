@@ -1,0 +1,24 @@
+# Bloc de pietris: pietricele cu lumina sus-stanga si umbra jos-dreapta, pe fond de piatra.
+id: bloc-pietris
+s = --piatra-1
+t = --piatra-2
+u = --piatra-4
+v = --piatra-3
+p = --pamant-3
+
+vvvvvvvsusuuvvvv
+vvvvvvvvtuuuvvvv
+vvvvsttvvuuutsuv
+vvvsttussstttuuv
+vvvsssvsssttuvvv
+vvvssuvssuttppvv
+vvvvsusttvtsuuvv
+vstsssttsttuuuvv
+vttssuvvtttvvvvv
+vvvvvvvvttuvvvvv
+vvvvvvvvsuuvssvv
+vvvvvsssuuuvsstv
+vvvstsssuuuvsuuv
+vvvtussusstvvvvv
+vvvvvsppttuvvvvv
+vvvvvuusstuvvvvv
