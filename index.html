@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coborârea</title>
+  <meta name="description" content="O coborâre prin straturile unei lumi din blocuri, de la cer până la bedrock.">
+  <link rel="stylesheet" href="css/base.css">
+  <!-- Fiecare strat adaugă aici css/straturi/NN-nume.css, după base.css. -->
+
+  <script src="js/main.js" defer></script>
+  <!-- Fiecare strat adaugă aici js/straturi/NN-nume.js (defer), după main.js. -->
+</head>
+<body>
+  <aside class="adancime" aria-hidden="true">
+    <span class="adancime__y">Y: 64</span>
+  </aside>
+
+  <main>
+    <section class="strat strat--cer" id="cer">
+      <h1>Coborârea</h1>
+    </section>
+
+    <section class="strat strat--suprafata" id="suprafata">
+      <h2>Suprafața</h2>
+    </section>
+
+    <section class="strat strat--piatra" id="piatra">
+      <h2>Pământ și piatră</h2>
+    </section>
+
+    <section class="strat strat--pestera" id="pestera">
+      <h2>Peștera</h2>
+    </section>
+
+    <section class="strat strat--mina" id="mina">
+      <h2>Mina abandonată</h2>
+    </section>
+
+    <section class="strat strat--nether" id="nether">
+      <h2>Nether</h2>
+    </section>
+
+    <section class="strat strat--bedrock" id="bedrock">
+      <h2>Bedrock</h2>
+      <a class="respawn" href="#cer">Respawn</a>
+    </section>
+  </main>
+</body>
+</html>

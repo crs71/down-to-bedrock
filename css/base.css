@@ -1,0 +1,87 @@
+/*
+  Bază comună: variabile, reset, elemente permanente, reduced-motion.
+  Stilurile fiecărui strat stau în css/straturi/NN-nume.css.
+
+  Convenție pentru animații: stilul de bază al unui element este starea
+  FINALĂ, vizibilă. Animația (keyframes / scroll-driven) descrie doar
+  punctul de plecare (`from`). Așa, când prefers-reduced-motion oprește
+  animațiile, pagina rămâne completă și statică, fără cod în plus.
+  GSAP nu e afectat de CSS: se verifică Coborarea.miscareRedusa în JS.
+*/
+
+:root {
+  --cer: #7ec0ee;
+  --iarba: #5d9b3a;
+  --pamant: #7a5230;
+  --piatra: #6b6b6b;
+  --pestera: #1c1c22;
+  --mina: #3a2e22;
+  --nether: #5a1414;
+  --bedrock: #2a2a2a;
+  --text: #f4f4f4;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bedrock);
+}
+
+img {
+  image-rendering: pixelated;
+}
+
+.strat {
+  min-height: 100vh;
+  min-height: 100svh; /* nu sare când apare/dispare bara browserului pe telefon */
+  display: grid;
+  place-items: center;
+  padding: 4rem 1rem;
+}
+
+.strat--cer       { background: var(--cer); }
+.strat--suprafata { background: var(--iarba); }
+.strat--piatra    { background: linear-gradient(var(--pamant), var(--piatra)); }
+.strat--pestera   { background: var(--pestera); }
+.strat--mina      { background: var(--mina); }
+.strat--nether    { background: var(--nether); }
+.strat--bedrock   { background: var(--bedrock); }
+
+.adancime {
+  position: fixed;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  font-family: monospace;
+  background: rgb(0 0 0 / 0.5);
+  padding: 0.25rem 0.5rem;
+  z-index: 10;
+}
+
+.respawn {
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
