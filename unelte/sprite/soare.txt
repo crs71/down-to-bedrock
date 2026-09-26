@@ -1,0 +1,22 @@
+# Soarele. Culorile vin din --soare-1..3, setate pe fiecare instanta (zi / apus).
+id: soare
+a = --soare-3
+b = --soare-2
+c = --soare-1
+
+.....aaaaaa.....
+...aabbbbbbaa...
+..abbbbbbbbbba..
+.abbccbbbbbbbba.
+.abccbbbbbbbbba.
+abbcbbbbbbbbbbba
+abbbbbbbbbbbbbba
+abbbbbbbbbbbbbba
+abbbbbbbbbbbbbba
+abbbbbbbbbbbbbba
+abbbbbbbbbbbbbba
+.abbbbbbbbbbbba.
+.abbbbbbbbbbbba.
+..abbbbbbbbbba..
+...aabbbbbbaa...
+.....aaaaaa.....

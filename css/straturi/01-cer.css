@@ -1,0 +1,220 @@
+/*
+  Stratul 1: cerul.
+  Secțiunea are 250svh; scena (100svh) stă fixată cu sticky cât timp o traversezi.
+  Animațiile de scroll folosesc timeline-ul --cer (view-timeline al secțiunii), pe
+  intervalul `contain`: de la scroll 0 până când secțiunea iese pe la partea de sus.
+
+  Starea statică (reduced-motion / browsere fără animation-timeline): cer de zi,
+  soarele sus, norii la pozițiile --x. Apusul e varianta animată, nu starea de bază.
+*/
+
+.strat--cer {
+  display: block;
+  place-items: normal; /* altfel Chrome centrează și micșorează scena și în layout de tip bloc */
+  min-height: 0;
+  height: 250vh;
+  height: 250svh;
+  padding: 0;
+  background: var(--cer-2);
+  view-timeline-name: --cer;
+  view-timeline-axis: block;
+}
+
+.cer__scena {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+/* Straturile de fundal umplu toată scena (place-items: center le-ar micșora la conținut). */
+.cer__cer,
+.cer__plan {
+  place-self: stretch;
+}
+
+/* Cerul în benzi. .dither = tablă de șah cu pătrate de un pixel, între două culori. */
+.cer__cer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.cer__cer > i {
+  flex-basis: 0;
+  background: var(--c);
+}
+
+.cer__cer > .dither {
+  background:
+    repeating-conic-gradient(var(--c) 0 25%, var(--c2) 0 50%)
+    0 0 / calc(var(--pixel) * 2) calc(var(--pixel) * 2);
+}
+
+.cer__cer--apus {
+  opacity: 0;
+}
+
+/* Soarele: două instanțe suprapuse (zi și apus), aceeași formă, altă paletă. */
+.cer__soare {
+  --p: 6px;
+  position: absolute;
+  top: 12%;
+  right: 16%;
+  width: calc(16 * var(--p));
+  height: calc(16 * var(--p));
+}
+
+.soare {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.soare--zi {
+  --soare-1: var(--nor-1);
+  --soare-2: var(--apus-1);
+  --soare-3: var(--apus-2);
+}
+
+.soare--apus {
+  --soare-1: var(--apus-1);
+  --soare-2: var(--apus-2);
+  --soare-3: var(--nether-2);
+  opacity: 0;
+}
+
+/* Nori: fiecare plan are mărimea lui de pixel (--p). */
+.cer__plan {
+  position: absolute;
+  inset: 0;
+}
+
+.cer__plan--departe { --p: 2px; opacity: 0.7; }
+.cer__plan--mijloc  { --p: 4px; opacity: 0.9; }
+.cer__plan--aproape { --p: 6px; }
+
+.nor {
+  position: absolute;
+  top: var(--y);
+  left: 0;
+  width: calc(var(--w) * var(--p));
+  height: calc(var(--h) * var(--p));
+  transform: translateX(var(--x));
+  animation: nor-plutire var(--durata) linear var(--intarziere) infinite;
+}
+
+.nor--mic   { --w: 16; --h: 6; }
+.nor--mediu { --w: 24; --h: 8; }
+.nor--mare  { --w: 32; --h: 10; }
+
+@keyframes nor-plutire {
+  from { transform: translateX(100vw); }
+  to   { transform: translateX(-100%); }
+}
+
+/* Titlul: 9 blocuri alăturate. Pixelul crește în trepte întregi, ca pixel art-ul să rămână clar. */
+.titlu {
+  --p: 2px;
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+
+@media (min-width: 480px)  { .titlu { --p: 3px; } }
+@media (min-width: 640px)  { .titlu { --p: 4px; } }
+@media (min-width: 1100px) { .titlu { --p: 6px; } }
+
+.titlu__blocuri {
+  display: flex;
+}
+
+.titlu__bloc {
+  display: block;
+  width: calc(16 * var(--p));
+  height: calc(16 * var(--p));
+  filter: drop-shadow(0 var(--p) 0 rgb(24 20 37 / 0.45));
+}
+
+/* Blocurile sunt ascunse până le aruncă GSAP (js/straturi/01-cer.js).
+   Plasă de siguranță: dacă JS-ul nu ajunge să ruleze, apar singure după 4s. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .titlu__bloc {
+    visibility: hidden;
+    animation: titlu-plasa 0s 4s forwards;
+  }
+}
+
+@keyframes titlu-plasa {
+  to { visibility: visible; }
+}
+
+.cer__indemn {
+  position: absolute;
+  z-index: 1;
+  bottom: 8%;
+  margin: 0;
+  padding: 0.25rem 0.75rem;
+  background: rgb(24 20 37 / 0.6);
+  font-size: 1.125rem;
+}
+
+.cer__sageata {
+  display: inline-block;
+  animation: sageata 1.2s steps(1) infinite;
+}
+
+@keyframes sageata {
+  50% { transform: translateY(calc(var(--pixel) * 1)); }
+}
+
+@media (max-width: 480px) {
+  .cer__soare         { --p: 4px; right: 10%; }
+  .cer__plan--mijloc  { --p: 3px; }
+  .cer__plan--aproape { --p: 4px; }
+}
+
+/* Animațiile legate de scroll: doar unde browserul le suportă, altfel rămâne starea statică. */
+@supports (animation-timeline: view()) {
+  .cer__cer--apus,
+  .soare--apus,
+  .cer__soare,
+  .cer__plan,
+  .cer__indemn {
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: --cer;
+    animation-range: contain 0% contain 100%;
+  }
+
+  .cer__cer--apus      { animation-name: cer-apus; }
+  .soare--apus         { animation-name: cer-apus; }
+  .cer__soare          { animation-name: soare-coboara; }
+  .cer__plan--departe  { animation-name: plan-departe; }
+  .cer__plan--mijloc   { animation-name: plan-mijloc; }
+  .cer__plan--aproape  { animation-name: plan-aproape; }
+  .cer__indemn         { animation-name: indemn-dispare; }
+}
+
+@keyframes cer-apus {
+  0%, 10%   { opacity: 0; }
+  85%, 100% { opacity: 1; }
+}
+
+@keyframes soare-coboara {
+  to { transform: translate(-6vw, 62svh); }
+}
+
+@keyframes plan-departe { to { transform: translateY(-12svh); } }
+@keyframes plan-mijloc  { to { transform: translateY(-30svh); } }
+@keyframes plan-aproape { to { transform: translateY(-65svh); } }
+
+@keyframes indemn-dispare {
+  0%        { opacity: 1; }
+  8%, 100%  { opacity: 0; }
+}

@@ -1,0 +1,26 @@
+# Bloc de iarba, vazut din lateral: iarba sus, pamant dedesubt.
+id: bloc-iarba
+a = --pamant-1
+b = --pamant-2
+c = --pamant-3
+d = --pamant-4
+g = --iarba-1
+h = --iarba-2
+i = --iarba-3
+
+hghhhghhhhghhhgh
+hhhhhhhhghhhhhhh
+hhihhhhhhhhihhhh
+ihbihhbhhibbhhbi
+bbbbibbbibbbbibb
+bbbbbabbbbbbbbcb
+bcbbbbbbcbbbabbb
+bbbbbbbbccbbbbbb
+cbbabbbbbbbbbbdb
+bbbbbbdbbbabbbcb
+bbabbbcbbbbbbbbb
+bbbbbbbbbbbcbbbb
+bdbbbbbbabbccbab
+bcbbbcbbbbbbbbbb
+bbbbabbbbbbbbdbb
+bbcbbbbbbcbbabbc

@@ -1,0 +1,23 @@
+# Bloc de pamant.
+id: bloc-pamant
+a = --pamant-1
+b = --pamant-2
+c = --pamant-3
+d = --pamant-4
+
+bbcbbbbbabbbbcbb
+bbbbbccbbbbbbbbb
+abbbbbbbbbbdbabb
+bbbdbbbabbbcbbbb
+bbbcbbbbbbbbbbbc
+bbbbbabbbbbbbbcb
+bcbbbbbbcbbbabbb
+bbbbbbbbccbbbbbb
+cbbabbbbbbbbbbdb
+bbbbbbdbbbabbbcb
+bbabbbcbbbbbbbbb
+bbbbbbbbbbbcbbbb
+bdbbbbbbabbccbab
+bcbbbcbbbbbbbbbb
+bbbbabbbbbbbbdbb
+bbcbbbbbbcbbabbc

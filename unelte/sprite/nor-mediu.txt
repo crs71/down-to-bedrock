@@ -1,0 +1,13 @@
+# Nor mediu, 24x8.
+id: nor-mediu
+a = --nor-1
+b = --nor-2
+
+.......aaaa.............
+.....aaaaaaaa..aa.......
+....aaaaaaaaaaaaaaa.....
+..aaaaaaaaaaaaaaaaaaa...
+.aaaaaaaaaaaaaaaaaaaaaa.
+aaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaa
+.bbbbbbbbbbbbbbbbbbbbbb.

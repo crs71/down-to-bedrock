@@ -1,0 +1,11 @@
+# Nor mic, 16x6.
+id: nor-mic
+a = --nor-1
+b = --nor-2
+
+.....aaa........
+...aaaaaaa.aa...
+..aaaaaaaaaaaaa.
+aaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaa
+bbbbbbbbbbbbbbbb

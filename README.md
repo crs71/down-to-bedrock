@@ -23,6 +23,16 @@ Site cu temă de lume din blocuri: cobori prin straturi (cer → suprafață →
 - `assets/pixel/`: grafica pixel art care nu stă inline
 - `assets/fonts/`: fontul și licența lui (`OFL.txt`)
 - `serve.ps1`: server local pentru dezvoltare
+- `unelte/pixel.ps1` și `unelte/sprite/*.txt`: sursele sprite-urilor, ca grile de caractere
+
+## Sprite-uri
+Fiecare sprite e un fișier text în `unelte/sprite/`: un antet (`id`, opțional `baza`, apoi `caracter = --variabila-css`), un rând gol și grila, cu `.` pentru transparent. După ce modifici sau adaugi un fișier, rulezi:
+
+```
+powershell -ExecutionPolicy Bypass -File unelte/pixel.ps1
+```
+
+Scriptul rescrie `<symbol>`-urile din `index.html`, între `<!-- sprite:inceput -->` și `<!-- sprite:sfarsit -->`. Zona dintre marcaje nu se editează de mână.
 
 Convenție pentru animații: stilul de bază e starea finală, vizibilă; animația descrie doar punctul de plecare. Așa, cu `prefers-reduced-motion`, pagina rămâne completă și statică.
 
@@ -36,4 +46,4 @@ powershell -ExecutionPolicy Bypass -File serve.ps1
 Apoi deschizi http://localhost:8080/ (portul se schimbă cu `-Port 3000`). Pagina merge și deschisă direct din fișier, dar serverul se comportă ca pe Cloudflare.
 
 ## Deploy
-Site separat pe Cloudflare Pages, încărcat manual dintr-o arhivă .zip. Arhiva conține doar `index.html`, `css/`, `js/` și `assets/`, fără `README.md`, `serve.ps1` și `.gitignore`.
+Site separat pe Cloudflare Pages, încărcat manual dintr-o arhivă .zip. Arhiva conține doar `index.html`, `css/`, `js/` și `assets/`, fără `README.md`, `serve.ps1`, `unelte/` și `.gitignore`.

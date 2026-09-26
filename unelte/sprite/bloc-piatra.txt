@@ -1,0 +1,23 @@
+# Bloc de piatra.
+id: bloc-piatra
+s = --piatra-1
+t = --piatra-2
+u = --piatra-3
+v = --piatra-4
+
+tttttuttttttttut
+ttsttuuttttssttt
+tttttttttttttttt
+tuuttttsttttuutt
+ttttsstttttttutt
+ttttttttuutttttt
+sttttttttvttttts
+tttuutttttttttst
+ttttvtttssttttut
+tttttttttttttuut
+ttssttttuutttttt
+tttttttttvttssst
+uttttssttttttttu
+tuutttttttuuttst
+ttttttvttttttttt
+ttsttttttsttuttt
