@@ -81,9 +81,9 @@ foreach ($f in $fisiere) { $simboluri += ConvertTo-Symbol (Read-Sprite $f.FullNa
 
 $utf8 = New-Object Text.UTF8Encoding($false)
 $html = [IO.File]::ReadAllText($pagina, $utf8)
-$tipar = '(?s)(<!-- sprite:inceput -->\r?\n).*?(\s*<!-- sprite:sfarsit -->)'
+$tipar = '(?s)(<!-- sprite:inceput -->).*?([ \t]*<!-- sprite:sfarsit -->)'
 if ($html -notmatch $tipar) { throw 'index.html: lipsesc marcajele sprite:inceput / sprite:sfarsit' }
-$html = [regex]::Replace($html, $tipar, { param($m) $m.Groups[1].Value + $simboluri.TrimEnd("`n") + $m.Groups[2].Value })
+$html = [regex]::Replace($html, $tipar, { param($m) $m.Groups[1].Value + "`n" + $simboluri + $m.Groups[2].Value })
 [IO.File]::WriteAllText($pagina, $html, $utf8)
 
 Write-Host "$($fisiere.Count) sprite-uri scrise in index.html"

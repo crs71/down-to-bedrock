@@ -36,23 +36,10 @@
   place-self: stretch;
 }
 
-/* Cerul în benzi. .dither = tablă de șah cu pătrate de un pixel, între două culori. */
+/* Cerul în benzi (componenta .benzi din base.css). */
 .cer__cer {
   position: absolute;
   inset: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.cer__cer > i {
-  flex-basis: 0;
-  background: var(--c);
-}
-
-.cer__cer > .dither {
-  background:
-    repeating-conic-gradient(var(--c) 0 25%, var(--c2) 0 50%)
-    0 0 / calc(var(--pixel) * 2) calc(var(--pixel) * 2);
 }
 
 .cer__cer--apus {

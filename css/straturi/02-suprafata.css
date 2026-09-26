@@ -1,0 +1,168 @@
+/*
+  Stratul 2: suprafața.
+  Cu animație (clasa .sup--animat, pusă de js/straturi/02-suprafata.js): secțiunea e
+  fixată de GSAP, pista de 300vw se deplasează orizontal, copacii cresc, creeper-ul
+  clipește și explodează, apoi „camera” plonjează în crater.
+
+  Starea statică (reduced-motion / fără GSAP): fereastra de 100svh se derulează
+  orizontal manual; copacii sunt mari, creeper-ul stă în picioare, craterul nu există.
+*/
+
+.strat--suprafata {
+  display: block;
+  place-items: normal;
+  min-height: 0;
+  padding: 0;
+  background: var(--pamant-4);
+}
+
+.sup__fereastra {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+}
+
+.sup--animat .sup__fereastra {
+  overflow: hidden;
+}
+
+.sup__titlu {
+  position: sticky;
+  z-index: 2;
+  top: 1rem;
+  left: 1rem;
+  width: max-content;
+  margin: 1rem;
+  padding: 0.25rem 0.75rem;
+  background: rgb(24 20 37 / 0.6);
+  font-size: 1.25rem;
+}
+
+/* .sup__scutura primește tremuratul exploziei, .sup__lume primește zoom-ul în crater. */
+.sup__scutura {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300vw;
+  height: 100%;
+}
+
+.sup__lume,
+.sup__cer,
+.sup__pista {
+  position: absolute;
+  inset: 0;
+}
+
+.sup__soare {
+  --p: 6px;
+  --soare-1: var(--apus-1);
+  --soare-2: var(--apus-2);
+  --soare-3: var(--nether-2);
+  position: absolute;
+  left: 70vw;
+  bottom: calc(var(--bloc) * 4.4);
+  width: calc(16 * var(--p));
+  height: calc(16 * var(--p));
+}
+
+/* Planul îndepărtat: un deal închis la culoare, cu copaci mici. */
+.sup__departe {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--bloc) * 4);
+  width: 100%;
+  height: var(--bloc);
+  background: var(--iarba-4);
+}
+
+/* Aceleași sprite-uri, cu rampele coborâte o treaptă (valorile Endesga, nu var(), ca să nu se refere la ele însele). */
+.sup__copac-departe {
+  --p: 2px;
+  --iarba-1: #3e8948;
+  --iarba-2: #265c42;
+  --iarba-3: #193c3e;
+  --iarba-4: #181425;
+  --lemn-2: #733e39;
+  --lemn-3: #3e2731;
+  --lemn-4: #181425;
+  position: absolute;
+  left: var(--x);
+  bottom: calc(100% - var(--p) * 2);
+  width: calc(32 * var(--p));
+  height: calc(48 * var(--p));
+  transform: translateX(-50%);
+}
+
+/* Pista. --centru = locul creeper-ului, aliniat la grila de blocuri acolo unde browserul știe round(). */
+.sup__pista {
+  --sol: calc(var(--bloc) * 4);
+  --centru: 250vw;
+}
+
+@supports (width: round(1px, 1px)) {
+  .sup__pista {
+    --centru: calc(round(250vw, var(--bloc)) + var(--bloc) / 2);
+  }
+}
+
+.sup__sol {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: var(--sol);
+}
+
+.sup__copac {
+  position: absolute;
+  left: var(--x);
+  bottom: var(--sol);
+  width: calc(32 * var(--pixel));
+  height: calc(48 * var(--pixel));
+  transform: translateX(-50%);
+}
+
+.sup__crater {
+  position: absolute;
+  left: calc(var(--centru) - var(--bloc) * 1.5);
+  bottom: calc(var(--sol) - var(--bloc) * 2);
+  width: calc(var(--bloc) * 3);
+  height: calc(var(--bloc) * 2);
+  opacity: 0;
+}
+
+.sup__creeper {
+  position: absolute;
+  left: var(--centru);
+  bottom: var(--sol);
+  width: calc(8 * var(--pixel));
+  height: calc(26 * var(--pixel));
+  transform: translateX(-50%);
+  transform-origin: 50% 100%;
+}
+
+.sup__creeper svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sup__creeper-alb {
+  position: absolute;
+  inset: 0;
+  background: var(--nor-1);
+  opacity: 0;
+}
+
+.sup__intuneric {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  background: var(--pamant-4);
+  opacity: 0;
+  pointer-events: none;
+}

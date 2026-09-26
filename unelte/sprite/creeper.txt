@@ -1,0 +1,34 @@
+# Creeper vazut din fata, 8x26 (cap 8x8, corp 8x12, picioare 8x6).
+id: creeper
+a = --iarba-1
+b = --iarba-2
+c = --iarba-3
+d = --iarba-4
+k = --pestera-3
+
+abaabbab
+babaabaa
+akkbbkka
+bkkabkkb
+abbkkaba
+bakkkkab
+abkkkkba
+bakbbkab
+cbcbbcbc
+abaabbac
+babaabbc
+aabbabac
+babaabbc
+abbaabac
+baabbabc
+abababbc
+babbaabc
+aababbac
+babaabbc
+abbabacc
+abbcabbc
+babcbabc
+abbcabbc
+babcbabc
+abbcabbc
+dddddddd

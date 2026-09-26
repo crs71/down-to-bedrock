@@ -145,6 +145,34 @@ img {
   overflow: hidden;
 }
 
+/* Cer sau fundal în benzi orizontale: <div class="benzi"><i style="--c: …; flex-grow: N"></i>…</div>
+   .dither = tablă de șah cu pătrate de un pixel între --c și --c2, ca tranziție între benzi. */
+.benzi {
+  display: flex;
+  flex-direction: column;
+}
+
+.benzi > i {
+  flex-basis: 0;
+  background: var(--c);
+}
+
+.benzi > .dither {
+  background:
+    repeating-conic-gradient(var(--c) 0 25%, var(--c2) 0 50%)
+    0 0 / calc(var(--pixel) * 2) calc(var(--pixel) * 2);
+}
+
+/* Particulele (js/util/particule.js): un canvas fix peste pagină, sub bara de adâncime. */
+.particule {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9;
+}
+
 /* Un bloc: <svg class="bloc"><use href="#bloc-piatra"/></svg> */
 .bloc {
   display: block;
@@ -162,7 +190,8 @@ img {
 
 .strat--cer       { background: var(--cer-2); }
 .strat--suprafata { background: var(--iarba-2); }
-.strat--piatra    { background: linear-gradient(var(--pamant-3), var(--piatra-3)); }
+/* Piatra începe cu --pamant-4: aceeași culoare ca interiorul craterului din stratul 2. */
+.strat--piatra    { background: linear-gradient(var(--pamant-4), var(--piatra-3)); }
 .strat--pestera   { background: var(--pestera-3); }
 .strat--mina      { background: var(--lemn-4); }
 .strat--nether    { background: var(--nether-fundal); }
