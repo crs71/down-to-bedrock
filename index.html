@@ -5,13 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coborârea</title>
   <meta name="description" content="O coborâre prin straturile unei lumi din blocuri, de la cer până la bedrock.">
+  <link rel="preload" href="assets/fonts/pixelify-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/base.css">
   <!-- Fiecare strat adaugă aici css/straturi/NN-nume.css, după base.css. -->
 
+  <!-- GSAP + ScrollTrigger (versiune fixată, cu SRI). Fără ele, pagina rămâne pe varianta statică. -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous" defer></script>
   <script src="js/main.js" defer></script>
   <!-- Fiecare strat adaugă aici js/straturi/NN-nume.js (defer), după main.js. -->
 </head>
 <body>
+  <!-- Sprite-uri pixel art 16×16. Culorile vin din variabilele CSS (paleta din base.css). -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="bloc-iarba" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--pamant-2)" d="M0 0h16v16h-16z"/>
+      <path style="fill:var(--pamant-1)" d="M5 5h1v1h-1zM12 6h1v1h-1zM3 8h1v1h-1zM10 9h1v1h-1zM2 10h1v1h-1zM8 12h1v1h-1zM14 12h1v1h-1zM4 14h1v1h-1zM12 15h1v1h-1z"/>
+      <path style="fill:var(--pamant-3)" d="M14 5h1v1h-1zM1 6h1v1h-1zM8 6h1v1h-1zM8 7h2v1h-2zM0 8h1v1h-1zM14 9h1v1h-1zM6 10h1v1h-1zM11 11h1v1h-1zM11 12h2v1h-2zM1 13h1v1h-1zM5 13h1v1h-1zM2 15h1v1h-1zM9 15h1v1h-1zM15 15h1v1h-1z"/>
+      <path style="fill:var(--pamant-4)" d="M14 8h1v1h-1zM6 9h1v1h-1zM1 12h1v1h-1zM13 14h1v1h-1z"/>
+      <path style="fill:var(--iarba-1)" d="M1 0h1v1h-1zM5 0h1v1h-1zM10 0h1v1h-1zM14 0h1v1h-1zM8 1h1v1h-1z"/>
+      <path style="fill:var(--iarba-2)" d="M0 0h1v1h-1zM2 0h3v1h-3zM6 0h4v1h-4zM11 0h3v1h-3zM15 0h1v1h-1zM0 1h8v1h-8zM9 1h7v1h-7zM0 2h2v1h-2zM3 2h8v1h-8zM12 2h4v1h-4zM1 3h1v1h-1zM4 3h2v1h-2zM7 3h2v1h-2zM12 3h2v1h-2z"/>
+      <path style="fill:var(--iarba-3)" d="M2 2h1v1h-1zM11 2h1v1h-1zM0 3h1v1h-1zM3 3h1v1h-1zM9 3h1v1h-1zM15 3h1v1h-1zM4 4h1v1h-1zM8 4h1v1h-1zM13 4h1v1h-1z"/>
+    </symbol>
+    <symbol id="bloc-pamant" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--pamant-2)" d="M0 0h16v16h-16z"/>
+      <path style="fill:var(--pamant-1)" d="M8 0h1v1h-1zM0 2h1v1h-1zM13 2h1v1h-1zM7 3h1v1h-1zM5 5h1v1h-1zM12 6h1v1h-1zM3 8h1v1h-1zM10 9h1v1h-1zM2 10h1v1h-1zM8 12h1v1h-1zM14 12h1v1h-1zM4 14h1v1h-1zM12 15h1v1h-1z"/>
+      <path style="fill:var(--pamant-3)" d="M2 0h1v1h-1zM13 0h1v1h-1zM5 1h2v1h-2zM11 3h1v1h-1zM3 4h1v1h-1zM15 4h1v1h-1zM14 5h1v1h-1zM1 6h1v1h-1zM8 6h1v1h-1zM8 7h2v1h-2zM0 8h1v1h-1zM14 9h1v1h-1zM6 10h1v1h-1zM11 11h1v1h-1zM11 12h2v1h-2zM1 13h1v1h-1zM5 13h1v1h-1zM2 15h1v1h-1zM9 15h1v1h-1zM15 15h1v1h-1z"/>
+      <path style="fill:var(--pamant-4)" d="M11 2h1v1h-1zM3 3h1v1h-1zM14 8h1v1h-1zM6 9h1v1h-1zM1 12h1v1h-1zM13 14h1v1h-1z"/>
+    </symbol>
+    <symbol id="bloc-piatra" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--piatra-2)" d="M0 0h16v16h-16z"/>
+      <path style="fill:var(--piatra-1)" d="M2 1h1v1h-1zM11 1h2v1h-2zM7 3h1v1h-1zM4 4h2v1h-2zM0 6h1v1h-1zM15 6h1v1h-1zM14 7h1v1h-1zM8 8h2v1h-2zM2 10h2v1h-2zM12 11h3v1h-3zM5 12h2v1h-2zM14 13h1v1h-1zM2 15h1v1h-1zM9 15h1v1h-1z"/>
+      <path style="fill:var(--piatra-3)" d="M5 0h1v1h-1zM14 0h1v1h-1zM5 1h2v1h-2zM1 3h2v1h-2zM12 3h2v1h-2zM13 4h1v1h-1zM8 5h2v1h-2zM3 7h2v1h-2zM14 8h1v1h-1zM13 9h2v1h-2zM8 10h2v1h-2zM0 12h1v1h-1zM15 12h1v1h-1zM1 13h2v1h-2zM10 13h2v1h-2zM12 15h1v1h-1z"/>
+      <path style="fill:var(--piatra-4)" d="M9 6h1v1h-1zM4 8h1v1h-1zM9 11h1v1h-1zM6 14h1v1h-1z"/>
+    </symbol>
+  </svg>
+
   <aside class="adancime" aria-hidden="true">
     <span class="adancime__y">Y: 64</span>
   </aside>
