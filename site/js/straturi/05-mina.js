@@ -73,7 +73,19 @@
     }
     masoara();
 
+    // Paleta se schimbă cât violetul acoperă tot ecranul; la scroll înapoi, revine.
     let nether = false;
+    function verificaPaleta(timp, prag) {
+      if (prag === undefined) return; // cronologia încă se construiește
+      const acum = timp >= prag;
+      if (acum !== nether) {
+        nether = acum;
+        window.Coborarea.paletaNether(nether);
+      }
+    }
+    // Pagina reîncărcată mai jos de mină: cronologia nu mai primește actualizări, deci paleta se
+    // stabilește și după fiecare refresh, din progresul declanșatorului.
+    const dupaRefresh = () => verificaPaleta(tl.scrollTrigger.progress * tl.duration(), tl.labels.nether);
     let botAnterior = null;
     const tl = gsap.timeline({
       defaults: { ease: 'none' },
@@ -100,12 +112,7 @@
             repara(p);
           }
         }
-        // Paleta se schimbă cât violetul acoperă tot ecranul; la scroll înapoi, revine.
-        const acum = this.time() >= this.labels.nether;
-        if (acum !== nether) {
-          nether = acum;
-          window.Coborarea.paletaNether(nether);
-        }
+        verificaPaleta(this.time(), this.labels.nether);
       },
     });
 
@@ -120,6 +127,7 @@
       .to({}, { duration: 0.3 });
 
     ScrollTrigger.addEventListener('refreshInit', masoara);
+    ScrollTrigger.addEventListener('refresh', dupaRefresh);
 
     // Sclipirile violete din portal, cât portalul e pe ecran și camera încă n-a intrat în el.
     let emitator = 0;
@@ -149,6 +157,7 @@
     // Revenire la varianta statică dacă utilizatorul activează reduced-motion cu pagina deschisă.
     return () => {
       ScrollTrigger.removeEventListener('refreshInit', masoara);
+      ScrollTrigger.removeEventListener('refresh', dupaRefresh);
       observator.disconnect();
       clearInterval(emitator);
       emitator = 0;
