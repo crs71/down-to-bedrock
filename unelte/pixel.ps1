@@ -1,5 +1,5 @@
 # Genereaza sprite-urile SVG din grilele de caractere din unelte/sprite/*.txt
-# si le scrie in index.html, intre <!-- sprite:inceput --> si <!-- sprite:sfarsit -->.
+# si le scrie in site/index.html, intre <!-- sprite:inceput --> si <!-- sprite:sfarsit -->.
 #
 # Rulare (din folderul proiectului):
 #   powershell -ExecutionPolicy Bypass -File unelte/pixel.ps1
@@ -14,12 +14,14 @@
 #
 # Culoarea cea mai frecventa devine un singur patrat desenat primul
 # (doar cand grila nu are pixeli transparenti), restul se deseneaza peste.
-# Fisierul nu intra in arhiva de deploy.
+# Folderul unelte/ nu se publica: Cloudflare Pages publica doar site/.
+# Toate sortarile sunt ordinale, ca rezultatul sa fie identic pe Windows si pe Linux
+# (unelte/verifica.ps1 il regenereaza si pe GitHub, ca sa verifice ca e la zi).
 
 $ErrorActionPreference = 'Stop'
 $proiect = Split-Path $PSScriptRoot -Parent
 $sursa = Join-Path $PSScriptRoot 'sprite'
-$pagina = Join-Path $proiect 'index.html'
+$pagina = Join-Path (Join-Path $proiect 'site') 'index.html'
 
 function Read-Sprite([string]$cale) {
   $s = @{ id = $null; baza = $null; culori = @{}; grila = @() }
@@ -45,13 +47,23 @@ function ConvertTo-Symbol($s) {
   $h = $grila.Count; $w = $grila[0].Length
   foreach ($r in $grila) { if ($r.Length -ne $w) { throw "$id : rand de lungime $($r.Length) in loc de ${w}: '$r'" } }
 
-  $toate = ($grila -join '').ToCharArray() | ForEach-Object { [string]$_ }
-  $baza = ($toate | Group-Object -CaseSensitive | Sort-Object Count -Descending | Select-Object -First 1).Name
-  if ($toate -contains '.') { $baza = $null }
+  # Culoarea de baza = cea mai frecventa; la egalitate, caracterul cel mai mic (ordinal), ca sa fie stabila.
+  $numar = New-Object 'System.Collections.Generic.Dictionary[char,int]'
+  foreach ($ch in ($grila -join '').ToCharArray()) {
+    if ($numar.ContainsKey($ch)) { $numar[$ch]++ } else { $numar[$ch] = 1 }
+  }
+  $baza = $null
+  foreach ($ch in $numar.Keys) {
+    if ($null -eq $baza -or $numar[$ch] -gt $numar[$baza] -or
+        ($numar[$ch] -eq $numar[$baza] -and [int]$ch -lt [int]$baza)) { $baza = $ch }
+  }
+  $baza = if ($numar.ContainsKey([char]'.')) { $null } else { [string]$baza }
 
   $trasee = [ordered]@{}
   if ($baza) { $trasee[$baza] = New-Object Text.StringBuilder("M0 0h${w}v${h}h-${w}z") }
-  foreach ($k in $s.culori.Keys | Sort-Object) { if ($k -cne $baza) { $trasee[$k] = New-Object Text.StringBuilder } }
+  $chei = [string[]]@($s.culori.Keys)
+  [Array]::Sort($chei, [StringComparer]::Ordinal)
+  foreach ($k in $chei) { if ($k -cne $baza) { $trasee[$k] = New-Object Text.StringBuilder } }
 
   for ($y = 0; $y -lt $h; $y++) {
     $x = 0
@@ -76,14 +88,15 @@ function ConvertTo-Symbol($s) {
 }
 
 $simboluri = ''
-$fisiere = Get-ChildItem $sursa -Filter *.txt | Sort-Object Name
-foreach ($f in $fisiere) { $simboluri += ConvertTo-Symbol (Read-Sprite $f.FullName) }
+$fisiere = [string[]]@(Get-ChildItem $sursa -Filter *.txt | ForEach-Object { $_.FullName })
+[Array]::Sort($fisiere, [StringComparer]::Ordinal)
+foreach ($f in $fisiere) { $simboluri += ConvertTo-Symbol (Read-Sprite $f) }
 
 $utf8 = New-Object Text.UTF8Encoding($false)
 $html = [IO.File]::ReadAllText($pagina, $utf8)
 $tipar = '(?s)(<!-- sprite:inceput -->).*?([ \t]*<!-- sprite:sfarsit -->)'
-if ($html -notmatch $tipar) { throw 'index.html: lipsesc marcajele sprite:inceput / sprite:sfarsit' }
+if ($html -notmatch $tipar) { throw 'site/index.html: lipsesc marcajele sprite:inceput / sprite:sfarsit' }
 $html = [regex]::Replace($html, $tipar, { param($m) $m.Groups[1].Value + "`n" + $simboluri + $m.Groups[2].Value })
 [IO.File]::WriteAllText($pagina, $html, $utf8)
 
-Write-Host "$($fisiere.Count) sprite-uri scrise in index.html"
+Write-Host "$($fisiere.Count) sprite-uri scrise in site/index.html"

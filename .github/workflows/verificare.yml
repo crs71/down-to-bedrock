@@ -1,0 +1,20 @@
+# Aceleași verificări ca hook-ul local (.githooks/pre-push), rulate pe GitHub la fiecare push.
+# Cloudflare Pages publică independent de rezultat; aici afli dacă ceva s-a stricat.
+name: Verificare
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verificare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verifică site-ul
+        shell: pwsh
+        run: ./unelte/verifica.ps1

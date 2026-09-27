@@ -1,0 +1,16 @@
+#!/bin/sh
+# Ruleaza unelte/verifica.ps1 inainte de fiecare push; daca gaseste o problema, push-ul se opreste.
+# Activare (o singura data, dupa o clonare noua): git config core.hooksPath .githooks
+if command -v powershell.exe >/dev/null 2>&1; then
+  PS=powershell.exe
+elif command -v pwsh >/dev/null 2>&1; then
+  PS=pwsh
+else
+  echo "pre-push: PowerShell nu e instalat, verificarea ramane doar pe GitHub."
+  exit 0
+fi
+
+if ! "$PS" -NoProfile -ExecutionPolicy Bypass -File unelte/verifica.ps1; then
+  echo "pre-push: verificarea a esuat, push-ul a fost oprit. Repara problemele de mai sus si incearca din nou."
+  exit 1
+fi

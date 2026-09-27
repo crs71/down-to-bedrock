@@ -1,0 +1,9 @@
+# Fișierele text se păstrează cu LF, pe Windows și pe serverele de build (Linux).
+* text=auto eol=lf
+
+# Fișiere binare: fără conversii.
+*.woff2 binary
+*.png   binary
+*.ico   binary
+*.webp  binary
+*.zip   binary
