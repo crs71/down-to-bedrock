@@ -1,0 +1,14 @@
+# Sina vazuta din lateral (16x6): bara de fier peste traverse de lemn. Se repeta pe podeaua minei.
+id: sina
+s = --piatra-1
+t = --piatra-2
+v = --piatra-4
+b = --lemn-2
+c = --lemn-3
+
+ssssssssssssssss
+tttttttttttttttt
+vvvvvvvvvvvvvvvv
+.bbbbb...bbbbb..
+.bcccb...bcccb..
+.ccccc...ccccc..

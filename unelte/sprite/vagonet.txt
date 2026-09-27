@@ -1,0 +1,24 @@
+# Vagonet vazut din lateral (24x14): cutie de fier cu nervuri si doua roti.
+id: vagonet
+s = --piatra-1
+t = --piatra-2
+u = --piatra-3
+v = --piatra-4
+w = --pestera-2
+k = --pestera-3
+g = --piatra-2
+
+tsssssssssssssssssssssst
+tvvvvvvvvvvvvvvvvvvvvvvt
+tutttttutttttttttuttttut
+tutttttutttttttttuttttut
+tutttttutttttttttuttttut
+tutttttutttttttttuttttut
+tutttttutttttttttuttttut
+tutttttutttttttttuttttut
+uuuuuuuuuuuuuuuuuuuuuuuu
+.wwwwwwwwwwwwwwwwwwwwww.
+...kkkk..........kkkk...
+..kggggk........kggggk..
+..kggggk........kggggk..
+...kkkk..........kkkk...

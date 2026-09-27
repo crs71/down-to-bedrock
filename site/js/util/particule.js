@@ -81,6 +81,43 @@
       });
     }
 
+    porneste();
+  }
+
+  // Particule cu viteze alese la întâmplare în intervalele date (de ex. scântei care urcă: vy negativ și
+  // gravitație negativă). vx și vy sunt [minim, maxim] în px/s.
+  function emite(x, y, optiuni = {}) {
+    if (miscareRedusa.matches) return;
+    const {
+      culori = ['#ffffff'],
+      numar = 1,
+      vx = [-20, 20],
+      vy = [-120, -60],
+      marime = 4,
+      gravitatie = -40,
+      viata = 1.5,
+      frecare = 0.4,
+    } = optiuni;
+    const intre = ([a, b]) => a + Math.random() * (b - a);
+
+    pregateste();
+    for (let i = 0; i < numar; i++) {
+      particule.push({
+        x,
+        y,
+        vx: intre(vx),
+        vy: intre(vy),
+        marime,
+        culoare: culori[Math.floor(Math.random() * culori.length)],
+        gravitatie,
+        frecare,
+        viata: viata * (0.6 + Math.random() * 0.4),
+      });
+    }
+    porneste();
+  }
+
+  function porneste() {
     if (!ruleaza) {
       ruleaza = true;
       ultimCadru = performance.now();
@@ -88,5 +125,5 @@
     }
   }
 
-  window.Coborarea.particule = { explozie };
+  window.Coborarea.particule = { explozie, emite };
 })();

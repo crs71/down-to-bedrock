@@ -1,0 +1,23 @@
+# Piatra luminoasa din tavanul Nether-ului.
+id: bloc-lumina
+a = --apus-1
+b = --apus-2
+c = --nether-2
+d = --pamant-1
+
+babbbbddbbbbaccb
+bbbbbbbbcbbbaccb
+bcbbbbaacaaabbbb
+ccbbbbbbaaaabbbb
+ccbbbbcbaaabbbbb
+aabbccbbbbbbbbbc
+aaaaccbbbbbbbaab
+baaabbbbbbbbccab
+bbbbbbbbbbbaccab
+bbbbbbbbbbbbbbbb
+bbbbbdddbbbbbbbb
+caabbbddbbbabbbc
+daabbbbbbbbabbbd
+daabbbbbbbbaabbd
+dabddbbbbbbaabbb
+babbbbbbbbbaaabb

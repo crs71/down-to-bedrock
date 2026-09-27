@@ -1,0 +1,22 @@
+# Scanduri de lemn, pentru stalpii si grinzile minei.
+id: bloc-scandura
+a = --lemn-1
+b = --pamant-1
+c = --pamant-2
+
+abbbbbbcabbbbbbb
+bbbabbbcbbbbabbb
+bbbbbbbcbbbbbbbb
+cccccccccccccccc
+bbbbbbbbbbbbcabb
+babbbbbbabbbcbbb
+bbbbbbbbbbbbcbbb
+cccccccccccccccc
+bbbcabbbbbbbbbbb
+bbbcbbbbbabbbbab
+bbbcbbbbbbbbbbbb
+cccccccccccccccc
+bbbbbbbbbbcabbbb
+babbbbbbbbcbbbab
+bbbbbbbbbbcbbbbb
+cccccccccccccccc

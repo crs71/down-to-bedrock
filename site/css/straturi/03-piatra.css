@@ -178,7 +178,7 @@
   position: fixed;
   z-index: 11;
   left: 50%;
-  bottom: 1.25rem;
+  bottom: 5.5rem; /* deasupra hotbar-ului din peșteră */
   display: grid;
   gap: 0.5rem;
   width: min(20rem, calc(100% - 2rem));

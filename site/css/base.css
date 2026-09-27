@@ -79,9 +79,19 @@
   --nether-4: #a22633;
   --nether-fundal: #3e2731;
 
+  --bedrock-0: #8b9bb4;
   --bedrock-1: #5a6988;
   --bedrock-2: #262b44;
   --bedrock-3: #181425;
+
+  --obsidian-1: #b55088;
+  --obsidian-2: #68386c;
+  --obsidian-3: #262b44;
+  --obsidian-4: #181425;
+
+  --portal-1: #b55088;
+  --portal-2: #68386c;
+  --portal-3: #3a4466;
 
   --minereu-carbune: #181425;
   --minereu-fier: #e8b796;
@@ -101,6 +111,42 @@
   :root {
     --pixel: 3px;
   }
+}
+
+/*
+  Paleta Nether: aceleași rampe, recolorate. E mereu activă pe .strat--nether (piatra devine
+  netherrack, pământul nisip de suflete, iarba ciuperci roșii) și pe toată pagina
+  (html.paleta-nether) după ce treci prin portal (js/straturi/06-nether.js).
+  Bedrock-ul, obsidianul, portalul și lava au variabile proprii și rămân la fel.
+*/
+html.paleta-nether,
+.strat--nether {
+  --cer-1: #f6757a;
+  --cer-2: #e43b44;
+  --cer-3: #a22633;
+  --cer-4: #3e2731;
+  --iarba-1: #ff0044;
+  --iarba-2: #e43b44;
+  --iarba-3: #a22633;
+  --iarba-4: #68386c;
+  --pamant-1: #c28569;
+  --pamant-2: #733e39;
+  --pamant-3: #3e2731;
+  --pamant-4: #181425;
+  --piatra-1: #e43b44;
+  --piatra-2: #a22633;
+  --piatra-3: #68386c;
+  --piatra-4: #3e2731;
+  --pestera-1: #68386c;
+  --pestera-2: #3e2731;
+  --pestera-3: #181425;
+  --nor-1: #f6757a;
+  --nor-2: #b55088;
+  --text-2: #f6757a;
+}
+
+html {
+  scrollbar-color: var(--piatra-3) var(--pestera-3);
 }
 
 *,
@@ -165,7 +211,26 @@ img {
 }
 
 .subsol p {
-  margin: 0;
+  max-width: 40rem;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.subsol__autor {
+  margin-bottom: 0.75rem !important;
+  font-size: 1rem;
+}
+
+.subsol__autor a {
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.subsol__autor a:hover {
+  color: var(--apus-1);
 }
 
 /* Cer sau fundal în benzi orizontale: <div class="benzi"><i style="--c: …; flex-grow: N"></i>…</div>
@@ -211,34 +276,123 @@ img {
   padding: 4rem 1rem;
 }
 
-/* Cerul, suprafața și piatra își au fundalul în css/straturi/. */
-.strat--pestera   { background: var(--pestera-3); }
-.strat--mina      { background: var(--lemn-4); }
-.strat--nether    { background: var(--nether-fundal); }
-.strat--bedrock   { background: var(--bedrock-3); }
+/* Fiecare strat își are fundalul și scena în css/straturi/. */
 
-.adancime {
-  position: fixed;
-  top: 50%;
-  right: 1rem;
-  transform: translateY(-50%);
-  font-variant-numeric: tabular-nums;
-  background: rgb(0 0 0 / 0.5);
-  padding: 0.25rem 0.5rem;
-  z-index: 10;
+/* Focus vizibil pentru navigarea cu tastatura. */
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--apus-1);
+  outline-offset: 3px;
 }
 
-/* Pe telefon, bara Y urcă în colț, ca să nu stea peste conținutul centrat. */
+/* ---------- HUD: adâncimea Y și biomul (js/main.js) ---------- */
+.hud {
+  position: fixed;
+  z-index: 10;
+  top: 50%;
+  right: 1rem;
+  display: grid;
+  justify-items: end;
+  gap: 0.25rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: opacity 0.3s steps(3);
+}
+
+.hud--ascuns {
+  opacity: 0;
+}
+
+.hud__y,
+.hud__biom {
+  padding: 0.25rem 0.5rem;
+  background: rgb(24 20 37 / 0.72);
+}
+
+.hud__y {
+  color: var(--iarba-1);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud__biom {
+  color: var(--text-2);
+  font-size: 0.875rem;
+}
+
+.hud__biom--nou {
+  animation: biom-nou 0.5s steps(4) both;
+}
+
+@keyframes biom-nou {
+  from { opacity: 0; transform: translateX(0.75rem); }
+}
+
+/* Pe telefon, HUD-ul urcă în colț, ca să nu stea peste conținutul centrat. */
 @media (max-width: 480px) {
-  .adancime {
+  .hud {
     top: 0.75rem;
     right: 0.75rem;
     transform: none;
   }
 }
 
-.respawn {
-  color: var(--text);
+/* ---------- Hotbar-ul din peșteră (js/straturi/04-pestera.js) ---------- */
+.hotbar {
+  --slot: min(2.75rem, calc((100vw - 2.5rem) / 9));
+  position: fixed;
+  z-index: 12;
+  left: 50%;
+  bottom: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(9, var(--slot));
+  padding: 3px;
+  background: rgb(24 20 37 / 0.85);
+  border: 3px solid var(--pestera-3);
+  box-shadow: 0 4px 0 rgb(0 0 0 / 0.4);
+  transform: translate(-50%, calc(100% + 1.5rem));
+  transition: transform 0.35s steps(5);
+  pointer-events: none;
+}
+
+.hotbar--vizibil {
+  transform: translate(-50%, 0);
+}
+
+.hotbar__slot {
+  position: relative;
+  width: var(--slot);
+  height: var(--slot);
+  background: rgb(58 68 102 / 0.35);
+  box-shadow: inset 0 0 0 2px var(--piatra-4);
+}
+
+.hotbar__slot--activ {
+  box-shadow: inset 0 0 0 3px var(--nor-1);
+}
+
+.hotbar__slot svg {
+  position: absolute;
+  inset: 18%;
+  width: 64%;
+  height: 64%;
+}
+
+.hotbar__slot[data-tip] svg {
+  opacity: 0;
+}
+
+.hotbar__slot--plin[data-tip] svg {
+  opacity: 1;
+}
+
+.hotbar__numar {
+  position: absolute;
+  right: 3px;
+  bottom: 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 0 var(--pestera-3);
 }
 
 @media (prefers-reduced-motion: reduce) {

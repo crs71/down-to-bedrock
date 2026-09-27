@@ -1,0 +1,262 @@
+/*
+  Stratul 6: Nether.
+
+  Paleta Nether e mereu activă pe secțiune (base.css), deci piatra din zid devine netherrack.
+  Cu JS, mișcare permisă și animation-timeline: 400svh, scena sticky. Pe view-timeline-ul --nether,
+  portalul crește (8% → 36%) până când violetul acoperă ecranul, apoi dispare (36% → 46%).
+  La 36%, js/straturi/06-nether.js pune paleta Nether pe toată pagina și pornește scânteile.
+  Lava curge, iar aerul de deasupra ei tremură prin filtrul SVG #caldura (feTurbulence).
+
+  Starea statică: Nether-ul, fără portal și fără mișcare.
+*/
+
+.strat--nether {
+  position: relative;
+  display: block;
+  place-items: normal;
+  min-height: 0;
+  padding: 0;
+  background: var(--nether-fundal);
+  view-timeline-name: --nether;
+  view-timeline-axis: block;
+}
+
+.nether__scena {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  overflow: clip;
+}
+
+.nether__lume {
+  position: absolute;
+  inset: 0;
+}
+
+.nether__zid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(var(--bloc) * 60);
+  filter: brightness(0.62);
+}
+
+/* Aerul fierbinte: copia zidului din jumătatea de jos, deformată. Doar zona de deasupra lavei,
+   ca filtrul să lucreze pe o suprafață mică. */
+.nether__caldura {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40vh;
+  top: 40svh;
+  bottom: calc(var(--bloc) * 2);
+  overflow: clip;
+  filter: url(#caldura);
+  -webkit-mask-image: linear-gradient(transparent, #000 40%);
+  mask-image: linear-gradient(transparent, #000 40%);
+}
+
+.nether__caldura .nether__zid {
+  top: -40vh;
+  top: -40svh;
+}
+
+/* Piatra luminoasă din tavan. */
+.nether__lumini svg {
+  position: absolute;
+  left: var(--x);
+  top: calc(var(--r) * var(--bloc));
+  width: var(--bloc);
+  height: var(--bloc);
+  filter: drop-shadow(0 0 calc(var(--bloc) / 4) rgb(254 231 97 / 0.55));
+}
+
+@supports (width: round(1px, 1px)) {
+  .nether__lumini svg {
+    left: round(down, var(--x), var(--bloc));
+  }
+}
+
+/* Cascada de lavă: o bandă de două ori mai înaltă decât e nevoie, care alunecă în jos. */
+.nether__cascada {
+  position: absolute;
+  top: 0;
+  left: 74%;
+  bottom: calc(var(--bloc) * 2);
+  width: var(--bloc);
+  overflow: clip;
+  box-shadow: 0 0 calc(var(--bloc) / 2) rgb(247 118 34 / 0.5);
+}
+
+@supports (width: round(1px, 1px)) {
+  .nether__cascada {
+    left: round(down, 74%, var(--bloc));
+  }
+}
+
+.nether__cascada svg {
+  display: block;
+  width: 100%;
+  height: calc(var(--bloc) * 120);
+  transform: translateY(-50%);
+}
+
+/* Lacul de lavă: o bandă mai lată cu 8 blocuri, care alunecă exact 8 blocuri și reîncepe. */
+.nether__lava {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--bloc) * 2);
+}
+
+.nether__lava::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: calc(var(--bloc) * 3);
+  background: linear-gradient(transparent, rgb(247 118 34 / 0.35));
+  pointer-events: none;
+}
+
+.nether__lava-banda {
+  display: block;
+  width: calc(100% + var(--bloc) * 8);
+  height: 100%;
+}
+
+.nether__titlu {
+  position: absolute;
+  z-index: 1;
+  top: 1rem;
+  left: 1rem;
+}
+
+/* ---------- Portalul (doar în varianta animată) ---------- */
+.nether__portal {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  /* Portalul stă încă în mină: piatra de aici are culorile normale, nu pe cele din Nether. */
+  --piatra-1: #c0cbdc;
+  --piatra-2: #8b9bb4;
+  --piatra-3: #5a6988;
+  --piatra-4: #3a4466;
+}
+
+.nether__portal-zid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(var(--bloc) * 60);
+}
+
+.nether__portal-umbra {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgb(181 80 136 / 0.35), rgb(8 6 14 / 0.75) 40%, rgb(8 6 14 / 0.92));
+}
+
+.nether__rama {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--bloc) * 4);
+  height: calc(var(--bloc) * 5);
+  transform: translate(-50%, -50%);
+}
+
+.nether__obsidian {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.nether__interior {
+  position: absolute;
+  left: var(--bloc);
+  top: var(--bloc);
+  width: calc(var(--bloc) * 2);
+  height: calc(var(--bloc) * 3);
+  overflow: clip;
+  box-shadow: 0 0 calc(var(--bloc) * 0.75) calc(var(--bloc) * 0.2) rgb(181 80 136 / 0.55);
+}
+
+.nether__interior svg {
+  display: block;
+  width: 100%;
+  height: 200%;
+}
+
+.nether__indiciu {
+  position: absolute;
+  left: 50%;
+  bottom: 12%;
+  margin: 0;
+  padding: 0.25rem 0.75rem;
+  background: rgb(24 20 37 / 0.7);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .strat--nether {
+    height: 400vh;
+    height: 400svh;
+  }
+
+  .js .nether__scena {
+    position: sticky;
+    top: 0;
+  }
+
+  .js .nether__cascada svg {
+    animation: lava-cade 16s linear infinite;
+  }
+
+  .js .nether__lava-banda {
+    animation: lava-curge 9s linear infinite;
+  }
+
+  .js .nether__interior svg {
+    animation: portal-curge 2.5s linear infinite;
+  }
+
+  @supports (animation-timeline: view()) {
+    .js .nether__portal {
+      display: block;
+      animation: portal-intra linear both;
+      animation-timeline: --nether;
+      animation-range: contain 0% contain 100%;
+    }
+  }
+}
+
+@keyframes lava-cade {
+  from { transform: translateY(-50%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes lava-curge {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(var(--bloc) * -8)); }
+}
+
+@keyframes portal-curge {
+  from { transform: translateY(-50%); }
+  to   { transform: translateY(0); }
+}
+
+/* Camera intră în portal (0.08 → 0.36), apoi violetul se retrage (0.36 → 0.46). */
+@keyframes portal-intra {
+  0%, 8%     { transform: scale(1); opacity: 1; }
+  36%        { transform: scale(18); opacity: 1; }
+  46%, 100%  { transform: scale(18); opacity: 0; }
+}

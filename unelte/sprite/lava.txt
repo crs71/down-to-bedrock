@@ -1,0 +1,23 @@
+# Lava: se repeta pe suprafata lacului din Nether si curge incet din CSS.
+id: lava
+a = --nether-1
+b = --nether-2
+c = --nether-3
+d = --apus-1
+
+bbbbbbbbbbcccbcd
+babbbbbbbbcccbcb
+aabbbbaddbccbbca
+aabbbbaabbbbbcba
+aabbbbaabbbbbcba
+bbbbbbaabbbbbbbb
+bbbbbbaaabcccbcb
+bbbbbbaaabbbbbbb
+cbbbbdaaaccbbbcc
+ccbbbbbbbccabbbc
+bbbbbbbbbccababb
+bcccdacbbaaabbbb
+bccddbcbdbbbbbbb
+acccbbcbdbbbbbbb
+cabbbbbbbbbbbbbb
+cabbbbbaaabbbbbd

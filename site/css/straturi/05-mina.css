@@ -1,0 +1,221 @@
+/*
+  Stratul 5: mina abandonată.
+
+  Cu JS și mișcare permisă: 260svh, scena sticky. Unde există animation-timeline, vagonetul merge pe
+  șine de la stânga la dreapta odată cu scroll-ul (view-timeline --mina), iar js/straturi/05-mina.js
+  rupe pânzele din drum când trece vagonetul peste ele.
+  Starea statică: vagonetul parcat la mijloc, pânzele întregi.
+
+  Blocurile au --bloc, ca în peșteră; podeaua are un rând de piatră și șinele deasupra.
+*/
+
+.strat--mina {
+  position: relative;
+  display: block;
+  place-items: normal;
+  min-height: 0;
+  padding: 0;
+  background: var(--pestera-3);
+  view-timeline-name: --mina;
+  view-timeline-axis: block;
+}
+
+.mina__scena {
+  --podea: var(--bloc);
+  --sine: calc(var(--pixel) * 6);
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  overflow: clip;
+}
+
+.mina__zid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(var(--bloc) * 60);
+}
+
+/* Umbra: întunecată sus, unde se leagă de întunericul peșterii, mai deschisă la nivelul torțelor. */
+.mina__umbra {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgb(8 6 14 / 0.95),
+    rgb(8 6 14 / 0.62) 30%,
+    rgb(8 6 14 / 0.5) 70%,
+    rgb(8 6 14 / 0.7)
+  );
+}
+
+.mina__titlu {
+  position: absolute;
+  z-index: 2;
+  top: 1rem;
+  left: 1rem;
+}
+
+/* ---------- Cadrele de susținere ---------- */
+.mina__cadru {
+  position: absolute;
+  left: calc(var(--bloc) * (1 + 6 * var(--i)));
+  bottom: calc(var(--podea) + var(--sine));
+  width: calc(var(--bloc) * 4);
+  height: calc(var(--bloc) * 5);
+}
+
+.mina__lemn {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mina__panza {
+  position: absolute;
+  top: var(--bloc);
+  left: var(--bloc);
+  width: var(--bloc);
+  height: var(--bloc);
+  opacity: 0.85;
+}
+
+.mina__panza--dreapta {
+  left: calc(var(--bloc) * 2);
+  transform: scaleX(-1);
+}
+
+/* Torța de pe stâlpul din dreapta, cu o lumină caldă care pâlpâie. */
+.mina__torta {
+  position: absolute;
+  left: calc(var(--bloc) * 2.4);
+  top: calc(var(--bloc) * 1.8);
+  width: var(--bloc);
+  height: var(--bloc);
+}
+
+.mina__torta::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 25%;
+  width: calc(var(--bloc) * 5);
+  height: calc(var(--bloc) * 5);
+  background: radial-gradient(circle, rgb(254 174 52 / 0.32), rgb(254 174 52 / 0.12) 40%, transparent 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.mina__torta svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- Pânzele din calea vagonetului ---------- */
+.mina__piedica {
+  position: absolute;
+  left: calc(var(--bloc) * (4.6 + 6 * var(--i)));
+  bottom: calc(var(--podea) + var(--sine));
+  width: calc(var(--bloc) * 1.5);
+  height: calc(var(--bloc) * 1.5);
+}
+
+.mina__bucata {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.9;
+}
+
+.mina__bucata--1 { clip-path: polygon(0 0, 100% 0, 0 100%); }
+.mina__bucata--2 { clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+
+/* ---------- Podeaua, șinele și vagonetul ---------- */
+.mina__podea {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--podea) + var(--sine));
+}
+
+.mina__sine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--sine);
+}
+
+.mina__pietre {
+  position: absolute;
+  top: var(--sine);
+  left: 0;
+  width: 100%;
+  height: calc(var(--bloc) * 2);
+}
+
+.mina__vagonet {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: calc(var(--podea) + var(--sine));
+  width: calc(var(--pixel) * 24);
+  height: calc(var(--pixel) * 14);
+  transform: translateX(-50%);
+}
+
+.mina__vagonet svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .strat--mina {
+    height: 260vh;
+    height: 260svh;
+  }
+
+  .js .mina__scena {
+    position: sticky;
+    top: 0;
+  }
+
+  .js .mina__torta::before {
+    animation: torta-palpaie 1.3s steps(1) infinite;
+  }
+
+  @supports (animation-timeline: view()) {
+    .js .mina__vagonet {
+      left: 0;
+      animation: vagonet-merge linear both;
+      animation-timeline: --mina;
+      animation-range: contain 0% contain 100%;
+    }
+
+    .js .mina__vagonet svg {
+      animation: vagonet-hurducaie 0.24s steps(2) infinite;
+    }
+  }
+}
+
+@keyframes vagonet-merge {
+  from { transform: translateX(-110%); }
+  to   { transform: translateX(calc(100vw + 10%)); }
+}
+
+@keyframes vagonet-hurducaie {
+  50% { transform: translateY(calc(var(--pixel) * -1)); }
+}
+
+@keyframes torta-palpaie {
+  0%  { opacity: 1; }
+  35% { opacity: 0.8; }
+  60% { opacity: 0.95; }
+  85% { opacity: 0.75; }
+}

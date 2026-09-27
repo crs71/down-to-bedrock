@@ -1,0 +1,22 @@
+# Interiorul portalului: se repeta si curge din CSS.
+id: portal
+a = --portal-1
+b = --portal-2
+c = --portal-3
+
+baaaabbbbbbbcccc
+bbbcbbaaabcccccb
+ccccbaaabbccbbbc
+ccccbaaaabccbbbc
+cccccbaaabbcbbbb
+cccccbaaabbbbbbb
+ccccbbbbbbbbaaab
+ccbbccccbaaaabcc
+bbcccccbaabbbbba
+bcccccbbbcccbaaa
+abcccccbbcccbaaa
+abcccccbbccccbaa
+aabccccbbccccbaa
+abccbbbbcccccbaa
+bbaaabcccccbbbcc
+aaabbcccbbcccccb

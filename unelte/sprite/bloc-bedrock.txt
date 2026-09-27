@@ -1,0 +1,23 @@
+# Bedrock. Culori proprii (--bedrock-*), neschimbate de paleta Nether.
+id: bloc-bedrock
+a = --bedrock-0
+b = --bedrock-1
+c = --bedrock-2
+d = --bedrock-3
+
+bbbbbbccbbbbcccb
+cbbbbbbbbcbbbccc
+cbbbbbdbccbbbbcc
+bbabbbdbccbbbbbb
+bbabbbdbccbbaabb
+bbabbbbbbbbbaabb
+bccbbbdbbbaddabb
+bbbbbbddbbbddbbb
+accabbddbddbbbba
+bccbbbcccbbbbbdb
+bbbbbbccccbbbddb
+bbbbbccccaacbbbb
+bbbbbcbbbaacbbaa
+bbbbbcabbaabbbca
+bbbbbbabbaabbbca
+bbbbbbccbaabcccb

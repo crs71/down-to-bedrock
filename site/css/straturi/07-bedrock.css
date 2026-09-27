@@ -1,0 +1,194 @@
+/*
+  Stratul 7: bedrock, fundul lumii.
+  Cât blocul e pe ecran (clasa .bedrock--sapa, pusă de js/straturi/07-bedrock.js), ținta încearcă
+  să-l spargă: fisurile ajung la cadrul 3 și se refac, bara se umple puțin și se golește, blocul
+  tremură. Nu se sparge niciodată. Respawn duce înapoi pe cer.
+  Starea statică: blocul întreg, mesajul și butonul.
+*/
+
+.strat--bedrock {
+  position: relative;
+  display: block;
+  place-items: normal;
+  min-height: 0;
+  padding: 0;
+  background: var(--bedrock-3);
+}
+
+.bedrock__scena {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 5rem 1rem 6rem;
+  overflow: clip;
+}
+
+.bedrock__zid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(var(--bloc) * 60);
+}
+
+.bedrock__umbra {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgb(24 20 37 / 0.9), rgb(24 20 37 / 0.55) 35%, rgb(24 20 37 / 0.75));
+}
+
+.bedrock__titlu {
+  position: absolute;
+  z-index: 1;
+  top: 1rem;
+  left: 1rem;
+}
+
+.bedrock__atelier {
+  --p: 8px;
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 1.25rem;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .bedrock__atelier { --p: 11px; }
+}
+
+.bedrock__bloc {
+  position: relative;
+  width: calc(16 * var(--p));
+  height: calc(16 * var(--p));
+  filter: drop-shadow(0 var(--p) 0 rgb(0 0 0 / 0.5));
+}
+
+.bedrock__textura {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.bedrock__fisuri,
+.bedrock__contur,
+.bedrock__bara {
+  display: none;
+}
+
+.bedrock__fisuri {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  opacity: 0.85;
+}
+
+.bedrock__foaie {
+  display: block;
+  width: 1000%;
+  height: 100%;
+}
+
+.bedrock__contur {
+  position: absolute;
+  inset: 0;
+  border: calc(var(--p) / 2) solid rgb(24 20 37 / 0.85);
+}
+
+.bedrock__bara {
+  width: calc(16 * var(--p));
+  height: calc(2 * var(--p));
+  padding: calc(var(--p) / 3);
+  background: var(--pestera-3);
+  box-shadow: 0 0 0 calc(var(--p) / 4) var(--bedrock-1);
+}
+
+.bedrock__bara i {
+  display: block;
+  height: 100%;
+  background: var(--iarba-1);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.bedrock__mesaj {
+  max-width: 24rem;
+  margin: 0;
+  padding: 0.35rem 0.85rem;
+  background: rgb(24 20 37 / 0.7);
+  line-height: 1.5;
+}
+
+.buton-respawn {
+  display: inline-block;
+  padding: 0.6rem 1.75rem;
+  background: var(--piatra-4);
+  color: var(--text);
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 3px solid var(--pestera-3);
+  box-shadow:
+    inset 3px 3px 0 var(--piatra-3),
+    inset -3px -3px 0 var(--pestera-2),
+    0 6px 0 rgb(0 0 0 / 0.45);
+}
+
+.buton-respawn:hover {
+  background: var(--piatra-3);
+}
+
+.buton-respawn:active {
+  transform: translateY(3px);
+  box-shadow:
+    inset 3px 3px 0 var(--piatra-3),
+    inset -3px -3px 0 var(--pestera-2),
+    0 3px 0 rgb(0 0 0 / 0.45);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bedrock--sapa .bedrock__fisuri,
+  .bedrock--sapa .bedrock__contur,
+  .bedrock--sapa .bedrock__bara {
+    display: block;
+  }
+
+  .bedrock--sapa .bedrock__foaie {
+    animation: bedrock-fisuri 2.4s steps(1) infinite;
+  }
+
+  .bedrock--sapa .bedrock__bara i {
+    animation: bedrock-bara 2.4s steps(1) infinite;
+  }
+
+  .bedrock--sapa .bedrock__textura {
+    animation: bedrock-tremura 0.3s steps(2) infinite;
+  }
+}
+
+/* Fisurile urcă până la cadrul 3 din 9, apoi se refac: bedrock-ul nu cedează. */
+@keyframes bedrock-fisuri {
+  0%   { transform: translateX(0); }
+  15%  { transform: translateX(-10%); }
+  30%  { transform: translateX(-20%); }
+  45%  { transform: translateX(-30%); }
+  60%  { transform: translateX(-20%); }
+  75%  { transform: translateX(-10%); }
+  90%  { transform: translateX(0); }
+}
+
+@keyframes bedrock-bara {
+  0%   { transform: scaleX(0); }
+  15%  { transform: scaleX(0.1); }
+  30%  { transform: scaleX(0.2); }
+  45%  { transform: scaleX(0.3); }
+  60%  { transform: scaleX(0.15); }
+  75%  { transform: scaleX(0.05); }
+  90%  { transform: scaleX(0); }
+}
+
+@keyframes bedrock-tremura {
+  50% { transform: translateX(calc(var(--p) / 3)); }
+}

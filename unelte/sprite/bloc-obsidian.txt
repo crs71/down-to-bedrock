@@ -1,0 +1,23 @@
+# Obsidian, pentru rama portalului. Culori proprii (--obsidian-*), neschimbate de paleta Nether.
+id: bloc-obsidian
+a = --obsidian-4
+b = --obsidian-3
+c = --obsidian-2
+d = --obsidian-1
+
+bbaaaaaaaaaaaaaa
+bbaacaccaaaaabbb
+bbbabaaaaaccabbb
+bbbabaaaaaccaaaa
+bbbaaababaadaaaa
+aaaaaadaabbbaaaa
+aaaaaaaaabbbbaaa
+aaaaaaaaabbbaaaa
+caaaaaaaabbaaaaa
+cbbbaaadaaaabaaa
+abbbaabdcaaabaaa
+caaaaabbbaaaaaac
+aaabbabbbaaaaaaa
+aaaaaaaaaaaaaaaa
+caaaaaaaacaaabba
+bbaaaaaaacaaadaa
