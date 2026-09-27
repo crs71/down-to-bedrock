@@ -33,6 +33,7 @@ Tot ce se publică stă în `site/`; restul repo-ului e doar pentru dezvoltare.
 - `unelte/pixel.ps1` și `unelte/sprite/*.txt`: sursele sprite-urilor, ca grile de caractere
 - `unelte/verifica.ps1`: verificările de dinainte de publicare
 - `.githooks/pre-push` și `.github/workflows/verificare.yml`: rulează verificările automat
+- `wrangler.toml`: configurarea Cloudflare Pages (publică doar `site/`), cu prioritate față de dashboard
 
 ## Sprite-uri
 Fiecare sprite e un fișier text în `unelte/sprite/`: un antet (`id`, opțional `baza`, apoi `caracter = --variabila-css`), un rând gol și grila, cu `.` pentru transparent. După ce modifici sau adaugi un fișier, rulezi:
@@ -69,7 +70,7 @@ git config core.hooksPath .githooks
 ```
 
 ## Publicare
-Cloudflare Pages e legat de repo-ul GitHub: fiecare push pe `main` publică automat site-ul, iar celelalte ramuri primesc o adresă de previzualizare. Setările proiectului:
+Cloudflare Pages e legat de repo-ul GitHub: fiecare push pe `main` publică automat site-ul, iar celelalte ramuri primesc o adresă de previzualizare. Folderul publicat vine din `wrangler.toml` (`pages_build_output_dir`), nu din dashboard. Setările proiectului:
 
 | Setare | Valoare |
 |---|---|

@@ -1,0 +1,5 @@
+# Configurarea proiectului Cloudflare Pages. Fișierul e sursa de adevăr: are prioritate
+# față de setările din dashboard, deci doar folderul site/ se publică.
+name = "down-to-bedrock"
+pages_build_output_dir = "./site"
+compatibility_date = "2026-09-27"
