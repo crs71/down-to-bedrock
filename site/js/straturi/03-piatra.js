@@ -41,7 +41,7 @@
 
     const el = document.createElement('div');
     el.className = 'realizare';
-    el.innerHTML = `<svg><use href="${icon}"/></svg><span><span class="realizare__eticheta">Realizare deblocată</span><span class="realizare__nume"></span></span>`;
+    el.innerHTML = `<svg><use href="${icon}"/></svg><span><span class="realizare__eticheta">Achievement unlocked</span><span class="realizare__nume"></span></span>`;
     el.querySelector('.realizare__nume').textContent = nume;
     realizari.appendChild(el);
 

@@ -122,25 +122,38 @@
   place-items: center;
 }
 
-/* Titlul: 9 blocuri alăturate (scos temporar din index.html). Pixelul crește în trepte întregi. */
+/* Titlul: două rânduri de câte 7 celule („DOWN TO” / „BEDROCK”). Pixelul crește în trepte întregi,
+   ca literele să rămână clare: 7 blocuri încap în lățimea ecranului la fiecare treaptă. */
 .titlu {
   --p: 2px;
   position: relative;
   margin: 0;
+  margin-bottom: 12vh;
+  margin-bottom: 12svh;
 }
 
-@media (min-width: 480px)  { .titlu { --p: 3px; } }
-@media (min-width: 640px)  { .titlu { --p: 4px; } }
-@media (min-width: 1100px) { .titlu { --p: 6px; } }
+@media (min-width: 360px)  { .titlu { --p: 3px; } }
+@media (min-width: 640px)  { .titlu { --p: 5px; } }
+@media (min-width: 1100px) and (min-height: 700px) { .titlu { --p: 7px; } }
 
 .titlu__blocuri {
+  display: grid;
+  gap: calc(var(--p) * 3);
+}
+
+.titlu__rand {
   display: flex;
 }
 
-.titlu__bloc {
+.titlu__bloc,
+.titlu__gol {
   display: block;
+  flex: none;
   width: calc(16 * var(--p));
   height: calc(16 * var(--p));
+}
+
+.titlu__bloc {
   filter: drop-shadow(0 var(--p) 0 rgb(24 20 37 / 0.45));
 }
 

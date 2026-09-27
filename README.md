@@ -1,6 +1,6 @@
-# Coborârea
+# Down to Bedrock
 
-Site cu temă de lume din blocuri: cobori prin straturi (cer → suprafață → piatră → peșteră → mină → Nether → bedrock), fiecare cu animațiile lui la scroll. Un HUD arată adâncimea Y și biomul curent.
+Site cu temă de lume din blocuri (textul paginii e în engleză): cobori prin straturi (cer → suprafață → piatră → peșteră → mină → Nether → bedrock), fiecare cu animațiile lui la scroll. Un HUD arată adâncimea Y și biomul curent.
 
 Publicat automat pe Cloudflare Pages: https://down-to-bedrock.pages.dev
 
