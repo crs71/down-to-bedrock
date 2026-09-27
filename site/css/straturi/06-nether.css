@@ -1,13 +1,15 @@
 /*
-  Stratul 6: Nether.
+  Stratul 6: Nether, o plimbare orizontală prin 4 biomi: Nether Wastes, Crimson Forest,
+  Nether Fortress și Soul Sand Valley.
 
-  Paleta Nether e mereu activă pe secțiune (base.css), deci piatra din zid devine netherrack.
-  Cu JS, mișcare permisă și animation-timeline: 400svh, scena sticky. Pe view-timeline-ul --nether,
-  portalul crește (8% → 36%) până când violetul acoperă ecranul, apoi dispare (36% → 46%).
-  La 36%, js/straturi/06-nether.js pune paleta Nether pe toată pagina și pornește scânteile.
-  Lava curge, iar aerul de deasupra ei tremură prin filtrul SVG #caldura (feTurbulence).
+  Paleta Nether e mereu activă pe secțiune (base.css): piatra devine netherrack, iarba nylium purpuriu.
+  Lumea (.nether__lume) are 104 blocuri; pozițiile sunt în blocuri: --x de la început, --y în rânduri
+  deasupra solului (solul are 3 rânduri: bedrock și 2 de teren), --sus în rânduri de la tavan.
+  .nether__b e o fâșie de --w × --h blocuri (un SVG cu model de bloc sau un singur bloc).
 
-  Starea statică: Nether-ul, fără portal și fără mișcare.
+  Cu animație (JS, GSAP și mișcare permisă): secțiunea are 800svh, scena e sticky, violetul portalului
+  se retrage, apoi GSAP mută lumea spre stânga. Mobii devin butoane (js/straturi/06-nether.js).
+  Starea statică: scena de 100svh se derulează orizontal manual, cu mobii nemișcați.
 */
 
 .strat--nether {
@@ -17,21 +19,40 @@
   min-height: 0;
   padding: 0;
   background: var(--nether-fundal);
-  view-timeline-name: --nether;
-  view-timeline-axis: block;
 }
 
 .nether__scena {
+  --sol: calc(var(--bloc) * 3);
+  --lungime: calc(var(--bloc) * 104);
   position: relative;
   height: 100vh;
   height: 100svh;
-  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
-  overflow: clip;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
 }
 
+.nether__cutremur,
 .nether__lume {
   position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--lungime);
+  height: 100%;
+}
+
+.nether__decor,
+.nether__sol {
+  position: absolute;
   inset: 0;
+}
+
+.nether__zona {
+  position: absolute;
+  left: calc(var(--bloc) * var(--x));
+  top: 0;
+  width: 1px;
+  height: 1px;
 }
 
 .nether__zid {
@@ -40,62 +61,91 @@
   left: 0;
   width: 100%;
   height: calc(var(--bloc) * 60);
-  filter: brightness(0.62);
 }
 
-/* Aerul fierbinte: copia zidului din jumătatea de jos, deformată. Doar zona de deasupra lavei,
-   ca filtrul să lucreze pe o suprafață mică. */
-.nether__caldura {
+.nether__umbra {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgb(24 20 37 / 0.78), rgb(24 20 37 / 0.6) 55%, rgb(24 20 37 / 0.68));
+}
+
+/* Ceața biomilor: roșiatică în pădure, albastră în valea sufletelor. */
+.nether__ceata {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--bloc) * var(--x));
+  width: calc(var(--bloc) * var(--w));
+}
+
+.nether__ceata--rosie {
+  background: linear-gradient(90deg, transparent, rgb(255 0 68 / 0.1) 15%, rgb(255 0 68 / 0.1) 85%, transparent);
+}
+
+.nether__ceata--albastra {
+  background: linear-gradient(90deg, transparent, rgb(0 153 219 / 0.16) 12%);
+}
+
+.nether__tavan {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--bloc);
+}
+
+/* Fâșiile de blocuri. */
+.nether__b {
+  position: absolute;
+  left: calc(var(--bloc) * var(--x));
+  bottom: calc(var(--sol) + var(--bloc) * var(--y));
+  width: calc(var(--bloc) * var(--w));
+  height: calc(var(--bloc) * var(--h));
+  display: block;
+}
+
+.nether__b--sus {
+  bottom: auto;
+  top: calc(var(--bloc) * var(--sus));
+}
+
+.nether__b--lumina {
+  filter: drop-shadow(0 0 calc(var(--bloc) / 4) rgb(254 231 97 / 0.5));
+}
+
+.nether__b--liana {
+  opacity: 0.95;
+}
+
+.nether__bedrock {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: var(--bloc);
+}
+
+/* Aceeași umbră ca sus pe zidul din stratul bedrock, ca rândul să continue fără margine. */
+.nether__sol::after {
+  content: "";
   position: absolute;
   left: 0;
   right: 0;
-  top: 40vh;
-  top: 40svh;
-  bottom: calc(var(--bloc) * 2);
-  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
-  overflow: clip;
-  filter: url(#caldura);
-  -webkit-mask-image: linear-gradient(transparent, #000 40%);
-  mask-image: linear-gradient(transparent, #000 40%);
-}
-
-.nether__caldura .nether__zid {
-  top: -40vh;
-  top: -40svh;
-}
-
-/* Piatra luminoasă din tavan. */
-.nether__lumini svg {
-  position: absolute;
-  left: var(--x);
-  top: calc(var(--r) * var(--bloc));
-  width: var(--bloc);
+  bottom: 0;
   height: var(--bloc);
-  filter: drop-shadow(0 0 calc(var(--bloc) / 4) rgb(254 231 97 / 0.55));
-}
-
-@supports (width: round(1px, 1px)) {
-  .nether__lumini svg {
-    left: round(down, var(--x), var(--bloc));
-  }
+  background: rgb(24 20 37 / 0.45);
 }
 
 /* Cascada de lavă: o bandă de două ori mai înaltă decât e nevoie, care alunecă în jos. */
 .nether__cascada {
   position: absolute;
   top: 0;
-  left: 74%;
-  bottom: calc(var(--bloc) * 2);
+  left: calc(var(--bloc) * var(--x));
+  bottom: calc(var(--sol) - var(--bloc) * 2);
   width: var(--bloc);
-  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
+  overflow: hidden; /* rezervă pentru browserele fără clip */
   overflow: clip;
   box-shadow: 0 0 calc(var(--bloc) / 2) rgb(247 118 34 / 0.5);
-}
-
-@supports (width: round(1px, 1px)) {
-  .nether__cascada {
-    left: round(down, 74%, var(--bloc));
-  }
 }
 
 .nether__cascada svg {
@@ -105,24 +155,24 @@
   transform: translateY(-50%);
 }
 
-/* Lacul de lavă: o bandă mai lată cu 8 blocuri, care alunecă exact 8 blocuri și reîncepe. */
+/* Lava din sol: o bandă mai lată cu 8 blocuri, care alunecă exact 8 blocuri și reîncepe. */
 .nether__lava {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: calc(var(--bloc) * var(--x));
+  bottom: var(--bloc);
+  width: calc(var(--bloc) * var(--w));
   height: calc(var(--bloc) * 2);
+  overflow: hidden; /* rezervă pentru browserele fără clip */
+  overflow: clip;
 }
 
 .nether__lava::before {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 100%;
-  height: calc(var(--bloc) * 3);
-  background: linear-gradient(transparent, rgb(247 118 34 / 0.35));
-  pointer-events: none;
+  z-index: 1;
+  inset: 0 0 auto;
+  height: calc(var(--pixel) * 2);
+  background: rgb(254 231 97 / 0.35);
 }
 
 .nether__lava-banda {
@@ -131,47 +181,53 @@
   height: 100%;
 }
 
-.nether__titlu {
+/* Aerul fierbinte: copia zidului (și a umbrei) din dreptul lavei, deformată. */
+.nether__caldura {
   position: absolute;
-  z-index: 1;
-  top: 1rem;
-  left: 1rem;
-}
-
-/* ---------- Portalul (doar în varianta animată) ---------- */
-.nether__portal {
-  display: none;
-  position: absolute;
-  z-index: 2;
-  inset: 0;
+  left: calc(var(--bloc) * var(--x));
+  bottom: var(--sol);
+  width: calc(var(--bloc) * var(--w));
+  height: calc(var(--bloc) * 3);
+  overflow: hidden; /* rezervă pentru browserele fără clip */
+  overflow: clip;
+  filter: url(#caldura);
+  -webkit-mask-image: linear-gradient(transparent, #000 45%);
+  mask-image: linear-gradient(transparent, #000 45%);
   pointer-events: none;
-  /* Portalul stă încă în mină: piatra de aici are culorile normale, nu pe cele din Nether. */
-  --piatra-1: #c0cbdc;
-  --piatra-2: #8b9bb4;
-  --piatra-3: #5a6988;
-  --piatra-4: #3a4466;
 }
 
-.nether__portal-zid {
+.nether__caldura > .nether__zid,
+.nether__caldura > .nether__umbra {
+  top: calc(var(--sol) + var(--bloc) * 3 - 100vh);
+  top: calc(var(--sol) + var(--bloc) * 3 - 100svh);
+  left: calc(var(--bloc) * var(--x) * -1);
+  width: var(--lungime);
+}
+
+.nether__caldura > .nether__umbra {
+  bottom: auto;
+  height: 100vh;
+  height: 100svh;
+}
+
+/* Portalul prin care ai venit și vagonetul parcat. */
+.nether__portal {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: calc(var(--bloc) * 60);
+  left: calc(var(--bloc) * var(--x));
+  bottom: var(--sol);
+  width: calc(var(--bloc) * 4);
+  height: calc(var(--bloc) * 5);
+  /* Obsidianul și portalul au variabile proprii, nu se schimbă cu paleta. */
 }
 
-.nether__portal-umbra {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgb(181 80 136 / 0.35), rgb(8 6 14 / 0.75) 40%, rgb(8 6 14 / 0.92));
-}
-
-.nether__rama {
+.nether__portal::before {
+  content: "";
   position: absolute;
   left: 50%;
   top: 50%;
-  width: calc(var(--bloc) * 4);
-  height: calc(var(--bloc) * 5);
+  width: calc(var(--bloc) * 8);
+  height: calc(var(--bloc) * 8);
+  background: radial-gradient(circle, rgb(181 80 136 / 0.35), transparent 65%);
   transform: translate(-50%, -50%);
 }
 
@@ -188,9 +244,8 @@
   top: var(--bloc);
   width: calc(var(--bloc) * 2);
   height: calc(var(--bloc) * 3);
-  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
+  overflow: hidden; /* rezervă pentru browserele fără clip */
   overflow: clip;
-  box-shadow: 0 0 calc(var(--bloc) * 0.75) calc(var(--bloc) * 0.2) rgb(181 80 136 / 0.55);
 }
 
 .nether__interior svg {
@@ -199,17 +254,234 @@
   height: 200%;
 }
 
-.nether__indiciu {
+.nether__vagonet {
   position: absolute;
-  left: 50%;
-  bottom: 12%;
-  margin: 0;
-  padding: 0.25rem 0.75rem;
-  background: rgb(24 20 37 / 0.7);
-  transform: translateX(-50%);
-  white-space: nowrap;
+  left: calc(var(--bloc) * var(--x));
+  bottom: var(--sol);
+  width: calc(var(--pixel) * 24);
+  height: calc(var(--pixel) * 14);
+  /* Vagonetul e din fier: păstrează culorile pietrei normale, nu pe cele de netherrack. */
+  --piatra-1: #c0cbdc;
+  --piatra-2: #8b9bb4;
+  --piatra-3: #5a6988;
+  --piatra-4: #3a4466;
 }
 
+.nether__vagonet svg,
+.nether__corp > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Focul de suflete pâlpâie. */
+.nether__foc {
+  transform-origin: 50% 100%;
+}
+
+/* ---------- Mobii și blocurile interactive ---------- */
+.nether__strider,
+.nether__resturi,
+.nether__magma,
+.nether__piglin,
+.nether__blaze,
+.nether__ghast {
+  position: absolute;
+  left: calc(var(--bloc) * var(--x));
+  bottom: calc(var(--sol) + var(--bloc) * var(--y, 0));
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.nether__corp {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+[data-eticheta][role="button"] {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+[data-eticheta][role="button"]:focus-visible {
+  outline: 3px solid var(--apus-1);
+  outline-offset: 3px;
+}
+
+/* Strider-ul merge încolo și încoace pe lacul de lavă, cufundat puțin în ea. */
+.nether__strider {
+  bottom: calc(var(--bloc) * 2.7);
+  width: var(--bloc);
+  height: calc(var(--bloc) * 1.25);
+}
+
+/* Resturile antice: un bloc cu conturul de minat la hover și fisuri la fiecare lovitură. */
+.nether__resturi {
+  width: var(--bloc);
+  height: var(--bloc);
+}
+
+.nether__fisuri {
+  position: absolute;
+  inset: 0;
+  overflow: hidden; /* rezervă pentru browserele fără clip */
+  overflow: clip;
+  opacity: 0.85;
+}
+
+.nether__foaie {
+  display: block;
+  width: 1000%;
+  height: 100%;
+}
+
+.nether__resturi[role="button"]:hover .nether__corp::after,
+.nether__resturi[role="button"]:focus-visible .nether__corp::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: calc(var(--pixel) / 2 + 1px) solid rgb(24 20 37 / 0.9);
+}
+
+.nether__resturi--spart {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Cubii de magma: mărimea 3 = 1,5 blocuri, 2 = 1 bloc, 1 = o jumătate. */
+.nether__magma {
+  width: calc(var(--bloc) * var(--m, 1.5));
+  height: calc(var(--bloc) * var(--m, 1.5));
+}
+
+.nether__magma[data-marime="2"] { --m: 1; }
+.nether__magma[data-marime="1"] { --m: 0.5; }
+
+.nether__magma .nether__corp {
+  transform-origin: 50% 100%;
+}
+
+/* Piglinul, cu lingoul de aur în mână (când face schimb) și un balon care arată că vrea aur. */
+.nether__piglin {
+  width: var(--bloc);
+  height: calc(var(--bloc) * 2);
+}
+
+.nether__piglin .nether__corp {
+  transform-origin: 50% 100%;
+}
+
+.nether__piglin-aur {
+  position: absolute;
+  left: 55%;
+  top: 38%;
+  width: 60%;
+  height: 60%;
+  opacity: 0;
+}
+
+.nether__balon {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + var(--pixel) * 2);
+  width: calc(var(--bloc) * 0.9);
+  height: calc(var(--bloc) * 0.9);
+  padding: calc(var(--pixel) * 2);
+  background: rgb(255 255 255 / 0.9);
+  border: var(--pixel) solid var(--obsidian-4);
+  opacity: 0;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.nether__balon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Blaze-ul: capul plutește, bețele se rotesc în jurul lui (translateX dus-întors, decalat). */
+.nether__blaze {
+  width: calc(var(--bloc) * 1.5);
+  height: calc(var(--bloc) * 1.5);
+}
+
+.nether__blaze-cap {
+  position: absolute;
+  left: 25%;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  filter: drop-shadow(0 0 calc(var(--bloc) / 5) rgb(254 174 52 / 0.8));
+}
+
+.nether__bat {
+  position: absolute;
+  left: calc(50% - var(--pixel));
+  top: 12%;
+  width: calc(var(--pixel) * 2);
+  height: calc(var(--pixel) * 6);
+  background: var(--apus-2);
+  box-shadow: inset calc(var(--pixel) * -1) 0 0 var(--nether-2);
+}
+
+.nether__bat--jos {
+  top: 62%;
+}
+
+/* Ghast-ul: un cub mare care plutește; .nether__lovit e sclipirea albă când e lovit. */
+.nether__ghast {
+  width: calc(var(--bloc) * 2.5);
+  height: calc(var(--bloc) * 3.75);
+}
+
+.nether__lovit {
+  position: absolute;
+  inset: 0 0 33%;
+  background: rgb(255 255 255 / 0.9);
+  opacity: 0;
+}
+
+/* Mingea de foc: adăugată din JS în scenă, zboară spre ecran. */
+.nether__minge {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  width: var(--bloc);
+  height: var(--bloc);
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nether__minge svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 calc(var(--bloc) / 4) rgb(247 118 34 / 0.9));
+}
+
+.nether__titlu {
+  position: sticky;
+  z-index: 3;
+  top: 1rem;
+  left: 1rem;
+  margin: 1rem;
+}
+
+.nether__violet,
+.nether__indiciu {
+  display: none;
+}
+
+/* ---------- Mișcarea continuă (doar cu mișcare permisă) ---------- */
 @media (prefers-reduced-motion: no-preference) {
   .js .nether__cascada svg {
     animation: lava-cade 16s linear infinite;
@@ -223,24 +495,95 @@
     animation: portal-curge 2.5s linear infinite;
   }
 
-  @supports (animation-timeline: view()) {
-    /* Fără animation-timeline nu există portal, deci nici drumul lung prin secțiune. */
-    .js .strat--nether {
-      height: 400vh;
-      height: 400svh;
-    }
+  .js .nether__foc {
+    animation: foc-palpaie 0.9s steps(1) infinite;
+  }
 
-    .js .nether__scena {
-      position: sticky;
-      top: 0;
-    }
+  .js .nether__foc:nth-of-type(2n) {
+    animation-delay: -0.4s;
+  }
 
-    .js .nether__portal {
-      display: block;
-      animation: portal-intra linear both;
-      animation-timeline: --nether;
-      animation-range: contain 0% contain 100%;
-    }
+  .js .nether__strider {
+    animation: strider-merge 14s ease-in-out infinite;
+  }
+
+  .js .nether__strider .nether__corp > svg {
+    animation: strider-pas 0.5s steps(2) infinite;
+  }
+
+  .js .nether__magma .nether__corp > svg {
+    transform-origin: 50% 100%;
+    animation: magma-sare 1.6s ease-in-out infinite;
+  }
+
+  .js .nether__magma:nth-of-type(2n) .nether__corp > svg {
+    animation-delay: -0.7s;
+  }
+
+  .js .nether__piglin .nether__corp > svg:first-child {
+    transform-origin: 50% 100%;
+    animation: piglin-respira 2.4s steps(2) infinite;
+  }
+
+  .js .nether__blaze .nether__corp {
+    animation: pluteste 2.2s ease-in-out infinite;
+  }
+
+  .js .nether__bat {
+    animation: blaze-orbita 1.4s ease-in-out infinite alternate;
+    animation-delay: calc(var(--i) * -0.35s);
+  }
+
+  .js .nether__blaze--furios .nether__bat {
+    animation-duration: 0.35s;
+  }
+
+  .js .nether__ghast .nether__corp > svg {
+    animation: pluteste 3.2s ease-in-out infinite;
+  }
+
+  .js:not(.fara-gsap) .strat--nether {
+    height: 800vh;
+    height: 800svh;
+  }
+
+  .js:not(.fara-gsap) .nether__scena {
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+  }
+
+  .js:not(.fara-gsap) .nether__lume {
+    will-change: transform;
+  }
+
+  .js:not(.fara-gsap) .nether__titlu {
+    position: absolute;
+    margin: 0;
+  }
+
+  .js:not(.fara-gsap) .nether__violet {
+    display: block;
+    position: absolute;
+    z-index: 4;
+    inset: 0;
+    background: var(--portal-2);
+    pointer-events: none;
+  }
+
+  .js:not(.fara-gsap) .nether__indiciu {
+    display: block;
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    top: 4.25rem;
+    max-width: calc(100% - 2rem);
+    margin: 0;
+    padding: 0.35rem 0.75rem;
+    background: rgb(24 20 37 / 0.75);
+    color: var(--text);
+    text-align: center;
+    transform: translateX(-50%);
   }
 }
 
@@ -259,9 +602,40 @@
   to   { transform: translateY(0); }
 }
 
-/* Camera intră în portal (0.08 → 0.36), apoi violetul se retrage (0.36 → 0.46). */
-@keyframes portal-intra {
-  0%, 8%     { transform: scale(1); opacity: 1; }
-  36%        { transform: scale(18); opacity: 1; }
-  46%, 100%  { transform: scale(18); opacity: 0; }
+@keyframes foc-palpaie {
+  0%  { transform: scaleY(1); opacity: 1; }
+  40% { transform: scaleY(0.9); opacity: 0.85; }
+  70% { transform: scaleY(1.06); opacity: 1; }
+}
+
+@keyframes strider-merge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(calc(var(--bloc) * var(--drum))); }
+}
+
+@keyframes strider-pas {
+  50% { transform: translateY(calc(var(--pixel) * -1)); }
+}
+
+/* Cubul se strânge, sare, se turtește la aterizare. */
+@keyframes magma-sare {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  15%      { transform: translateY(0) scale(1.12, 0.82); }
+  45%      { transform: translateY(-45%) scale(0.92, 1.1); }
+  75%      { transform: translateY(0) scale(1.1, 0.88); }
+  85%      { transform: translateY(0) scale(1, 1); }
+}
+
+@keyframes piglin-respira {
+  50% { transform: scaleY(0.98); }
+}
+
+@keyframes pluteste {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(calc(var(--pixel) * -4)); }
+}
+
+@keyframes blaze-orbita {
+  from { transform: translateX(calc(var(--bloc) * -0.6)); }
+  to   { transform: translateX(calc(var(--bloc) * 0.6)); }
 }

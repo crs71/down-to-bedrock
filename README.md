@@ -1,6 +1,14 @@
 # Down to Bedrock
 
-Site cu temă de lume din blocuri (textul paginii e în engleză): cobori prin straturi (cer → suprafață → piatră → peșteră → mină → Nether → bedrock), fiecare cu animațiile lui la scroll. Un HUD arată adâncimea Y și biomul curent.
+Site cu temă de lume din blocuri (textul paginii e în engleză): cobori prin straturi, fiecare cu animațiile lui la scroll. Un HUD arată adâncimea Y și biomul curent.
+
+- Cer: titlul DOWN TO / BEDROCK din blocuri, apusul și norii
+- Suprafață: mers orizontal, creeper-ul explodează, zoom în crater
+- Pământ și piatră: săpat lent, bloc cu bloc (fiecare bloc cere scroll după duritate)
+- Peșteră: torța luminează, minereurile zboară în hotbar
+- Mina abandonată: plimbare orizontală cu vagonetul până la un portal, intrarea în portal schimbă paleta paginii
+- Nether: plimbare orizontală prin 4 biomi, cu mobi interactivi (cubi de magma, ghast, piglin, blaze, strider) și prada în hotbar
+- Bedrock: blocul care nu se sparge și Respawn
 
 Publicat automat pe Cloudflare Pages: https://down-to-bedrock.pages.dev
 
@@ -27,7 +35,7 @@ Tot ce se publică stă în `site/`; restul repo-ului e doar pentru dezvoltare.
 - `site/css/straturi/NN-nume.css`: stilurile fiecărui strat
 - `site/js/main.js`: spațiul de nume `window.Coborarea`, bara de adâncime
 - `site/js/straturi/NN-nume.js`: animațiile fiecărui strat, scripturi clasice cu `defer`
-- `site/js/util/`: cod comun (de ex. bucla de particule)
+- `site/js/util/`: cod comun: bucla de particule (`particule.js`) și hotbar-ul (`hotbar.js`)
 - `site/css/despre.css`, `site/js/despre.js`: „Cum e făcut site-ul”, la finalul paginii, sub bedrock
 - `site/assets/fonts/`: fontul și licența lui (`OFL.txt`)
 - `serve.ps1`: server local care imită Cloudflare Pages

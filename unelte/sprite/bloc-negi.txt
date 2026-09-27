@@ -1,0 +1,23 @@
+# Bloc de negi din Nether: rosu, cu pete inchise si puncte aprinse (palaria ciupercilor).
+id: bloc-negi
+a = --nether-4
+b = --nether-3
+c = --apus-5
+d = --minereu-redstone
+
+aabaaacaabaaaaba
+abbbaaaaabbacaaa
+aaabacaabaaaaaab
+caaaaaabbbaadaaa
+aabaaaaabaaaaaca
+aabbacaaaaabaaaa
+daaaaaabaaabbaaa
+aaacaaabbaaaaaba
+abaaaaaaaaacaaaa
+abbaabaaadaaaabb
+aaaaabbaaaaabaaa
+acaaaaaacaaabbaa
+aaabaaaaaaaaaaac
+aabbbadaabaacaaa
+caaaaaaaabbaaaaa
+aaacaabaaaaaaaba

@@ -1,0 +1,23 @@
+# Resturi antice: patru inele maronii, ca un trunchi fosilizat.
+id: bloc-resturi
+l = --lemn-3
+a = --lemn-4
+h = --lemn-2
+d = --obsidian-4
+
+llllllldllllllld
+laaaaaldlaaaaald
+lahhaaldlaaahald
+lahhaaldlaahhald
+laaaaaldlaaaaald
+llllllldllllllld
+aaaaaaadaaaaaaad
+dddddddddddddddd
+llllllldllllllld
+laaaaaldlaaaaald
+laaahaldlahhaald
+laahhaldlahhaald
+laaaaaldlaaaaald
+llllllldllllllld
+aaaaaaadaaaaaaad
+dddddddddddddddd

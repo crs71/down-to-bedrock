@@ -1,0 +1,31 @@
+# Ghast linistit: cub alb cu ochii inchisi, lacrimi si tentacule.
+id: ghast
+w = --os-1
+g = --os-2
+s = --bedrock-0
+d = --portal-3
+
+wwwwwwwwwwwwwwwg
+wwwwwwwwwwwwwwwg
+wwwwwwwwwwwwwwwg
+wwwwwwwwwwwwwwwg
+wwwwwwwwwwwwwwwg
+wwdddwwwwwdddwwg
+wwwgwwwwwwwgwwwg
+wwwgwwwwwwwgwwwg
+wwwwwwwwwwwwwwwg
+wwwwwwwwwwwwwwwg
+wwwwwddddddwwwwg
+wwwwwdwwwwdwwwwg
+wwwwwwwwwwwwwwwg
+wwwwwwwwwwwwwwwg
+wwwwwwwwwwwwwwwg
+gggggggggggggggs
+.gg.gg.gg.gg.gg.
+.ww.ww.ww.ww.ww.
+.ww.ww.ww.ww.ww.
+.ww.gg.ww.ww.ww.
+.gg....ww.ww.gg.
+.......gg.ww....
+..........gg....
+................

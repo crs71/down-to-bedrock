@@ -1,0 +1,33 @@
+# Ghast care trage: ochi rosii deschisi si gura mare, deschisa.
+id: ghast-trage
+w = --os-1
+g = --os-2
+s = --bedrock-0
+d = --portal-3
+r = --nether-3
+k = --obsidian-4
+
+wwwwwwwwwwwwwwwg
+wwwwwwwwwwwwwwwg
+wwwwwwwwwwwwwwwg
+wwwwwwwwwwwwwwwg
+wwdddwwwwwdddwwg
+wwdrdwwwwwdrdwwg
+wwdddwwwwwdddwwg
+wwwwwwwwwwwwwwwg
+wwwwwwwwwwwwwwwg
+wwwwddddddddwwwg
+wwwwdkkkkkkdwwwg
+wwwwdkrrrrkdwwwg
+wwwwddddddddwwwg
+wwwwwwwwwwwwwwwg
+wwwwwwwwwwwwwwwg
+gggggggggggggggs
+.gg.gg.gg.gg.gg.
+.ww.ww.ww.ww.ww.
+.ww.ww.ww.ww.ww.
+.ww.gg.ww.ww.ww.
+.gg....ww.ww.gg.
+.......gg.ww....
+..........gg....
+................

@@ -1,0 +1,22 @@
+# Foc de suflete: flacari albastre pe nisipul de suflete.
+id: foc-suflet
+a = --suflet-3
+b = --suflet-2
+c = --minereu-diamant
+
+................
+.......a........
+......aa....a...
+...a..aba..aa...
+...aa.aba..aba..
+..aba.abba.aba..
+..abaabbbaabba..
+..abbabcbbabba..
+.aabbbbccbbbbaa.
+.abbbcbccbcbbba.
+.abbccccccccbba.
+.abcccccccccbba.
+..bcccccccccbb..
+..bccccccccccb..
+...ccccccccccc..
+................

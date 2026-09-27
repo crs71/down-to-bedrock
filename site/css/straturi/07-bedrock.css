@@ -30,14 +30,22 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: calc(100% + var(--bloc));
   height: calc(var(--bloc) * 60);
+}
+
+/* Grila continuă rândul de bedrock de la capătul Nether-ului: lumea de acolo se oprește la
+   104 blocuri minus lățimea ecranului, deci coloanele sunt decalate cu restul împărțirii la un bloc. */
+@supports (left: mod(10px, 3px)) {
+  .bedrock__zid {
+    left: calc(mod(100%, var(--bloc)) - var(--bloc));
+  }
 }
 
 .bedrock__umbra {
   position: absolute;
   inset: 0;
-  background: linear-gradient(rgb(24 20 37 / 0.9), rgb(24 20 37 / 0.55) 35%, rgb(24 20 37 / 0.75));
+  background: linear-gradient(rgb(24 20 37 / 0.45), rgb(24 20 37 / 0.6) 30%, rgb(24 20 37 / 0.75));
 }
 
 .bedrock__titlu {

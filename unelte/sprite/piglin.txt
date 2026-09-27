@@ -1,0 +1,46 @@
+# Piglin din fata: cap lat cu bot si colti, tunica de piele, centura de aur.
+id: piglin
+p = --apus-3
+q = --apus-4
+w = --os-1
+t = --os-2
+k = --lemn-4
+n = --lemn-1
+c = --lemn-3
+C = --lemn-2
+g = --apus-2
+G = --apus-1
+l = --obsidian-3
+
+..pppppppppppp..
+.pppppppppppppp.
+qppppppppppppppq
+qqppppppppppppqq
+qpwkppppppppkwpq
+qppppnnnnnnppppq
+.pppnknnnnknppp.
+.ppppnnnnnnpppp.
+.pptpppppppptpp.
+..qqqqqqqqqqqq..
+...cccccccccc...
+.ppcccccccccccp.
+.ppccCccccCccpp.
+.ppccccccccccpp.
+.ppccccccccccpp.
+.qqggggggggggqq.
+.ppccccgGccccpp.
+.ppccccccccccpp.
+..qccccccccccq..
+...cccccccccc...
+...cccccccccc...
+...llllllllll...
+...llll..llll...
+...llll..llll...
+...llll..llll...
+...llll..llll...
+...llll..llll...
+...llll..llll...
+...llll..llll...
+...qqqq..qqqq...
+...kkkk..kkkk...
+................

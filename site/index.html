@@ -46,6 +46,7 @@
   <script src="js/main.js" defer></script>
   <!-- Fiecare strat adaugă aici js/straturi/NN-nume.js (defer), după main.js. -->
   <script src="js/util/particule.js" defer></script>
+  <script src="js/util/hotbar.js" defer></script>
   <script src="js/straturi/01-cer.js" defer></script>
   <script src="js/straturi/02-suprafata.js" defer></script>
   <script src="js/straturi/03-piatra.js" defer></script>
@@ -60,6 +61,12 @@
        Zona dintre marcaje e generată de unelte/pixel.ps1 din unelte/sprite/*.txt; nu o edita de mână. -->
   <svg class="sprite" aria-hidden="true" focusable="false">
     <!-- sprite:inceput -->
+    <symbol id="blaze" viewBox="0 0 8 8" shape-rendering="crispEdges">
+      <path style="fill:var(--apus-1)" d="M1 1h6v1h-6zM0 2h1v1h-1zM3 2h2v1h-2zM7 2h1v1h-1zM0 3h8v1h-8zM1 4h1v1h-1zM6 4h1v1h-1zM1 5h6v1h-6z"/>
+      <path style="fill:var(--lemn-4)" d="M1 2h2v1h-2zM5 2h2v1h-2zM2 4h4v1h-4z"/>
+      <path style="fill:var(--apus-2)" d="M1 0h6v1h-6zM0 1h1v1h-1zM7 1h1v1h-1zM0 4h1v1h-1zM7 4h1v1h-1zM0 5h1v1h-1zM7 5h1v1h-1zM1 6h6v1h-6z"/>
+      <path style="fill:var(--nether-2)" d="M0 0h1v1h-1zM7 0h1v1h-1zM0 6h1v1h-1zM7 6h1v1h-1zM1 7h6v1h-6z"/>
+    </symbol>
     <symbol id="bloc-aur" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <use href="#bloc-piatra" width="16" height="16"/>
       <path style="fill:var(--apus-2)" d="M11 1h1v1h-1zM4 2h1v1h-1zM10 2h1v1h-1zM3 3h1v1h-1zM7 7h1v1h-1zM6 8h1v1h-1zM14 8h1v1h-1zM13 10h1v1h-1zM4 12h1v1h-1zM11 12h1v1h-1zM3 13h1v1h-1zM10 13h1v1h-1z"/>
@@ -72,11 +79,23 @@
       <path style="fill:var(--bedrock-2)" d="M6 0h2v1h-2zM12 0h3v1h-3zM0 1h1v1h-1zM9 1h1v1h-1zM13 1h3v1h-3zM0 2h1v1h-1zM8 2h2v1h-2zM14 2h2v1h-2zM8 3h2v1h-2zM8 4h2v1h-2zM1 6h2v1h-2zM1 8h2v1h-2zM1 9h2v1h-2zM6 9h3v1h-3zM6 10h4v1h-4zM5 11h4v1h-4zM11 11h1v1h-1zM5 12h1v1h-1zM11 12h1v1h-1zM5 13h1v1h-1zM14 13h1v1h-1zM14 14h1v1h-1zM6 15h2v1h-2zM12 15h3v1h-3z"/>
       <path style="fill:var(--bedrock-3)" d="M6 2h1v1h-1zM6 3h1v1h-1zM6 4h1v1h-1zM6 6h1v1h-1zM11 6h2v1h-2zM6 7h2v1h-2zM11 7h2v1h-2zM6 8h2v1h-2zM9 8h2v1h-2zM14 9h1v1h-1zM13 10h2v1h-2z"/>
     </symbol>
+    <symbol id="bloc-caramida" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--lemn-4)" d="M0 0h16v16h-16z"/>
+      <path style="fill:var(--apus-5)" d="M0 0h7v1h-7zM8 0h7v1h-7zM0 4h3v1h-3zM4 4h7v1h-7zM12 4h4v1h-4zM0 8h7v1h-7zM8 8h7v1h-7zM0 12h3v1h-3zM4 12h7v1h-7zM12 12h4v1h-4z"/>
+      <path style="fill:var(--obsidian-3)" d="M3 2h1v1h-1zM13 2h1v1h-1zM1 6h1v1h-1zM9 6h1v1h-1zM2 9h1v1h-1zM5 10h1v1h-1zM9 10h1v1h-1zM8 13h1v1h-1zM6 14h1v1h-1zM14 14h1v1h-1z"/>
+      <path style="fill:var(--obsidian-4)" d="M7 0h1v1h-1zM15 0h1v1h-1zM7 1h1v1h-1zM15 1h1v1h-1zM7 2h1v1h-1zM15 2h1v1h-1zM0 3h16v1h-16zM3 4h1v1h-1zM11 4h1v1h-1zM3 5h1v1h-1zM11 5h1v1h-1zM3 6h1v1h-1zM11 6h1v1h-1zM0 7h16v1h-16zM7 8h1v1h-1zM15 8h1v1h-1zM7 9h1v1h-1zM15 9h1v1h-1zM7 10h1v1h-1zM15 10h1v1h-1zM0 11h16v1h-16zM3 12h1v1h-1zM11 12h1v1h-1zM3 13h1v1h-1zM11 13h1v1h-1zM3 14h1v1h-1zM11 14h1v1h-1zM0 15h16v1h-16z"/>
+    </symbol>
     <symbol id="bloc-carbune" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <use href="#bloc-piatra" width="16" height="16"/>
       <path style="fill:var(--pestera-3)" d="M4 2h1v1h-1zM10 2h1v1h-1zM3 4h1v1h-1zM7 7h1v1h-1zM14 8h1v1h-1zM6 9h1v1h-1zM13 9h1v1h-1zM4 12h1v1h-1zM11 12h1v1h-1zM3 13h1v1h-1zM10 13h1v1h-1z"/>
       <path style="fill:var(--piatra-4)" d="M9 1h1v1h-1zM2 2h1v1h-1zM1 3h1v1h-1zM5 7h1v1h-1zM4 8h1v1h-1zM12 8h1v1h-1zM2 12h1v1h-1zM9 12h1v1h-1zM1 13h1v1h-1zM8 13h1v1h-1z"/>
       <path style="fill:var(--pestera-3)" d="M10 1h1v1h-1zM3 2h1v1h-1zM9 2h1v1h-1zM2 3h2v1h-2zM6 7h1v1h-1zM5 8h2v1h-2zM13 8h1v1h-1zM12 9h1v1h-1zM3 12h1v1h-1zM10 12h1v1h-1zM2 13h1v1h-1zM9 13h1v1h-1z"/>
+    </symbol>
+    <symbol id="bloc-cuart" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <use href="#bloc-piatra" width="16" height="16"/>
+      <path style="fill:var(--os-2)" d="M3 1h1v1h-1zM2 2h1v1h-1zM11 2h1v1h-1zM7 4h1v1h-1zM5 5h1v1h-1zM13 5h1v1h-1zM12 6h1v1h-1zM2 8h1v1h-1zM11 8h1v1h-1zM9 9h1v1h-1zM4 10h1v1h-1zM13 11h1v1h-1zM12 12h1v1h-1zM7 13h1v1h-1z"/>
+      <path style="fill:var(--bedrock-0)" d="M3 2h1v1h-1zM12 2h1v1h-1zM11 3h1v1h-1zM6 5h1v1h-1zM13 6h1v1h-1zM3 8h1v1h-1zM10 9h2v1h-2zM3 11h1v1h-1zM13 12h1v1h-1zM8 13h1v1h-1zM7 14h1v1h-1z"/>
+      <path style="fill:var(--os-1)" d="M2 1h1v1h-1zM11 1h1v1h-1zM10 2h1v1h-1zM5 4h2v1h-2zM12 5h1v1h-1zM2 7h1v1h-1zM9 8h2v1h-2zM3 10h1v1h-1zM12 11h1v1h-1zM7 12h1v1h-1zM6 13h1v1h-1z"/>
     </symbol>
     <symbol id="bloc-diamant" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <use href="#bloc-piatra" width="16" height="16"/>
@@ -99,17 +118,40 @@
       <path style="fill:var(--iarba-2)" d="M0 0h1v1h-1zM2 0h3v1h-3zM6 0h4v1h-4zM11 0h3v1h-3zM15 0h1v1h-1zM0 1h8v1h-8zM9 1h7v1h-7zM0 2h2v1h-2zM3 2h8v1h-8zM12 2h4v1h-4zM1 3h1v1h-1zM4 3h2v1h-2zM7 3h2v1h-2zM12 3h2v1h-2z"/>
       <path style="fill:var(--iarba-3)" d="M2 2h1v1h-1zM11 2h1v1h-1zM0 3h1v1h-1zM3 3h1v1h-1zM9 3h1v1h-1zM15 3h1v1h-1zM4 4h1v1h-1zM8 4h1v1h-1zM13 4h1v1h-1z"/>
     </symbol>
+    <symbol id="bloc-lumina-rosie" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--nether-2)" d="M0 0h16v16h-16z"/>
+      <path style="fill:var(--nether-1)" d="M2 0h2v1h-2zM12 0h2v1h-2zM1 1h1v1h-1zM4 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM1 2h1v1h-1zM4 2h1v1h-1zM11 2h1v1h-1zM14 2h1v1h-1zM2 3h2v1h-2zM12 3h2v1h-2zM8 4h2v1h-2zM7 5h1v1h-1zM10 5h1v1h-1zM3 6h2v1h-2zM7 6h1v1h-1zM10 6h1v1h-1zM13 6h2v1h-2zM2 7h1v1h-1zM5 7h1v1h-1zM8 7h2v1h-2zM12 7h1v1h-1zM15 7h1v1h-1zM2 8h1v1h-1zM5 8h1v1h-1zM12 8h1v1h-1zM15 8h1v1h-1zM3 9h2v1h-2zM13 9h2v1h-2zM1 11h2v1h-2zM6 11h2v1h-2zM12 11h2v1h-2zM0 12h1v1h-1zM3 12h1v1h-1zM6 12h1v1h-1zM9 12h1v1h-1zM12 12h1v1h-1zM15 12h1v1h-1zM0 13h1v1h-1zM3 13h1v1h-1zM6 13h1v1h-1zM9 13h1v1h-1zM12 13h1v1h-1zM15 13h1v1h-1zM1 14h2v1h-2zM7 14h2v1h-2zM13 14h2v1h-2z"/>
+      <path style="fill:var(--apus-1)" d="M2 1h2v1h-2zM12 1h2v1h-2zM2 2h2v1h-2zM12 2h2v1h-2zM8 5h2v1h-2zM8 6h2v1h-2zM3 7h2v1h-2zM13 7h2v1h-2zM3 8h2v1h-2zM13 8h2v1h-2zM1 12h2v1h-2zM7 12h2v1h-2zM13 12h2v1h-2zM1 13h2v1h-2zM7 13h2v1h-2zM13 13h2v1h-2z"/>
+      <path style="fill:var(--nether-3)" d="M8 0h1v1h-1zM7 2h1v1h-1zM5 4h1v1h-1zM15 4h1v1h-1zM0 5h1v1h-1zM9 9h1v1h-1zM4 15h1v1h-1zM10 15h1v1h-1z"/>
+    </symbol>
     <symbol id="bloc-lumina" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <path style="fill:var(--apus-2)" d="M0 0h16v16h-16z"/>
       <path style="fill:var(--apus-1)" d="M1 0h1v1h-1zM12 0h1v1h-1zM12 1h1v1h-1zM6 2h2v1h-2zM9 2h3v1h-3zM8 3h4v1h-4zM8 4h3v1h-3zM0 5h2v1h-2zM0 6h4v1h-4zM13 6h2v1h-2zM1 7h3v1h-3zM14 7h1v1h-1zM11 8h1v1h-1zM14 8h1v1h-1zM1 11h2v1h-2zM11 11h1v1h-1zM1 12h2v1h-2zM11 12h1v1h-1zM1 13h2v1h-2zM11 13h2v1h-2zM1 14h1v1h-1zM11 14h2v1h-2zM1 15h1v1h-1zM11 15h3v1h-3z"/>
       <path style="fill:var(--nether-2)" d="M13 0h2v1h-2zM8 1h1v1h-1zM13 1h2v1h-2zM1 2h1v1h-1zM8 2h1v1h-1zM0 3h2v1h-2zM0 4h2v1h-2zM6 4h1v1h-1zM4 5h2v1h-2zM15 5h1v1h-1zM4 6h2v1h-2zM12 7h2v1h-2zM12 8h2v1h-2zM0 11h1v1h-1zM15 11h1v1h-1z"/>
       <path style="fill:var(--pamant-1)" d="M6 0h2v1h-2zM5 10h3v1h-3zM6 11h2v1h-2zM0 12h1v1h-1zM15 12h1v1h-1zM0 13h1v1h-1zM15 13h1v1h-1zM0 14h1v1h-1zM3 14h2v1h-2z"/>
     </symbol>
+    <symbol id="bloc-negi" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--nether-4)" d="M0 0h16v16h-16z"/>
+      <path style="fill:var(--nether-3)" d="M2 0h1v1h-1zM9 0h1v1h-1zM14 0h1v1h-1zM1 1h3v1h-3zM9 1h2v1h-2zM3 2h1v1h-1zM8 2h1v1h-1zM15 2h1v1h-1zM7 3h3v1h-3zM2 4h1v1h-1zM8 4h1v1h-1zM2 5h2v1h-2zM11 5h1v1h-1zM7 6h1v1h-1zM11 6h2v1h-2zM7 7h2v1h-2zM14 7h1v1h-1zM1 8h1v1h-1zM1 9h2v1h-2zM5 9h1v1h-1zM14 9h2v1h-2zM5 10h2v1h-2zM12 10h1v1h-1zM12 11h2v1h-2zM3 12h1v1h-1zM2 13h3v1h-3zM9 13h1v1h-1zM9 14h2v1h-2zM6 15h1v1h-1zM14 15h1v1h-1z"/>
+      <path style="fill:var(--apus-5)" d="M6 0h1v1h-1zM12 1h1v1h-1zM5 2h1v1h-1zM0 3h1v1h-1zM14 4h1v1h-1zM5 5h1v1h-1zM3 7h1v1h-1zM11 8h1v1h-1zM1 11h1v1h-1zM8 11h1v1h-1zM15 12h1v1h-1zM12 13h1v1h-1zM0 14h1v1h-1zM3 15h1v1h-1z"/>
+      <path style="fill:var(--minereu-redstone)" d="M12 3h1v1h-1zM0 6h1v1h-1zM9 9h1v1h-1zM6 13h1v1h-1z"/>
+    </symbol>
+    <symbol id="bloc-nisip" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--lemn-3)" d="M0 0h16v16h-16z"/>
+      <path style="fill:var(--lemn-4)" d="M2 1h1v1h-1zM5 1h1v1h-1zM9 2h1v1h-1zM12 2h1v1h-1zM2 3h4v1h-4zM3 4h2v1h-2zM10 4h4v1h-4zM11 5h2v1h-2zM0 7h1v1h-1zM3 7h1v1h-1zM8 8h1v1h-1zM11 8h1v1h-1zM0 9h4v1h-4zM1 10h2v1h-2zM9 10h4v1h-4zM10 11h2v1h-2zM5 12h1v1h-1zM8 12h1v1h-1zM4 14h4v1h-4zM5 15h2v1h-2z"/>
+      <path style="fill:var(--lemn-2)" d="M3 0h1v1h-1zM12 0h1v1h-1zM15 2h1v1h-1zM1 3h1v1h-1zM9 4h1v1h-1zM5 6h1v1h-1zM13 7h1v1h-1zM6 9h1v1h-1zM14 11h1v1h-1zM2 12h1v1h-1zM1 14h1v1h-1zM12 14h1v1h-1z"/>
+    </symbol>
     <symbol id="bloc-obsidian" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <path style="fill:var(--obsidian-4)" d="M0 0h16v16h-16z"/>
       <path style="fill:var(--obsidian-3)" d="M0 0h2v1h-2zM0 1h2v1h-2zM13 1h3v1h-3zM0 2h3v1h-3zM4 2h1v1h-1zM13 2h3v1h-3zM0 3h3v1h-3zM4 3h1v1h-1zM0 4h3v1h-3zM6 4h1v1h-1zM8 4h1v1h-1zM9 5h3v1h-3zM9 6h4v1h-4zM9 7h3v1h-3zM9 8h2v1h-2zM1 9h3v1h-3zM12 9h1v1h-1zM1 10h3v1h-3zM6 10h1v1h-1zM12 10h1v1h-1zM6 11h3v1h-3zM3 12h2v1h-2zM6 12h3v1h-3zM13 14h2v1h-2zM0 15h2v1h-2z"/>
       <path style="fill:var(--obsidian-2)" d="M4 1h1v1h-1zM6 1h2v1h-2zM10 2h2v1h-2zM10 3h2v1h-2zM0 8h1v1h-1zM0 9h1v1h-1zM8 10h1v1h-1zM0 11h1v1h-1zM15 11h1v1h-1zM0 14h1v1h-1zM9 14h1v1h-1zM9 15h1v1h-1z"/>
       <path style="fill:var(--obsidian-1)" d="M11 4h1v1h-1zM6 5h1v1h-1zM7 9h1v1h-1zM7 10h1v1h-1zM13 15h1v1h-1z"/>
+    </symbol>
+    <symbol id="bloc-os" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--os-2)" d="M0 0h16v16h-16z"/>
+      <path style="fill:var(--bedrock-1)" d="M15 0h1v1h-1zM15 1h1v1h-1zM15 2h1v1h-1zM15 3h1v1h-1zM15 4h1v1h-1zM15 5h1v1h-1zM15 6h1v1h-1zM15 7h1v1h-1zM15 8h1v1h-1zM15 9h1v1h-1zM15 10h1v1h-1zM15 11h1v1h-1zM15 12h1v1h-1zM15 13h1v1h-1zM15 14h1v1h-1zM0 15h1v1h-1zM3 15h1v1h-1zM6 15h2v1h-2zM9 15h1v1h-1zM12 15h2v1h-2zM15 15h1v1h-1z"/>
+      <path style="fill:var(--bedrock-0)" d="M0 0h1v1h-1zM6 0h1v1h-1zM12 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM12 1h1v1h-1zM0 2h1v1h-1zM6 2h1v1h-1zM12 2h1v1h-1zM0 3h1v1h-1zM6 3h1v1h-1zM12 3h1v1h-1zM0 4h1v1h-1zM3 4h1v1h-1zM6 4h1v1h-1zM12 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM12 5h1v1h-1zM0 6h1v1h-1zM6 6h1v1h-1zM12 6h1v1h-1zM0 7h1v1h-1zM6 7h1v1h-1zM12 7h1v1h-1zM0 8h1v1h-1zM6 8h1v1h-1zM9 8h1v1h-1zM12 8h1v1h-1zM0 9h1v1h-1zM6 9h1v1h-1zM12 9h1v1h-1zM0 10h1v1h-1zM6 10h1v1h-1zM12 10h1v1h-1zM0 11h1v1h-1zM6 11h1v1h-1zM12 11h1v1h-1zM0 12h1v1h-1zM6 12h1v1h-1zM12 12h1v1h-1zM14 12h1v1h-1zM0 13h1v1h-1zM6 13h1v1h-1zM12 13h1v1h-1zM0 14h1v1h-1zM6 14h1v1h-1zM10 14h1v1h-1zM12 14h1v1h-1zM1 15h2v1h-2zM4 15h2v1h-2zM8 15h1v1h-1zM10 15h2v1h-2zM14 15h1v1h-1z"/>
+      <path style="fill:var(--os-1)" d="M3 0h1v1h-1zM9 0h1v1h-1zM3 1h1v1h-1zM9 1h1v1h-1zM3 2h1v1h-1zM9 2h1v1h-1zM14 2h1v1h-1zM3 3h1v1h-1zM9 3h1v1h-1zM9 4h1v1h-1zM3 5h1v1h-1zM9 5h1v1h-1zM3 6h1v1h-1zM7 6h1v1h-1zM9 6h1v1h-1zM3 7h1v1h-1zM9 7h1v1h-1zM3 8h1v1h-1zM3 9h1v1h-1zM9 9h1v1h-1zM3 10h1v1h-1zM5 10h1v1h-1zM9 10h1v1h-1zM3 11h1v1h-1zM9 11h1v1h-1zM3 12h1v1h-1zM9 12h1v1h-1zM3 13h1v1h-1zM9 13h1v1h-1zM3 14h1v1h-1zM9 14h1v1h-1z"/>
     </symbol>
     <symbol id="bloc-pamant" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <path style="fill:var(--pamant-2)" d="M0 0h16v16h-16z"/>
@@ -136,10 +178,22 @@
       <path style="fill:var(--apus-3)" d="M8 1h1v1h-1zM1 2h1v1h-1zM12 5h1v1h-1zM4 7h1v1h-1zM3 8h1v1h-1zM9 10h1v1h-1zM2 12h1v1h-1zM1 13h1v1h-1zM12 13h1v1h-1zM11 14h1v1h-1z"/>
       <path style="fill:var(--minereu-redstone)" d="M9 1h1v1h-1zM2 2h1v1h-1zM8 2h1v1h-1zM1 3h1v1h-1zM13 5h1v1h-1zM12 6h1v1h-1zM5 7h1v1h-1zM4 8h1v1h-1zM10 10h1v1h-1zM9 11h1v1h-1zM3 12h1v1h-1zM2 13h1v1h-1zM13 13h1v1h-1zM12 14h1v1h-1z"/>
     </symbol>
+    <symbol id="bloc-resturi" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--lemn-4)" d="M0 0h16v16h-16z"/>
+      <path style="fill:var(--obsidian-4)" d="M7 0h1v1h-1zM15 0h1v1h-1zM7 1h1v1h-1zM15 1h1v1h-1zM7 2h1v1h-1zM15 2h1v1h-1zM7 3h1v1h-1zM15 3h1v1h-1zM7 4h1v1h-1zM15 4h1v1h-1zM7 5h1v1h-1zM15 5h1v1h-1zM7 6h1v1h-1zM15 6h1v1h-1zM0 7h16v1h-16zM7 8h1v1h-1zM15 8h1v1h-1zM7 9h1v1h-1zM15 9h1v1h-1zM7 10h1v1h-1zM15 10h1v1h-1zM7 11h1v1h-1zM15 11h1v1h-1zM7 12h1v1h-1zM15 12h1v1h-1zM7 13h1v1h-1zM15 13h1v1h-1zM7 14h1v1h-1zM15 14h1v1h-1zM0 15h16v1h-16z"/>
+      <path style="fill:var(--lemn-2)" d="M2 2h2v1h-2zM12 2h1v1h-1zM2 3h2v1h-2zM11 3h2v1h-2zM4 10h1v1h-1zM10 10h2v1h-2zM3 11h2v1h-2zM10 11h2v1h-2z"/>
+      <path style="fill:var(--lemn-3)" d="M0 0h7v1h-7zM8 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM14 1h1v1h-1zM0 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM14 2h1v1h-1zM0 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM14 3h1v1h-1zM0 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM14 4h1v1h-1zM0 5h7v1h-7zM8 5h7v1h-7zM0 8h7v1h-7zM8 8h7v1h-7zM0 9h1v1h-1zM6 9h1v1h-1zM8 9h1v1h-1zM14 9h1v1h-1zM0 10h1v1h-1zM6 10h1v1h-1zM8 10h1v1h-1zM14 10h1v1h-1zM0 11h1v1h-1zM6 11h1v1h-1zM8 11h1v1h-1zM14 11h1v1h-1zM0 12h1v1h-1zM6 12h1v1h-1zM8 12h1v1h-1zM14 12h1v1h-1zM0 13h7v1h-7zM8 13h7v1h-7z"/>
+    </symbol>
     <symbol id="bloc-scandura" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <path style="fill:var(--pamant-1)" d="M0 0h16v16h-16z"/>
       <path style="fill:var(--lemn-1)" d="M0 0h1v1h-1zM8 0h1v1h-1zM3 1h1v1h-1zM12 1h1v1h-1zM13 4h1v1h-1zM1 5h1v1h-1zM8 5h1v1h-1zM4 8h1v1h-1zM9 9h1v1h-1zM14 9h1v1h-1zM11 12h1v1h-1zM1 13h1v1h-1zM14 13h1v1h-1z"/>
       <path style="fill:var(--pamant-2)" d="M7 0h1v1h-1zM7 1h1v1h-1zM7 2h1v1h-1zM0 3h16v1h-16zM12 4h1v1h-1zM12 5h1v1h-1zM12 6h1v1h-1zM0 7h16v1h-16zM3 8h1v1h-1zM3 9h1v1h-1zM3 10h1v1h-1zM0 11h16v1h-16zM10 12h1v1h-1zM10 13h1v1h-1zM10 14h1v1h-1zM0 15h16v1h-16z"/>
+    </symbol>
+    <symbol id="bloc-tulpina" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--nether-4)" d="M0 0h16v16h-16z"/>
+      <path style="fill:var(--apus-5)" d="M0 0h1v1h-1zM4 0h1v1h-1zM10 0h1v1h-1zM15 0h1v1h-1zM0 1h1v1h-1zM4 1h1v1h-1zM10 1h1v1h-1zM15 1h1v1h-1zM0 2h1v1h-1zM3 2h2v1h-2zM10 2h1v1h-1zM15 2h1v1h-1zM0 3h1v1h-1zM4 3h1v1h-1zM10 3h1v1h-1zM15 3h1v1h-1zM0 4h1v1h-1zM4 4h1v1h-1zM10 4h1v1h-1zM13 4h1v1h-1zM15 4h1v1h-1zM0 5h1v1h-1zM2 5h1v1h-1zM4 5h1v1h-1zM6 5h1v1h-1zM10 5h1v1h-1zM15 5h1v1h-1zM0 6h1v1h-1zM4 6h1v1h-1zM10 6h1v1h-1zM15 6h1v1h-1zM0 7h1v1h-1zM4 7h2v1h-2zM10 7h1v1h-1zM15 7h1v1h-1zM0 8h1v1h-1zM4 8h1v1h-1zM10 8h2v1h-2zM15 8h1v1h-1zM0 9h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM15 9h1v1h-1zM0 10h1v1h-1zM4 10h1v1h-1zM10 10h1v1h-1zM15 10h1v1h-1zM0 11h1v1h-1zM4 11h1v1h-1zM8 11h1v1h-1zM10 11h1v1h-1zM12 11h1v1h-1zM15 11h1v1h-1zM0 12h1v1h-1zM4 12h1v1h-1zM10 12h1v1h-1zM15 12h1v1h-1zM0 13h1v1h-1zM4 13h1v1h-1zM15 13h1v1h-1zM0 14h1v1h-1zM4 14h1v1h-1zM10 14h1v1h-1zM15 14h1v1h-1zM0 15h1v1h-1zM4 15h1v1h-1zM10 15h1v1h-1zM15 15h1v1h-1z"/>
+      <path style="fill:var(--nether-3)" d="M2 0h1v1h-1zM8 0h1v1h-1zM12 0h1v1h-1zM2 1h1v1h-1zM8 1h1v1h-1zM12 1h1v1h-1zM2 2h1v1h-1zM8 2h1v1h-1zM12 2h1v1h-1zM2 3h1v1h-1zM8 3h2v1h-2zM12 3h1v1h-1zM2 4h1v1h-1zM8 4h1v1h-1zM12 4h1v1h-1zM8 5h1v1h-1zM12 5h1v1h-1zM2 6h1v1h-1zM8 6h1v1h-1zM12 6h1v1h-1zM2 7h1v1h-1zM8 7h1v1h-1zM12 7h1v1h-1zM2 8h1v1h-1zM8 8h1v1h-1zM12 8h1v1h-1zM2 9h1v1h-1zM8 9h1v1h-1zM12 9h1v1h-1zM1 10h2v1h-2zM8 10h1v1h-1zM12 10h1v1h-1zM2 11h1v1h-1zM2 12h1v1h-1zM8 12h1v1h-1zM12 12h1v1h-1zM2 13h1v1h-1zM8 13h1v1h-1zM10 13h1v1h-1zM12 13h1v1h-1zM2 14h1v1h-1zM8 14h1v1h-1zM12 14h1v1h-1zM2 15h1v1h-1zM8 15h1v1h-1zM12 15h1v1h-1z"/>
+      <path style="fill:var(--lemn-4)" d="M6 0h1v1h-1zM14 0h1v1h-1zM6 1h1v1h-1zM14 1h1v1h-1zM6 2h1v1h-1zM14 2h1v1h-1zM6 3h1v1h-1zM14 3h1v1h-1zM6 4h1v1h-1zM14 4h1v1h-1zM14 5h1v1h-1zM6 6h1v1h-1zM14 6h1v1h-1zM6 7h1v1h-1zM14 7h1v1h-1zM6 8h1v1h-1zM14 8h1v1h-1zM6 9h1v1h-1zM14 9h1v1h-1zM6 10h1v1h-1zM14 10h1v1h-1zM6 11h1v1h-1zM14 11h1v1h-1zM6 12h1v1h-1zM14 12h1v1h-1zM6 13h1v1h-1zM14 13h1v1h-1zM6 14h1v1h-1zM14 14h1v1h-1zM5 15h2v1h-2zM14 15h1v1h-1z"/>
     </symbol>
     <symbol id="copac-0" viewBox="0 0 32 48" shape-rendering="crispEdges">
       <path style="fill:var(--iarba-1)" d="M15 36h1v1h-1zM17 37h1v1h-1zM17 38h1v1h-1zM13 39h1v1h-1zM13 40h1v1h-1z"/>
@@ -183,14 +237,63 @@
       <path style="fill:var(--iarba-4)" d="M0 25h8v1h-8z"/>
       <path style="fill:var(--pestera-3)" d="M1 2h2v1h-2zM5 2h2v1h-2zM1 3h2v1h-2zM5 3h2v1h-2zM3 4h2v1h-2zM2 5h4v1h-4zM2 6h4v1h-4zM2 7h1v1h-1zM5 7h1v1h-1z"/>
     </symbol>
+    <symbol id="crema-magma" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--lemn-4)" d="M6 3h4v1h-4zM4 4h2v1h-2zM8 4h1v1h-1zM10 4h2v1h-2zM3 5h1v1h-1zM13 5h1v1h-1zM3 6h1v1h-1zM13 6h1v1h-1zM2 7h1v1h-1zM14 7h1v1h-1zM2 8h1v1h-1zM14 8h1v1h-1zM2 9h1v1h-1zM14 9h1v1h-1zM3 10h1v1h-1zM13 10h1v1h-1zM3 11h2v1h-2zM12 11h2v1h-2zM5 12h6v1h-6z"/>
+      <path style="fill:var(--nether-2)" d="M6 4h2v1h-2zM9 4h1v1h-1zM4 5h2v1h-2zM8 5h5v1h-5zM4 6h1v1h-1zM7 6h3v1h-3zM11 6h2v1h-2zM3 7h1v1h-1zM5 7h4v1h-4zM12 7h2v1h-2zM3 8h5v1h-5zM10 8h4v1h-4zM3 9h4v1h-4zM9 9h5v1h-5zM4 10h3v1h-3zM9 10h4v1h-4zM5 11h7v1h-7z"/>
+      <path style="fill:var(--nether-4)" d="M10 6h1v1h-1zM9 7h3v1h-3zM8 8h2v1h-2zM7 9h2v1h-2zM7 10h2v1h-2z"/>
+      <path style="fill:var(--apus-1)" d="M6 5h2v1h-2zM5 6h2v1h-2zM4 7h1v1h-1z"/>
+    </symbol>
+    <symbol id="cub-magma" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--lemn-4)" d="M0 0h16v16h-16z"/>
+      <path style="fill:var(--obsidian-4)" d="M0 15h16v1h-16z"/>
+      <path style="fill:var(--nether-2)" d="M1 1h1v1h-1zM13 1h1v1h-1zM7 2h2v1h-2zM0 7h1v1h-1zM3 7h4v1h-4zM9 7h3v1h-3zM14 7h2v1h-2zM4 10h2v1h-2zM8 10h4v1h-4zM0 12h2v1h-2zM14 12h2v1h-2zM6 13h1v1h-1z"/>
+      <path style="fill:var(--nether-1)" d="M2 1h1v1h-1zM1 7h2v1h-2zM12 7h2v1h-2zM6 10h2v1h-2zM7 13h1v1h-1z"/>
+      <path style="fill:var(--nether-3)" d="M3 5h1v1h-1zM12 5h1v1h-1z"/>
+      <path style="fill:var(--apus-1)" d="M2 4h3v1h-3zM11 4h3v1h-3zM2 5h1v1h-1zM4 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1z"/>
+    </symbol>
     <symbol id="fisuri" viewBox="0 0 160 16" shape-rendering="crispEdges">
       <path style="fill:var(--pestera-3)" d="M132 0h1v1h-1zM148 0h1v1h-1zM116 1h1v1h-1zM132 1h1v1h-1zM148 1h1v1h-1zM86 2h2v1h-2zM101 2h3v1h-3zM117 2h3v1h-3zM133 2h3v1h-3zM149 2h3v1h-3zM157 2h3v1h-3zM71 3h1v1h-1zM87 3h1v1h-1zM103 3h1v1h-1zM119 3h1v1h-1zM135 3h1v1h-1zM141 3h1v1h-1zM151 3h1v1h-1zM157 3h2v1h-2zM55 4h1v1h-1zM71 4h1v1h-1zM87 4h1v1h-1zM103 4h1v1h-1zM107 4h1v1h-1zM119 4h1v1h-1zM123 4h2v1h-2zM135 4h1v1h-1zM139 4h3v1h-3zM151 4h1v1h-1zM155 4h3v1h-3zM39 5h1v1h-1zM54 5h2v1h-2zM69 5h3v1h-3zM85 5h3v1h-3zM90 5h2v1h-2zM101 5h3v1h-3zM106 5h2v1h-2zM117 5h3v1h-3zM122 5h2v1h-2zM133 5h3v1h-3zM138 5h2v1h-2zM149 5h3v1h-3zM154 5h2v1h-2zM39 6h1v1h-1zM55 6h1v1h-1zM57 6h1v1h-1zM71 6h1v1h-1zM73 6h2v1h-2zM85 6h1v1h-1zM87 6h4v1h-4zM99 6h8v1h-8zM115 6h8v1h-8zM131 6h8v1h-8zM147 6h8v1h-8zM23 7h2v1h-2zM39 7h3v1h-3zM55 7h3v1h-3zM71 7h4v1h-4zM87 7h4v1h-4zM103 7h4v1h-4zM115 7h1v1h-1zM119 7h4v1h-4zM131 7h1v1h-1zM133 7h1v1h-1zM135 7h4v1h-4zM147 7h3v1h-3zM151 7h4v1h-4zM23 8h2v1h-2zM39 8h3v1h-3zM55 8h4v1h-4zM71 8h4v1h-4zM87 8h4v1h-4zM103 8h4v1h-4zM119 8h4v1h-4zM131 8h1v1h-1zM135 8h4v1h-4zM147 8h2v1h-2zM151 8h4v1h-4zM24 9h1v1h-1zM40 9h2v1h-2zM56 9h2v1h-2zM72 9h2v1h-2zM88 9h2v1h-2zM104 9h2v1h-2zM120 9h2v1h-2zM131 9h1v1h-1zM136 9h2v1h-2zM145 9h3v1h-3zM152 9h2v1h-2zM39 10h1v1h-1zM55 10h1v1h-1zM57 10h1v1h-1zM71 10h1v1h-1zM73 10h1v1h-1zM87 10h1v1h-1zM89 10h1v1h-1zM103 10h1v1h-1zM105 10h1v1h-1zM119 10h1v1h-1zM121 10h1v1h-1zM135 10h1v1h-1zM137 10h1v1h-1zM151 10h1v1h-1zM153 10h1v1h-1zM38 11h1v1h-1zM54 11h1v1h-1zM57 11h1v1h-1zM70 11h2v1h-2zM73 11h1v1h-1zM86 11h2v1h-2zM89 11h1v1h-1zM102 11h2v1h-2zM105 11h1v1h-1zM118 11h2v1h-2zM121 11h1v1h-1zM134 11h2v1h-2zM137 11h1v1h-1zM150 11h2v1h-2zM153 11h1v1h-1zM54 12h1v1h-1zM69 12h2v1h-2zM73 12h1v1h-1zM84 12h4v1h-4zM89 12h1v1h-1zM100 12h4v1h-4zM105 12h1v1h-1zM116 12h4v1h-4zM121 12h1v1h-1zM132 12h4v1h-4zM137 12h1v1h-1zM148 12h4v1h-4zM153 12h1v1h-1zM89 13h1v1h-1zM99 13h1v1h-1zM104 13h2v1h-2zM115 13h2v1h-2zM120 13h2v1h-2zM131 13h2v1h-2zM136 13h2v1h-2zM147 13h2v1h-2zM152 13h2v1h-2zM106 14h1v1h-1zM115 14h1v1h-1zM120 14h3v1h-3zM131 14h2v1h-2zM136 14h4v1h-4zM147 14h2v1h-2zM152 14h4v1h-4zM119 15h1v1h-1zM123 15h1v1h-1zM131 15h1v1h-1zM135 15h1v1h-1zM139 15h1v1h-1zM147 15h1v1h-1zM149 15h1v1h-1zM151 15h1v1h-1zM155 15h1v1h-1z"/>
+    </symbol>
+    <symbol id="foc-suflet" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--suflet-3)" d="M7 1h1v1h-1zM6 2h2v1h-2zM12 2h1v1h-1zM3 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM11 3h2v1h-2zM3 4h2v1h-2zM6 4h1v1h-1zM8 4h1v1h-1zM11 4h1v1h-1zM13 4h1v1h-1zM2 5h1v1h-1zM4 5h1v1h-1zM6 5h1v1h-1zM9 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM2 6h1v1h-1zM4 6h2v1h-2zM9 6h2v1h-2zM13 6h1v1h-1zM2 7h1v1h-1zM5 7h1v1h-1zM10 7h1v1h-1zM13 7h1v1h-1zM1 8h2v1h-2zM13 8h2v1h-2zM1 9h1v1h-1zM14 9h1v1h-1zM1 10h1v1h-1zM14 10h1v1h-1zM1 11h1v1h-1zM14 11h1v1h-1z"/>
+      <path style="fill:var(--suflet-2)" d="M7 3h1v1h-1zM7 4h1v1h-1zM12 4h1v1h-1zM3 5h1v1h-1zM7 5h2v1h-2zM12 5h1v1h-1zM3 6h1v1h-1zM6 6h3v1h-3zM11 6h2v1h-2zM3 7h2v1h-2zM6 7h1v1h-1zM8 7h2v1h-2zM11 7h2v1h-2zM3 8h4v1h-4zM9 8h4v1h-4zM2 9h3v1h-3zM6 9h1v1h-1zM9 9h1v1h-1zM11 9h3v1h-3zM2 10h2v1h-2zM12 10h2v1h-2zM2 11h1v1h-1zM12 11h2v1h-2zM2 12h1v1h-1zM12 12h2v1h-2zM2 13h1v1h-1zM13 13h1v1h-1z"/>
+      <path style="fill:var(--minereu-diamant)" d="M7 7h1v1h-1zM7 8h2v1h-2zM5 9h1v1h-1zM7 9h2v1h-2zM10 9h1v1h-1zM4 10h8v1h-8zM3 11h9v1h-9zM3 12h9v1h-9zM3 13h10v1h-10zM3 14h11v1h-11z"/>
+    </symbol>
+    <symbol id="ghast-trage" viewBox="0 0 16 24" shape-rendering="crispEdges">
+      <path style="fill:var(--portal-3)" d="M2 4h3v1h-3zM10 4h3v1h-3zM2 5h1v1h-1zM4 5h1v1h-1zM10 5h1v1h-1zM12 5h1v1h-1zM2 6h3v1h-3zM10 6h3v1h-3zM4 9h8v1h-8zM4 10h1v1h-1zM11 10h1v1h-1zM4 11h1v1h-1zM11 11h1v1h-1zM4 12h8v1h-8z"/>
+      <path style="fill:var(--os-2)" d="M15 0h1v1h-1zM15 1h1v1h-1zM15 2h1v1h-1zM15 3h1v1h-1zM15 4h1v1h-1zM15 5h1v1h-1zM15 6h1v1h-1zM15 7h1v1h-1zM15 8h1v1h-1zM15 9h1v1h-1zM15 10h1v1h-1zM15 11h1v1h-1zM15 12h1v1h-1zM15 13h1v1h-1zM15 14h1v1h-1zM0 15h15v1h-15zM1 16h2v1h-2zM4 16h2v1h-2zM7 16h2v1h-2zM10 16h2v1h-2zM13 16h2v1h-2zM4 19h2v1h-2zM1 20h2v1h-2zM13 20h2v1h-2zM7 21h2v1h-2zM10 22h2v1h-2z"/>
+      <path style="fill:var(--obsidian-4)" d="M5 10h6v1h-6zM5 11h1v1h-1zM10 11h1v1h-1z"/>
+      <path style="fill:var(--nether-3)" d="M3 5h1v1h-1zM11 5h1v1h-1zM6 11h4v1h-4z"/>
+      <path style="fill:var(--bedrock-0)" d="M15 15h1v1h-1z"/>
+      <path style="fill:var(--os-1)" d="M0 0h15v1h-15zM0 1h15v1h-15zM0 2h15v1h-15zM0 3h15v1h-15zM0 4h2v1h-2zM5 4h5v1h-5zM13 4h2v1h-2zM0 5h2v1h-2zM5 5h5v1h-5zM13 5h2v1h-2zM0 6h2v1h-2zM5 6h5v1h-5zM13 6h2v1h-2zM0 7h15v1h-15zM0 8h15v1h-15zM0 9h4v1h-4zM12 9h3v1h-3zM0 10h4v1h-4zM12 10h3v1h-3zM0 11h4v1h-4zM12 11h3v1h-3zM0 12h4v1h-4zM12 12h3v1h-3zM0 13h15v1h-15zM0 14h15v1h-15zM1 17h2v1h-2zM4 17h2v1h-2zM7 17h2v1h-2zM10 17h2v1h-2zM13 17h2v1h-2zM1 18h2v1h-2zM4 18h2v1h-2zM7 18h2v1h-2zM10 18h2v1h-2zM13 18h2v1h-2zM1 19h2v1h-2zM7 19h2v1h-2zM10 19h2v1h-2zM13 19h2v1h-2zM7 20h2v1h-2zM10 20h2v1h-2zM10 21h2v1h-2z"/>
+    </symbol>
+    <symbol id="ghast" viewBox="0 0 16 24" shape-rendering="crispEdges">
+      <path style="fill:var(--portal-3)" d="M2 5h3v1h-3zM10 5h3v1h-3zM5 10h6v1h-6zM5 11h1v1h-1zM10 11h1v1h-1z"/>
+      <path style="fill:var(--os-2)" d="M15 0h1v1h-1zM15 1h1v1h-1zM15 2h1v1h-1zM15 3h1v1h-1zM15 4h1v1h-1zM15 5h1v1h-1zM3 6h1v1h-1zM11 6h1v1h-1zM15 6h1v1h-1zM3 7h1v1h-1zM11 7h1v1h-1zM15 7h1v1h-1zM15 8h1v1h-1zM15 9h1v1h-1zM15 10h1v1h-1zM15 11h1v1h-1zM15 12h1v1h-1zM15 13h1v1h-1zM15 14h1v1h-1zM0 15h15v1h-15zM1 16h2v1h-2zM4 16h2v1h-2zM7 16h2v1h-2zM10 16h2v1h-2zM13 16h2v1h-2zM4 19h2v1h-2zM1 20h2v1h-2zM13 20h2v1h-2zM7 21h2v1h-2zM10 22h2v1h-2z"/>
+      <path style="fill:var(--bedrock-0)" d="M15 15h1v1h-1z"/>
+      <path style="fill:var(--os-1)" d="M0 0h15v1h-15zM0 1h15v1h-15zM0 2h15v1h-15zM0 3h15v1h-15zM0 4h15v1h-15zM0 5h2v1h-2zM5 5h5v1h-5zM13 5h2v1h-2zM0 6h3v1h-3zM4 6h7v1h-7zM12 6h3v1h-3zM0 7h3v1h-3zM4 7h7v1h-7zM12 7h3v1h-3zM0 8h15v1h-15zM0 9h15v1h-15zM0 10h5v1h-5zM11 10h4v1h-4zM0 11h5v1h-5zM6 11h4v1h-4zM11 11h4v1h-4zM0 12h15v1h-15zM0 13h15v1h-15zM0 14h15v1h-15zM1 17h2v1h-2zM4 17h2v1h-2zM7 17h2v1h-2zM10 17h2v1h-2zM13 17h2v1h-2zM1 18h2v1h-2zM4 18h2v1h-2zM7 18h2v1h-2zM10 18h2v1h-2zM13 18h2v1h-2zM1 19h2v1h-2zM7 19h2v1h-2zM10 19h2v1h-2zM13 19h2v1h-2zM7 20h2v1h-2zM10 20h2v1h-2zM10 21h2v1h-2z"/>
+    </symbol>
+    <symbol id="lacrima-ghast" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--minereu-diamant)" d="M7 4h1v1h-1zM7 5h1v1h-1zM6 6h3v1h-3zM5 7h5v1h-5zM5 8h6v1h-6zM5 9h2v1h-2zM8 9h3v1h-3zM5 10h3v1h-3zM9 10h2v1h-2zM6 11h4v1h-4z"/>
+      <path style="fill:var(--os-2)" d="M7 2h1v1h-1zM7 3h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM5 6h1v1h-1zM9 6h1v1h-1zM10 7h1v1h-1zM4 8h1v1h-1zM11 8h1v1h-1zM4 9h1v1h-1zM11 9h1v1h-1zM4 10h1v1h-1zM11 10h1v1h-1zM4 11h2v1h-2zM10 11h2v1h-2zM5 12h6v1h-6z"/>
+      <path style="fill:var(--os-1)" d="M7 1h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM5 4h1v1h-1zM9 4h1v1h-1zM5 5h1v1h-1zM9 5h1v1h-1zM4 6h1v1h-1zM10 6h1v1h-1zM4 7h1v1h-1zM11 7h1v1h-1zM3 8h1v1h-1zM12 8h1v1h-1zM3 9h1v1h-1zM7 9h1v1h-1zM12 9h1v1h-1zM3 10h1v1h-1zM8 10h1v1h-1zM12 10h1v1h-1zM3 11h1v1h-1zM12 11h1v1h-1zM4 12h1v1h-1zM11 12h1v1h-1zM5 13h6v1h-6z"/>
     </symbol>
     <symbol id="lava" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <path style="fill:var(--nether-2)" d="M0 0h16v16h-16z"/>
       <path style="fill:var(--nether-1)" d="M1 1h1v1h-1zM0 2h2v1h-2zM6 2h1v1h-1zM15 2h1v1h-1zM0 3h2v1h-2zM6 3h2v1h-2zM15 3h1v1h-1zM0 4h2v1h-2zM6 4h2v1h-2zM15 4h1v1h-1zM6 5h2v1h-2zM6 6h3v1h-3zM6 7h3v1h-3zM6 8h3v1h-3zM11 9h1v1h-1zM11 10h1v1h-1zM13 10h1v1h-1zM5 11h1v1h-1zM9 11h3v1h-3zM0 13h1v1h-1zM1 14h1v1h-1zM1 15h1v1h-1zM7 15h3v1h-3z"/>
       <path style="fill:var(--nether-3)" d="M10 0h3v1h-3zM14 0h1v1h-1zM10 1h3v1h-3zM14 1h1v1h-1zM10 2h2v1h-2zM14 2h1v1h-1zM13 3h1v1h-1zM13 4h1v1h-1zM10 6h3v1h-3zM14 6h1v1h-1zM0 8h1v1h-1zM9 8h2v1h-2zM14 8h2v1h-2zM0 9h2v1h-2zM9 9h2v1h-2zM15 9h1v1h-1zM9 10h2v1h-2zM1 11h3v1h-3zM6 11h1v1h-1zM1 12h2v1h-2zM6 12h1v1h-1zM1 13h3v1h-3zM6 13h1v1h-1zM0 14h1v1h-1zM0 15h1v1h-1z"/>
       <path style="fill:var(--apus-1)" d="M15 0h1v1h-1zM7 2h2v1h-2zM5 8h1v1h-1zM4 11h1v1h-1zM3 12h2v1h-2zM8 12h1v1h-1zM8 13h1v1h-1zM15 15h1v1h-1z"/>
+    </symbol>
+    <symbol id="liane" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--nether-3)" d="M2 0h1v1h-1zM12 0h1v1h-1zM2 1h1v1h-1zM12 1h1v1h-1zM2 2h1v1h-1zM12 2h1v1h-1zM3 3h1v1h-1zM8 3h1v1h-1zM11 3h1v1h-1zM3 4h1v1h-1zM8 4h1v1h-1zM11 4h1v1h-1zM7 5h1v1h-1zM3 6h1v1h-1zM7 6h1v1h-1zM11 6h1v1h-1zM3 7h1v1h-1zM7 7h1v1h-1zM11 7h1v1h-1zM2 8h1v1h-1zM7 8h1v1h-1zM2 9h1v1h-1zM8 9h1v1h-1zM12 9h1v1h-1zM8 10h1v1h-1zM12 10h1v1h-1zM2 11h1v1h-1zM12 11h1v1h-1zM2 12h1v1h-1zM8 12h1v1h-1zM13 12h1v1h-1zM1 13h2v1h-2zM8 13h1v1h-1zM13 13h1v1h-1zM1 14h1v1h-1zM8 14h1v1h-1z"/>
+      <path style="fill:var(--nether-4)" d="M8 0h1v1h-1zM8 1h1v1h-1zM3 2h1v1h-1zM8 2h1v1h-1zM11 2h1v1h-1zM7 4h1v1h-1zM3 5h1v1h-1zM11 5h1v1h-1zM2 7h1v1h-1zM8 8h1v1h-1zM12 8h1v1h-1zM2 10h1v1h-1zM8 11h1v1h-1zM13 11h1v1h-1z"/>
+      <path style="fill:var(--minereu-redstone)" d="M7 14h1v1h-1zM13 14h1v1h-1zM1 15h1v1h-1zM8 15h1v1h-1z"/>
+    </symbol>
+    <symbol id="lingou-aur" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--apus-1)" d="M5 5h6v1h-6zM4 6h1v1h-1zM7 6h4v1h-4zM3 7h9v1h-9zM2 8h11v1h-11z"/>
+      <path style="fill:var(--apus-2)" d="M11 6h1v1h-1zM12 7h1v1h-1zM13 8h1v1h-1zM2 9h12v1h-12z"/>
+      <path style="fill:var(--nether-2)" d="M14 9h1v1h-1zM2 10h12v1h-12z"/>
+      <path style="fill:var(--os-1)" d="M5 6h2v1h-2z"/>
     </symbol>
     <symbol id="litera-a" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <use href="#bloc-piatra" width="16" height="16"/>
@@ -247,6 +350,12 @@
       <path style="fill:var(--piatra-1)" d="M6 4h1v1h-1zM12 4h1v1h-1zM6 5h1v1h-1zM12 5h1v1h-1zM6 6h1v1h-1zM12 6h1v1h-1zM6 7h1v1h-1zM9 7h1v1h-1zM12 7h1v1h-1zM6 8h1v1h-1zM9 8h1v1h-1zM12 8h1v1h-1zM6 9h1v1h-1zM9 9h1v1h-1zM12 9h1v1h-1zM12 10h1v1h-1zM7 11h2v1h-2zM12 11h1v1h-1zM6 12h1v1h-1zM9 12h1v1h-1zM12 12h1v1h-1zM4 13h2v1h-2zM10 13h2v1h-2z"/>
       <path style="fill:var(--piatra-4)" d="M4 4h2v1h-2zM10 4h2v1h-2zM4 5h2v1h-2zM10 5h2v1h-2zM4 6h2v1h-2zM10 6h2v1h-2zM4 7h2v1h-2zM7 7h2v1h-2zM10 7h2v1h-2zM4 8h2v1h-2zM7 8h2v1h-2zM10 8h2v1h-2zM4 9h2v1h-2zM7 9h2v1h-2zM10 9h2v1h-2zM4 10h8v1h-8zM4 11h3v1h-3zM9 11h3v1h-3zM4 12h2v1h-2zM10 12h2v1h-2z"/>
     </symbol>
+    <symbol id="minge-foc" viewBox="0 0 8 8" shape-rendering="crispEdges">
+      <path style="fill:var(--nether-4)" d="M2 0h1v1h-1zM5 0h1v1h-1zM1 1h1v1h-1zM6 1h1v1h-1zM0 2h1v1h-1zM7 2h1v1h-1zM0 5h1v1h-1zM7 5h1v1h-1zM1 6h1v1h-1zM6 6h1v1h-1zM2 7h1v1h-1zM5 7h1v1h-1z"/>
+      <path style="fill:var(--nether-2)" d="M3 1h2v1h-2zM2 2h2v1h-2zM5 2h1v1h-1zM1 3h1v1h-1zM6 3h1v1h-1zM1 4h1v1h-1zM6 4h1v1h-1zM2 5h2v1h-2zM5 5h1v1h-1zM3 6h2v1h-2z"/>
+      <path style="fill:var(--nether-3)" d="M3 0h2v1h-2zM2 1h1v1h-1zM5 1h1v1h-1zM1 2h1v1h-1zM6 2h1v1h-1zM0 3h1v1h-1zM7 3h1v1h-1zM0 4h1v1h-1zM7 4h1v1h-1zM1 5h1v1h-1zM6 5h1v1h-1zM2 6h1v1h-1zM5 6h1v1h-1zM3 7h2v1h-2z"/>
+      <path style="fill:var(--apus-1)" d="M4 2h1v1h-1zM2 3h4v1h-4zM2 4h4v1h-4zM4 5h1v1h-1z"/>
+    </symbol>
     <symbol id="nor-mare" viewBox="0 0 32 10" shape-rendering="crispEdges">
       <path style="fill:var(--nor-1)" d="M10 0h4v1h-4zM8 1h8v1h-8zM21 1h3v1h-3zM7 2h10v1h-10zM19 2h7v1h-7zM3 3h3v1h-3zM7 3h20v1h-20zM2 4h27v1h-27zM1 5h30v1h-30zM0 6h32v1h-32zM0 7h32v1h-32zM1 8h30v1h-30z"/>
       <path style="fill:var(--nor-2)" d="M0 8h1v1h-1zM31 8h1v1h-1zM1 9h30v1h-30z"/>
@@ -263,10 +372,27 @@
       <path style="fill:var(--nor-2)" d="M8 1h1v1h-1zM12 1h1v1h-1zM3 2h2v1h-2zM8 2h1v1h-1zM12 2h1v1h-1zM2 3h1v1h-1zM12 3h1v1h-1zM2 4h1v1h-1zM7 4h1v1h-1zM6 5h1v1h-1zM11 5h1v1h-1zM5 6h1v1h-1zM10 6h1v1h-1zM4 7h1v1h-1zM10 7h1v1h-1zM1 8h2v1h-2zM9 8h1v1h-1zM8 9h1v1h-1zM6 10h2v1h-2zM5 11h1v1h-1zM1 12h3v1h-3z"/>
       <path style="fill:var(--nor-1)" d="M0 0h15v1h-15zM0 1h5v1h-5zM0 2h3v1h-3zM5 2h2v1h-2zM0 3h2v1h-2zM3 3h1v1h-1zM6 3h3v1h-3zM0 4h2v1h-2zM4 4h1v1h-1zM9 4h3v1h-3zM0 5h1v1h-1zM2 5h1v1h-1zM5 5h1v1h-1zM12 5h2v1h-2zM0 6h1v1h-1zM2 6h2v1h-2zM6 6h1v1h-1zM0 7h1v1h-1zM3 7h1v1h-1zM7 7h1v1h-1zM0 8h1v1h-1zM3 8h1v1h-1zM8 8h1v1h-1zM0 9h1v1h-1zM4 9h1v1h-1zM9 9h1v1h-1zM0 10h1v1h-1zM4 10h1v1h-1zM10 10h1v1h-1zM0 11h1v1h-1zM4 11h1v1h-1zM0 12h1v1h-1zM5 12h1v1h-1zM0 13h1v1h-1zM5 13h1v1h-1zM0 14h1v1h-1z"/>
     </symbol>
+    <symbol id="piglin" viewBox="0 0 16 32" shape-rendering="crispEdges">
+      <path style="fill:var(--lemn-2)" d="M3 10h10v1h-10zM3 11h11v1h-11zM3 12h2v1h-2zM5 12h1v1h-1zM6 12h4v1h-4zM10 12h1v1h-1zM11 12h2v1h-2zM3 13h10v1h-10zM3 14h10v1h-10zM3 16h4v1h-4zM9 16h4v1h-4zM3 17h10v1h-10zM3 18h10v1h-10zM3 19h10v1h-10zM3 20h10v1h-10z"/>
+      <path style="fill:var(--apus-1)" d="M3 15h10v1h-10zM7 16h1v1h-1zM8 16h1v1h-1z"/>
+      <path style="fill:var(--lemn-4)" d="M3 4h1v1h-1zM12 4h1v1h-1zM5 6h1v1h-1zM10 6h1v1h-1zM3 30h4v1h-4zM9 30h4v1h-4z"/>
+      <path style="fill:var(--obsidian-3)" d="M3 21h10v1h-10zM3 22h4v1h-4zM9 22h4v1h-4zM3 23h4v1h-4zM9 23h4v1h-4zM3 24h4v1h-4zM9 24h4v1h-4zM3 25h4v1h-4zM9 25h4v1h-4zM3 26h4v1h-4zM9 26h4v1h-4zM3 27h4v1h-4zM9 27h4v1h-4zM3 28h4v1h-4zM9 28h4v1h-4z"/>
+      <path style="fill:var(--lemn-1)" d="M5 5h6v1h-6zM4 6h1v1h-1zM6 6h4v1h-4zM11 6h1v1h-1zM5 7h6v1h-6z"/>
+      <path style="fill:var(--apus-3)" d="M2 0h12v1h-12zM1 1h14v1h-14zM1 2h14v1h-14zM2 3h12v1h-12zM1 4h1v1h-1zM4 4h8v1h-8zM14 4h1v1h-1zM1 5h4v1h-4zM11 5h4v1h-4zM1 6h3v1h-3zM12 6h3v1h-3zM1 7h4v1h-4zM11 7h4v1h-4zM1 8h2v1h-2zM4 8h8v1h-8zM13 8h2v1h-2zM1 11h2v1h-2zM14 11h1v1h-1zM1 12h2v1h-2zM13 12h2v1h-2zM1 13h2v1h-2zM13 13h2v1h-2zM1 14h2v1h-2zM13 14h2v1h-2zM1 16h2v1h-2zM13 16h2v1h-2zM1 17h2v1h-2zM13 17h2v1h-2z"/>
+      <path style="fill:var(--apus-4)" d="M0 2h1v1h-1zM15 2h1v1h-1zM0 3h2v1h-2zM14 3h2v1h-2zM0 4h1v1h-1zM15 4h1v1h-1zM0 5h1v1h-1zM15 5h1v1h-1zM2 9h12v1h-12zM1 15h2v1h-2zM13 15h2v1h-2zM2 18h1v1h-1zM13 18h1v1h-1zM3 29h4v1h-4zM9 29h4v1h-4z"/>
+      <path style="fill:var(--os-2)" d="M3 8h1v1h-1zM12 8h1v1h-1z"/>
+      <path style="fill:var(--os-1)" d="M2 4h1v1h-1zM13 4h1v1h-1z"/>
+    </symbol>
     <symbol id="portal" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <path style="fill:var(--portal-3)" d="M0 0h16v16h-16z"/>
       <path style="fill:var(--portal-1)" d="M1 0h4v1h-4zM6 1h3v1h-3zM5 2h3v1h-3zM5 3h4v1h-4zM6 4h3v1h-3zM6 5h3v1h-3zM12 6h3v1h-3zM9 7h4v1h-4zM8 8h2v1h-2zM15 8h1v1h-1zM13 9h3v1h-3zM0 10h1v1h-1zM13 10h3v1h-3zM0 11h1v1h-1zM14 11h2v1h-2zM0 12h2v1h-2zM14 12h2v1h-2zM0 13h1v1h-1zM14 13h2v1h-2zM2 14h3v1h-3zM0 15h3v1h-3z"/>
       <path style="fill:var(--portal-2)" d="M0 0h1v1h-1zM5 0h7v1h-7zM0 1h3v1h-3zM4 1h2v1h-2zM9 1h1v1h-1zM15 1h1v1h-1zM4 2h1v1h-1zM8 2h2v1h-2zM12 2h3v1h-3zM4 3h1v1h-1zM9 3h1v1h-1zM12 3h3v1h-3zM5 4h1v1h-1zM9 4h2v1h-2zM12 4h4v1h-4zM5 5h1v1h-1zM9 5h7v1h-7zM4 6h8v1h-8zM15 6h1v1h-1zM2 7h2v1h-2zM8 7h1v1h-1zM13 7h1v1h-1zM0 8h2v1h-2zM7 8h1v1h-1zM10 8h5v1h-5zM0 9h1v1h-1zM6 9h3v1h-3zM12 9h1v1h-1zM1 10h1v1h-1zM7 10h2v1h-2zM12 10h1v1h-1zM1 11h1v1h-1zM7 11h2v1h-2zM13 11h1v1h-1zM2 12h1v1h-1zM7 12h2v1h-2zM13 12h1v1h-1zM1 13h1v1h-1zM4 13h4v1h-4zM13 13h1v1h-1zM0 14h2v1h-2zM5 14h1v1h-1zM11 14h3v1h-3zM3 15h2v1h-2zM8 15h2v1h-2zM15 15h1v1h-1z"/>
+    </symbol>
+    <symbol id="resturi" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <path style="fill:var(--lemn-4)" d="M5 4h3v1h-3zM9 4h1v1h-1zM3 5h2v1h-2zM6 5h6v1h-6zM3 6h1v1h-1zM7 6h3v1h-3zM11 6h1v1h-1zM2 7h3v1h-3zM6 7h3v1h-3zM12 7h1v1h-1zM2 8h8v1h-8zM11 8h2v1h-2zM2 9h1v1h-1zM4 9h9v1h-9zM3 10h3v1h-3zM8 10h4v1h-4zM4 11h7v1h-7z"/>
+      <path style="fill:var(--lemn-2)" d="M5 6h1v1h-1zM10 7h1v1h-1zM6 10h1v1h-1z"/>
+      <path style="fill:var(--obsidian-4)" d="M5 3h5v1h-5zM3 4h2v1h-2zM10 4h2v1h-2zM2 5h1v1h-1zM12 5h1v1h-1zM2 6h1v1h-1zM12 6h1v1h-1zM1 7h1v1h-1zM13 7h1v1h-1zM1 8h1v1h-1zM13 8h1v1h-1zM1 9h1v1h-1zM13 9h1v1h-1zM2 10h1v1h-1zM12 10h1v1h-1zM2 11h2v1h-2zM11 11h2v1h-2zM4 12h7v1h-7z"/>
+      <path style="fill:var(--lemn-3)" d="M8 4h1v1h-1zM5 5h1v1h-1zM4 6h1v1h-1zM6 6h1v1h-1zM10 6h1v1h-1zM5 7h1v1h-1zM9 7h1v1h-1zM11 7h1v1h-1zM10 8h1v1h-1zM3 9h1v1h-1zM7 10h1v1h-1z"/>
     </symbol>
     <symbol id="sina" viewBox="0 0 16 6" shape-rendering="crispEdges">
       <path style="fill:var(--lemn-2)" d="M1 3h5v1h-5zM9 3h5v1h-5zM1 4h1v1h-1zM5 4h1v1h-1zM9 4h1v1h-1zM13 4h1v1h-1z"/>
@@ -279,6 +405,13 @@
       <path style="fill:var(--soare-3)" d="M5 0h6v1h-6zM3 1h2v1h-2zM11 1h2v1h-2zM2 2h1v1h-1zM13 2h1v1h-1zM1 3h1v1h-1zM14 3h1v1h-1zM1 4h1v1h-1zM14 4h1v1h-1zM0 5h1v1h-1zM15 5h1v1h-1zM0 6h1v1h-1zM15 6h1v1h-1zM0 7h1v1h-1zM15 7h1v1h-1zM0 8h1v1h-1zM15 8h1v1h-1zM0 9h1v1h-1zM15 9h1v1h-1zM0 10h1v1h-1zM15 10h1v1h-1zM1 11h1v1h-1zM14 11h1v1h-1zM1 12h1v1h-1zM14 12h1v1h-1zM2 13h1v1h-1zM13 13h1v1h-1zM3 14h2v1h-2zM11 14h2v1h-2zM5 15h6v1h-6z"/>
       <path style="fill:var(--soare-2)" d="M5 1h6v1h-6zM3 2h10v1h-10zM2 3h2v1h-2zM6 3h8v1h-8zM2 4h1v1h-1zM5 4h9v1h-9zM1 5h2v1h-2zM4 5h11v1h-11zM1 6h14v1h-14zM1 7h14v1h-14zM1 8h14v1h-14zM1 9h14v1h-14zM1 10h14v1h-14zM2 11h12v1h-12zM2 12h12v1h-12zM3 13h10v1h-10zM5 14h6v1h-6z"/>
       <path style="fill:var(--soare-1)" d="M4 3h2v1h-2zM3 4h2v1h-2zM3 5h1v1h-1z"/>
+    </symbol>
+    <symbol id="strider" viewBox="0 0 16 20" shape-rendering="crispEdges">
+      <path style="fill:var(--apus-5)" d="M2 0h1v1h-1zM5 0h1v1h-1zM10 0h1v1h-1zM13 0h1v1h-1zM2 1h2v1h-2zM5 1h1v1h-1zM9 1h2v1h-2zM12 1h2v1h-2z"/>
+      <path style="fill:var(--obsidian-4)" d="M4 4h1v1h-1zM11 4h1v1h-1zM4 6h8v1h-8zM3 7h1v1h-1zM12 7h1v1h-1zM3 19h2v1h-2zM11 19h2v1h-2z"/>
+      <path style="fill:var(--apus-3)" d="M2 3h12v1h-12zM2 4h1v1h-1zM5 4h6v1h-6zM13 4h1v1h-1zM2 5h12v1h-12zM2 6h2v1h-2zM12 6h2v1h-2zM2 7h1v1h-1zM4 7h8v1h-8zM13 7h1v1h-1z"/>
+      <path style="fill:var(--nether-4)" d="M1 2h14v1h-14zM1 3h1v1h-1zM14 3h1v1h-1zM1 4h1v1h-1zM14 4h1v1h-1zM1 5h1v1h-1zM14 5h1v1h-1zM1 6h1v1h-1zM14 6h1v1h-1zM1 7h1v1h-1zM14 7h1v1h-1zM1 8h13v1h-13zM14 8h1v1h-1zM1 9h14v1h-14zM3 10h2v1h-2zM11 10h2v1h-2zM3 11h1v1h-1zM4 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM3 13h1v1h-1zM4 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1zM3 14h1v1h-1zM4 14h1v1h-1zM11 14h1v1h-1zM12 14h1v1h-1zM3 15h1v1h-1zM4 15h1v1h-1zM11 15h1v1h-1zM12 15h1v1h-1zM3 16h1v1h-1zM4 16h1v1h-1zM11 16h1v1h-1zM12 16h1v1h-1zM3 17h1v1h-1zM4 17h1v1h-1zM11 17h1v1h-1zM12 17h1v1h-1zM3 18h1v1h-1zM4 18h1v1h-1zM11 18h1v1h-1zM12 18h1v1h-1z"/>
+      <path style="fill:var(--os-1)" d="M3 4h1v1h-1zM12 4h1v1h-1z"/>
     </symbol>
     <symbol id="torta" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <path style="fill:var(--apus-1)" d="M7 2h1v1h-1zM6 3h2v1h-2zM6 4h1v1h-1zM8 4h1v1h-1zM7 5h1v1h-1z"/>
@@ -311,6 +444,12 @@
       <pattern id="model-bedrock" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-bedrock" width="16" height="16"/></pattern>
       <pattern id="model-portal" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#portal" width="16" height="16"/></pattern>
       <pattern id="model-obsidian" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-obsidian" width="16" height="16"/></pattern>
+      <pattern id="model-caramida" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-caramida" width="16" height="16"/></pattern>
+      <pattern id="model-nisip" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-nisip" width="16" height="16"/></pattern>
+      <pattern id="model-tulpina" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-tulpina" width="16" height="16"/></pattern>
+      <pattern id="model-negi" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-negi" width="16" height="16"/></pattern>
+      <pattern id="model-os" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-os" width="16" height="16"/></pattern>
+      <pattern id="model-liane" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#liane" width="16" height="16"/></pattern>
 
       <!-- Căldura din Nether: zgomot care se schimbă încet și deformează ce e în spate.
            Animația SMIL e pusă pe pauză din js/straturi/06-nether.js cât Nether-ul nu e pe ecran sau la reduced-motion. -->
@@ -332,7 +471,7 @@
     <span class="hud__biom">Sky</span>
   </aside>
 
-  <!-- Hotbar-ul din peșteră: minereurile găsite zboară aici (js/straturi/04-pestera.js). Decorativ. -->
+  <!-- Hotbar-ul: minereurile din peșteră și prada din Nether zboară aici (js/util/hotbar.js). Decorativ. -->
   <div class="hotbar" aria-hidden="true">
     <div class="hotbar__slot hotbar__slot--activ"><svg><use href="#torta"/></svg></div>
     <div class="hotbar__slot" data-tip="carbune"><svg><use href="#bloc-carbune"/></svg><span class="hotbar__numar"></span></div>
@@ -340,9 +479,9 @@
     <div class="hotbar__slot" data-tip="aur"><svg><use href="#bloc-aur"/></svg><span class="hotbar__numar"></span></div>
     <div class="hotbar__slot" data-tip="redstone"><svg><use href="#bloc-redstone"/></svg><span class="hotbar__numar"></span></div>
     <div class="hotbar__slot" data-tip="diamant"><svg><use href="#bloc-diamant"/></svg><span class="hotbar__numar"></span></div>
-    <div class="hotbar__slot"></div>
-    <div class="hotbar__slot"></div>
-    <div class="hotbar__slot"></div>
+    <div class="hotbar__slot" data-tip="crema-magma"><svg><use href="#crema-magma"/></svg><span class="hotbar__numar"></span></div>
+    <div class="hotbar__slot" data-tip="lacrima-ghast"><svg><use href="#lacrima-ghast"/></svg><span class="hotbar__numar"></span></div>
+    <div class="hotbar__slot" data-tip="resturi"><svg><use href="#resturi"/></svg><span class="hotbar__numar"></span></div>
   </div>
 
   <main>
@@ -579,93 +718,215 @@
       </div>
     </section>
 
-    <!-- Mina abandonată: un vagonet merge pe șine odată cu scroll-ul și rupe pânzele de păianjen din drum. -->
+    <!-- Mina abandonată: o plimbare cu vagonetul. Scena stă pe loc, galeria alunecă spre stânga odată cu scroll-ul,
+         vagonetul rupe pânzele din drum și se oprește la un portal de obsidian; camera intră în portal până când
+         violetul acoperă ecranul, iar atunci toată pagina trece pe paleta Nether (js/straturi/05-mina.js).
+         Fără mișcare, galeria se derulează orizontal manual (de aceea tabindex), cu vagonetul parcat la intrare.
+         Pozițiile sunt în blocuri: --x de la începutul galeriei, --y în rânduri deasupra podelei. -->
     <section class="strat strat--mina" id="mina" data-biom="Abandoned Mineshaft" data-y="0 -30">
-      <div class="mina__scena">
-        <svg class="mina__zid" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
-          <rect width="100000" height="960" fill="url(#model-piatra)"/>
-        </svg>
-        <div class="mina__umbra" aria-hidden="true"></div>
+      <div class="mina__scena" role="region" aria-label="Minecart ride through the mineshaft" tabindex="0">
+        <div class="mina__camera">
+          <div class="mina__lume" aria-hidden="true">
+            <svg class="mina__zid" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="960" fill="url(#model-piatra)"/></svg>
+            <div class="mina__umbra"></div>
 
-        <!-- Cadrele de susținere: stâlpi și grindă din scânduri, cu pânze în colțuri și o torță. -->
-        <div class="mina__cadre" aria-hidden="true">
-          <div class="mina__cadru" style="--i: 0">
-            <svg class="mina__lemn" viewBox="0 0 64 80"><rect width="64" height="16" fill="url(#model-scandura)"/><rect y="16" width="16" height="64" fill="url(#model-scandura)"/><rect x="48" y="16" width="16" height="64" fill="url(#model-scandura)"/></svg>
-            <svg class="mina__panza"><use href="#panza"/></svg>
-            <svg class="mina__panza mina__panza--dreapta"><use href="#panza"/></svg>
-            <div class="mina__torta"><svg><use href="#torta"/></svg></div>
-          </div>
-          <div class="mina__cadru" style="--i: 1">
-            <svg class="mina__lemn" viewBox="0 0 64 80"><rect width="64" height="16" fill="url(#model-scandura)"/><rect y="16" width="16" height="64" fill="url(#model-scandura)"/><rect x="48" y="16" width="16" height="64" fill="url(#model-scandura)"/></svg>
-            <svg class="mina__panza mina__panza--dreapta"><use href="#panza"/></svg>
-            <div class="mina__torta"><svg><use href="#torta"/></svg></div>
-          </div>
-          <div class="mina__cadru" style="--i: 2">
-            <svg class="mina__lemn" viewBox="0 0 64 80"><rect width="64" height="16" fill="url(#model-scandura)"/><rect y="16" width="16" height="64" fill="url(#model-scandura)"/><rect x="48" y="16" width="16" height="64" fill="url(#model-scandura)"/></svg>
-            <svg class="mina__panza"><use href="#panza"/></svg>
-            <div class="mina__torta"><svg><use href="#torta"/></svg></div>
-          </div>
-          <div class="mina__cadru" style="--i: 3">
-            <svg class="mina__lemn" viewBox="0 0 64 80"><rect width="64" height="16" fill="url(#model-scandura)"/><rect y="16" width="16" height="64" fill="url(#model-scandura)"/><rect x="48" y="16" width="16" height="64" fill="url(#model-scandura)"/></svg>
-            <svg class="mina__panza"><use href="#panza"/></svg>
-            <svg class="mina__panza mina__panza--dreapta"><use href="#panza"/></svg>
-            <div class="mina__torta"><svg><use href="#torta"/></svg></div>
+            <svg class="mina__bloc" style="--x: 9; --y: 3"><use href="#bloc-carbune"/></svg>
+            <svg class="mina__bloc" style="--x: 13; --y: 7"><use href="#bloc-fier"/></svg>
+            <svg class="mina__bloc" style="--x: 20; --y: 6"><use href="#bloc-carbune"/></svg>
+            <svg class="mina__bloc" style="--x: 25; --y: 2"><use href="#bloc-aur"/></svg>
+            <svg class="mina__bloc" style="--x: 32; --y: 7"><use href="#bloc-redstone"/></svg>
+            <svg class="mina__bloc" style="--x: 37; --y: 3"><use href="#bloc-fier"/></svg>
+            <svg class="mina__bloc" style="--x: 44; --y: 6"><use href="#bloc-diamant"/></svg>
+            <svg class="mina__bloc" style="--x: 48; --y: 2"><use href="#bloc-carbune"/></svg>
+            <svg class="mina__bloc" style="--x: 56; --y: 4"><use href="#bloc-redstone"/></svg>
+
+            <!-- Lângă portal, piatra s-a transformat deja în netherrack. -->
+            <svg class="mina__bloc mina__bloc--nether" style="--x: 59; --y: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="mina__bloc mina__bloc--nether" style="--x: 60; --y: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="mina__bloc mina__bloc--nether" style="--x: 60; --y: 2"><use href="#bloc-piatra"/></svg>
+            <svg class="mina__bloc mina__bloc--nether" style="--x: 61; --y: 6"><use href="#bloc-piatra"/></svg>
+            <svg class="mina__bloc mina__bloc--nether" style="--x: 64; --y: 6"><use href="#bloc-piatra"/></svg>
+            <svg class="mina__bloc mina__bloc--nether" style="--x: 66; --y: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="mina__bloc mina__bloc--nether" style="--x: 67; --y: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="mina__bloc mina__bloc--nether" style="--x: 67; --y: 2"><use href="#bloc-piatra"/></svg>
+
+            <!-- Cadrele de susținere: stâlpi și grindă din scânduri, cu pânze în colțuri și torțe. -->
+            <div class="mina__cadru" style="--x: 4"><svg class="mina__lemn" viewBox="0 0 64 80"><rect width="64" height="16" fill="url(#model-scandura)"/><rect y="16" width="16" height="64" fill="url(#model-scandura)"/><rect x="48" y="16" width="16" height="64" fill="url(#model-scandura)"/></svg><svg class="mina__panza"><use href="#panza"/></svg><svg class="mina__panza mina__panza--dreapta"><use href="#panza"/></svg><div class="mina__torta"><svg><use href="#torta"/></svg></div></div>
+            <div class="mina__cadru" style="--x: 16"><svg class="mina__lemn" viewBox="0 0 64 80"><rect width="64" height="16" fill="url(#model-scandura)"/><rect y="16" width="16" height="64" fill="url(#model-scandura)"/><rect x="48" y="16" width="16" height="64" fill="url(#model-scandura)"/></svg><svg class="mina__panza mina__panza--dreapta"><use href="#panza"/></svg><div class="mina__torta"><svg><use href="#torta"/></svg></div></div>
+            <div class="mina__cadru" style="--x: 28"><svg class="mina__lemn" viewBox="0 0 64 80"><rect width="64" height="16" fill="url(#model-scandura)"/><rect y="16" width="16" height="64" fill="url(#model-scandura)"/><rect x="48" y="16" width="16" height="64" fill="url(#model-scandura)"/></svg><svg class="mina__panza"><use href="#panza"/></svg></div>
+            <div class="mina__cadru" style="--x: 40"><svg class="mina__lemn" viewBox="0 0 64 80"><rect width="64" height="16" fill="url(#model-scandura)"/><rect y="16" width="16" height="64" fill="url(#model-scandura)"/><rect x="48" y="16" width="16" height="64" fill="url(#model-scandura)"/></svg><svg class="mina__panza"><use href="#panza"/></svg><svg class="mina__panza mina__panza--dreapta"><use href="#panza"/></svg><div class="mina__torta"><svg><use href="#torta"/></svg></div></div>
+            <div class="mina__cadru" style="--x: 52"><svg class="mina__lemn" viewBox="0 0 64 80"><rect width="64" height="16" fill="url(#model-scandura)"/><rect y="16" width="16" height="64" fill="url(#model-scandura)"/><rect x="48" y="16" width="16" height="64" fill="url(#model-scandura)"/></svg><svg class="mina__panza mina__panza--dreapta"><use href="#panza"/></svg><div class="mina__torta"><svg><use href="#torta"/></svg></div></div>
+
+            <!-- Portalul de la capătul galeriei: rama de obsidian 4×5, interiorul violet curge. -->
+            <div class="mina__portal" style="--x: 62">
+              <svg class="mina__obsidian" viewBox="0 0 64 80"><rect width="64" height="16" fill="url(#model-obsidian)"/><rect y="64" width="64" height="16" fill="url(#model-obsidian)"/><rect y="16" width="16" height="48" fill="url(#model-obsidian)"/><rect x="48" y="16" width="16" height="48" fill="url(#model-obsidian)"/></svg>
+              <div class="mina__interior"><svg viewBox="0 0 32 96" preserveAspectRatio="xMinYMin meet"><rect width="32" height="96" fill="url(#model-portal)"/></svg></div>
+            </div>
+
+            <!-- Pânzele din calea vagonetului: două jumătăți care se rup când trece vagonetul. -->
+            <div class="mina__piedica" style="--x: 10.5"><svg class="mina__bucata mina__bucata--1"><use href="#panza"/></svg><svg class="mina__bucata mina__bucata--2"><use href="#panza"/></svg></div>
+            <div class="mina__piedica" style="--x: 22.5"><svg class="mina__bucata mina__bucata--1"><use href="#panza"/></svg><svg class="mina__bucata mina__bucata--2"><use href="#panza"/></svg></div>
+            <div class="mina__piedica" style="--x: 34.5"><svg class="mina__bucata mina__bucata--1"><use href="#panza"/></svg><svg class="mina__bucata mina__bucata--2"><use href="#panza"/></svg></div>
+            <div class="mina__piedica" style="--x: 46.5"><svg class="mina__bucata mina__bucata--1"><use href="#panza"/></svg><svg class="mina__bucata mina__bucata--2"><use href="#panza"/></svg></div>
+
+            <div class="mina__podea">
+              <svg class="mina__sine" viewBox="0 0 16 6" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="6" fill="url(#model-sina)"/></svg>
+              <svg class="mina__pietre" viewBox="0 0 16 32" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="32" fill="url(#model-piatra)"/></svg>
+            </div>
+
+            <div class="mina__vagonet"><svg><use href="#vagonet"/></svg></div>
           </div>
         </div>
 
-        <!-- Pânzele din calea vagonetului: două jumătăți care se rup când trece vagonetul (js/straturi/05-mina.js). -->
-        <div class="mina__piedici" aria-hidden="true">
-          <div class="mina__piedica" style="--i: 0"><svg class="mina__bucata mina__bucata--1"><use href="#panza"/></svg><svg class="mina__bucata mina__bucata--2"><use href="#panza"/></svg></div>
-          <div class="mina__piedica" style="--i: 1"><svg class="mina__bucata mina__bucata--1"><use href="#panza"/></svg><svg class="mina__bucata mina__bucata--2"><use href="#panza"/></svg></div>
-          <div class="mina__piedica" style="--i: 2"><svg class="mina__bucata mina__bucata--1"><use href="#panza"/></svg><svg class="mina__bucata mina__bucata--2"><use href="#panza"/></svg></div>
-        </div>
-
-        <div class="mina__podea" aria-hidden="true">
-          <svg class="mina__sine" viewBox="0 0 16 6" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="6" fill="url(#model-sina)"/></svg>
-          <svg class="mina__pietre" viewBox="0 0 16 32" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="32" fill="url(#model-piatra)"/></svg>
-        </div>
-
-        <div class="mina__vagonet" aria-hidden="true"><svg><use href="#vagonet"/></svg></div>
-
+        <div class="mina__violet" aria-hidden="true"></div>
         <h2 class="eticheta mina__titlu">Abandoned Mineshaft</h2>
+        <p class="mina__indiciu">Keep scrolling: ride the minecart to the end of the tunnel</p>
       </div>
     </section>
 
-    <!-- Nether: întâi un portal, în care „camera” intră până când violetul acoperă ecranul; atunci se schimbă
-         paleta întregii pagini, iar violetul se retrage și rămâne Nether-ul: lavă, căldură și scântei. -->
+    <!-- Nether: o plimbare orizontală prin 4 biomi (--x în blocuri de la început, --y în rânduri deasupra solului,
+         --sus în rânduri de la tavan). Începe în violetul portalului, care se retrage. Mobii și blocul de resturi
+         antice devin butoane (js/straturi/06-nether.js): cubii de magma se despart, ghast-ul trage cu mingi de foc
+         care pot fi trimise înapoi, piglinul face schimb pe aur, iar prada zboară în hotbar.
+         Fără mișcare, lumea se derulează orizontal manual (de aceea tabindex), cu mobii nemișcați. -->
     <section class="strat strat--nether" id="nether" data-biom="Nether" data-y="-30 -58">
-      <div class="nether__scena">
-        <div class="nether__lume" aria-hidden="true">
-          <svg class="nether__zid" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="960" fill="url(#model-piatra)"/></svg>
-          <!-- Aerul fierbinte: o copie a zidului, deformată de filtrul #caldura, doar deasupra lavei. -->
-          <div class="nether__caldura">
+      <div class="nether__scena" role="region" aria-label="The Nether" tabindex="0">
+        <div class="nether__cutremur">
+          <div class="nether__lume">
+            <i class="nether__zona" data-zona data-biom="Nether Wastes" style="--x: 0"></i>
+            <i class="nether__zona" data-zona data-biom="Crimson Forest" style="--x: 28"></i>
+            <i class="nether__zona" data-zona data-biom="Nether Fortress" style="--x: 54"></i>
+            <i class="nether__zona" data-zona data-biom="Soul Sand Valley" style="--x: 80"></i>
+
+            <div class="nether__decor" aria-hidden="true">
             <svg class="nether__zid" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="960" fill="url(#model-piatra)"/></svg>
-          </div>
-          <div class="nether__lumini">
-            <svg style="--x: 8%; --r: 0"><use href="#bloc-lumina"/></svg>
-            <svg style="--x: 8%; --r: 1"><use href="#bloc-lumina"/></svg>
-            <svg style="--x: 34%; --r: 0"><use href="#bloc-lumina"/></svg>
-            <svg style="--x: 62%; --r: 0"><use href="#bloc-lumina"/></svg>
-            <svg style="--x: 62%; --r: 1"><use href="#bloc-lumina"/></svg>
-            <svg style="--x: 88%; --r: 0"><use href="#bloc-lumina"/></svg>
-          </div>
-          <div class="nether__cascada"><svg viewBox="0 0 16 1920" preserveAspectRatio="xMinYMin meet"><rect width="16" height="1920" fill="url(#model-lava)"/></svg></div>
-          <div class="nether__lava">
-            <svg class="nether__lava-banda" viewBox="0 0 16 32" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="32" fill="url(#model-lava)"/></svg>
+            <!-- Cuarț în perete, sub umbră. -->
+            <svg class="nether__b" style="--x: 11; --y: 5; --w: 1; --h: 1"><use href="#bloc-cuart"/></svg>
+            <svg class="nether__b" style="--x: 17; --y: 8; --w: 1; --h: 1"><use href="#bloc-cuart"/></svg>
+            <svg class="nether__b" style="--x: 25; --y: 6; --w: 1; --h: 1"><use href="#bloc-cuart"/></svg>
+            <svg class="nether__b" style="--x: 46; --y: 9; --w: 1; --h: 1"><use href="#bloc-cuart"/></svg>
+            <svg class="nether__b" style="--x: 85; --y: 7; --w: 1; --h: 1"><use href="#bloc-cuart"/></svg>
+            <div class="nether__umbra"></div>
+            <div class="nether__ceata nether__ceata--rosie" style="--x: 28; --w: 26"></div>
+            <div class="nether__ceata nether__ceata--albastra" style="--x: 78; --w: 26"></div>
+
+            <!-- Tavanul: un rând de netherrack, stalactite, piatră luminoasă și liane. -->
+            <svg class="nether__tavan" viewBox="0 0 16 16" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="16" fill="url(#model-piatra)"/></svg>
+            <svg class="nether__b nether__b--sus" style="--x: 5; --sus: 1; --w: 1; --h: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="nether__b nether__b--sus" style="--x: 6; --sus: 1; --w: 1; --h: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="nether__b nether__b--sus" style="--x: 6; --sus: 2; --w: 1; --h: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="nether__b nether__b--sus" style="--x: 18; --sus: 1; --w: 1; --h: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="nether__b nether__b--sus" style="--x: 31; --sus: 1; --w: 1; --h: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="nether__b nether__b--sus" style="--x: 44; --sus: 1; --w: 1; --h: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="nether__b nether__b--sus" style="--x: 45; --sus: 1; --w: 1; --h: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="nether__b nether__b--sus" style="--x: 45; --sus: 2; --w: 1; --h: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="nether__b nether__b--sus" style="--x: 70; --sus: 1; --w: 1; --h: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="nether__b nether__b--sus" style="--x: 86; --sus: 1; --w: 1; --h: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="nether__b nether__b--sus" style="--x: 99; --sus: 1; --w: 1; --h: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="nether__b nether__b--sus" style="--x: 99; --sus: 2; --w: 1; --h: 1"><use href="#bloc-piatra"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--lumina" style="--x: 9; --sus: 1; --w: 1; --h: 1"><use href="#bloc-lumina"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--lumina" style="--x: 10; --sus: 1; --w: 1; --h: 1"><use href="#bloc-lumina"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--lumina" style="--x: 10; --sus: 2; --w: 1; --h: 1"><use href="#bloc-lumina"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--lumina" style="--x: 21; --sus: 1; --w: 1; --h: 1"><use href="#bloc-lumina"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--lumina" style="--x: 22; --sus: 1; --w: 1; --h: 1"><use href="#bloc-lumina"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--lumina" style="--x: 60; --sus: 1; --w: 1; --h: 1"><use href="#bloc-lumina"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--lumina" style="--x: 61; --sus: 1; --w: 1; --h: 1"><use href="#bloc-lumina"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--lumina" style="--x: 61; --sus: 2; --w: 1; --h: 1"><use href="#bloc-lumina"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--lumina" style="--x: 76; --sus: 1; --w: 1; --h: 1"><use href="#bloc-lumina"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--lumina" style="--x: 92; --sus: 1; --w: 1; --h: 1"><use href="#bloc-lumina"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--lumina" style="--x: 93; --sus: 1; --w: 1; --h: 1"><use href="#bloc-lumina"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--liana" style="--x: 33; --sus: 1; --w: 1; --h: 3" viewBox="0 0 16 48"><rect width="16" height="48" fill="url(#model-liane)"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--liana" style="--x: 36; --sus: 1; --w: 1; --h: 2" viewBox="0 0 16 32"><rect width="16" height="32" fill="url(#model-liane)"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--liana" style="--x: 44; --sus: 3; --w: 1; --h: 3" viewBox="0 0 16 48"><rect width="16" height="48" fill="url(#model-liane)"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--liana" style="--x: 48; --sus: 1; --w: 1; --h: 4" viewBox="0 0 16 64"><rect width="16" height="64" fill="url(#model-liane)"/></svg>
+            <svg class="nether__b nether__b--sus nether__b--liana" style="--x: 52; --sus: 1; --w: 1; --h: 2" viewBox="0 0 16 32"><rect width="16" height="32" fill="url(#model-liane)"/></svg>
+
+            <!-- Cascada de lavă din tavan, în spatele podului. -->
+            <div class="nether__cascada" style="--x: 62"><svg viewBox="0 0 16 1920" preserveAspectRatio="xMinYMin meet"><rect width="16" height="1920" fill="url(#model-lava)"/></svg></div>
+
+            <!-- Portalul prin care ai venit, cu vagonetul parcat lângă el. -->
+            <div class="nether__portal" style="--x: 2">
+              <svg class="nether__obsidian" viewBox="0 0 64 80"><rect width="64" height="16" fill="url(#model-obsidian)"/><rect y="64" width="64" height="16" fill="url(#model-obsidian)"/><rect y="16" width="16" height="48" fill="url(#model-obsidian)"/><rect x="48" y="16" width="16" height="48" fill="url(#model-obsidian)"/></svg>
+              <div class="nether__interior"><svg viewBox="0 0 32 96" preserveAspectRatio="xMinYMin meet"><rect width="32" height="96" fill="url(#model-portal)"/></svg></div>
+            </div>
+            <div class="nether__vagonet" style="--x: 6.5"><svg><use href="#vagonet"/></svg></div>
+
+            <!-- Pădurea purpurie: ciuperci uriașe (tulpină, pălărie din negi, ciuperci luminoase). -->
+            <svg class="nether__b" style="--x: 31; --y: 0; --w: 1; --h: 5" viewBox="0 0 16 80"><rect width="16" height="80" fill="url(#model-tulpina)"/></svg>
+            <svg class="nether__b" style="--x: 29; --y: 5; --w: 5; --h: 2" viewBox="0 0 80 32"><rect width="80" height="32" fill="url(#model-negi)"/></svg>
+            <svg class="nether__b" style="--x: 30; --y: 7; --w: 3; --h: 1" viewBox="0 0 48 16"><rect width="48" height="16" fill="url(#model-negi)"/></svg>
+            <svg class="nether__b nether__b--lumina" style="--x: 29; --y: 5; --w: 1; --h: 1"><use href="#bloc-lumina-rosie"/></svg>
+            <svg class="nether__b nether__b--lumina" style="--x: 32; --y: 6; --w: 1; --h: 1"><use href="#bloc-lumina-rosie"/></svg>
+            <svg class="nether__b" style="--x: 41; --y: 0; --w: 1; --h: 7" viewBox="0 0 16 112"><rect width="16" height="112" fill="url(#model-tulpina)"/></svg>
+            <svg class="nether__b" style="--x: 38; --y: 7; --w: 7; --h: 2" viewBox="0 0 112 32"><rect width="112" height="32" fill="url(#model-negi)"/></svg>
+            <svg class="nether__b" style="--x: 39; --y: 9; --w: 5; --h: 1" viewBox="0 0 80 16"><rect width="80" height="16" fill="url(#model-negi)"/></svg>
+            <svg class="nether__b nether__b--lumina" style="--x: 39; --y: 7; --w: 1; --h: 1"><use href="#bloc-lumina-rosie"/></svg>
+            <svg class="nether__b nether__b--lumina" style="--x: 43; --y: 8; --w: 1; --h: 1"><use href="#bloc-lumina-rosie"/></svg>
+            <svg class="nether__b nether__b--lumina" style="--x: 41; --y: 9; --w: 1; --h: 1"><use href="#bloc-lumina-rosie"/></svg>
+            <svg class="nether__b" style="--x: 50; --y: 0; --w: 1; --h: 4" viewBox="0 0 16 64"><rect width="16" height="64" fill="url(#model-tulpina)"/></svg>
+            <svg class="nether__b" style="--x: 48; --y: 4; --w: 5; --h: 2" viewBox="0 0 80 32"><rect width="80" height="32" fill="url(#model-negi)"/></svg>
+            <svg class="nether__b" style="--x: 49; --y: 6; --w: 3; --h: 1" viewBox="0 0 48 16"><rect width="48" height="16" fill="url(#model-negi)"/></svg>
+            <svg class="nether__b nether__b--lumina" style="--x: 51; --y: 4; --w: 1; --h: 1"><use href="#bloc-lumina-rosie"/></svg>
+
+            <!-- Fortăreața: pod de cărămidă peste marea de lavă, pe stâlpi, sprijinit pe două maluri. -->
+            <svg class="nether__b" style="--x: 52; --y: 0; --w: 2; --h: 4" viewBox="0 0 32 64"><rect width="32" height="64" fill="url(#model-piatra)"/></svg>
+            <svg class="nether__b" style="--x: 80; --y: 0; --w: 2; --h: 4" viewBox="0 0 32 64"><rect width="32" height="64" fill="url(#model-piatra)"/></svg>
+            <svg class="nether__b" style="--x: 54; --y: 4; --w: 26; --h: 1" viewBox="0 0 416 16"><rect width="416" height="16" fill="url(#model-caramida)"/></svg>
+            <svg class="nether__b" style="--x: 57; --y: 0; --w: 2; --h: 4" viewBox="0 0 32 64"><rect width="32" height="64" fill="url(#model-caramida)"/></svg>
+            <svg class="nether__b" style="--x: 65; --y: 0; --w: 2; --h: 4" viewBox="0 0 32 64"><rect width="32" height="64" fill="url(#model-caramida)"/></svg>
+            <svg class="nether__b" style="--x: 73; --y: 0; --w: 2; --h: 4" viewBox="0 0 32 64"><rect width="32" height="64" fill="url(#model-caramida)"/></svg>
+
+            <!-- Valea nisipului de suflete: o fosilă din blocuri de os și foc de suflete. -->
+            <svg class="nether__b" style="--x: 89; --y: 5; --w: 7; --h: 1" viewBox="0 0 112 16"><rect width="112" height="16" fill="url(#model-os)"/></svg>
+            <svg class="nether__b" style="--x: 90; --y: 1; --w: 1; --h: 4" viewBox="0 0 16 64"><rect width="16" height="64" fill="url(#model-os)"/></svg>
+            <svg class="nether__b" style="--x: 92; --y: 2; --w: 1; --h: 3" viewBox="0 0 16 48"><rect width="16" height="48" fill="url(#model-os)"/></svg>
+            <svg class="nether__b" style="--x: 94; --y: 1; --w: 1; --h: 4" viewBox="0 0 16 64"><rect width="16" height="64" fill="url(#model-os)"/></svg>
+            <svg class="nether__b nether__foc" style="--x: 84; --y: 0; --w: 1; --h: 1"><use href="#foc-suflet"/></svg>
+            <svg class="nether__b nether__foc" style="--x: 87; --y: 0; --w: 1; --h: 1"><use href="#foc-suflet"/></svg>
+            <svg class="nether__b nether__foc" style="--x: 98; --y: 0; --w: 1; --h: 1"><use href="#foc-suflet"/></svg>
+            <svg class="nether__b nether__foc" style="--x: 101; --y: 0; --w: 1; --h: 1"><use href="#foc-suflet"/></svg>
+            </div>
+
+            <!-- Aerul fierbinte de deasupra lavei: o copie a zidului, deformată de filtrul #caldura. -->
+            <div class="nether__caldura" style="--x: 12; --w: 10" aria-hidden="true"><svg class="nether__zid" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="960" fill="url(#model-piatra)"/></svg><div class="nether__umbra"></div></div>
+            <div class="nether__caldura" style="--x: 54; --w: 26" aria-hidden="true"><svg class="nether__zid" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="960" fill="url(#model-piatra)"/></svg><div class="nether__umbra"></div></div>
+
+            <!-- Solul: bedrock dedesubt, apoi netherrack, lavă, nylium purpuriu și nisip de suflete. -->
+            <div class="nether__sol" aria-hidden="true">
+            <svg class="nether__b" style="--x: 0; --y: -2; --w: 12; --h: 2" viewBox="0 0 192 32"><rect width="192" height="32" fill="url(#model-piatra)"/></svg>
+            <div class="nether__lava" style="--x: 12; --w: 10"><svg class="nether__lava-banda" viewBox="0 0 16 32" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="32" fill="url(#model-lava)"/></svg></div>
+            <svg class="nether__b" style="--x: 22; --y: -2; --w: 6; --h: 2" viewBox="0 0 96 32"><rect width="96" height="32" fill="url(#model-piatra)"/></svg>
+            <svg class="nether__b" style="--x: 28; --y: -2; --w: 26; --h: 2" viewBox="0 0 416 32"><rect width="416" height="16" fill="url(#model-iarba)"/><rect y="16" width="416" height="16" fill="url(#model-piatra)"/></svg>
+            <div class="nether__lava" style="--x: 54; --w: 26"><svg class="nether__lava-banda" viewBox="0 0 16 32" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="32" fill="url(#model-lava)"/></svg></div>
+            <svg class="nether__b" style="--x: 80; --y: -2; --w: 24; --h: 2" viewBox="0 0 384 32"><rect width="384" height="32" fill="url(#model-nisip)"/></svg>
+            <svg class="nether__bedrock" viewBox="0 0 16 16" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="16" fill="url(#model-bedrock)"/></svg>
+            </div>
+
+            <!-- Mobii și blocurile cu care poți interacționa (devin butoane din JS). -->
+            <div class="nether__strider" style="--x: 12.5; --drum: 8" data-eticheta="Strider" aria-hidden="true"><div class="nether__corp"><svg><use href="#strider"/></svg></div></div>
+            <div class="nether__resturi" style="--x: 8; --y: 0" data-eticheta="Ancient debris: mine it" aria-hidden="true">
+              <div class="nether__corp"><svg><use href="#bloc-resturi"/></svg><div class="nether__fisuri"><svg class="nether__foaie"><use href="#fisuri"/></svg></div></div>
+            </div>
+            <div class="nether__magma" style="--x: 24" data-marime="3" data-eticheta="Magma cube" aria-hidden="true"><div class="nether__corp"><svg><use href="#cub-magma"/></svg></div></div>
+            <div class="nether__magma" style="--x: 26.2" data-marime="2" data-eticheta="Magma cube" aria-hidden="true"><div class="nether__corp"><svg><use href="#cub-magma"/></svg></div></div>
+            <div class="nether__piglin" style="--x: 35.5" data-eticheta="Piglin: trade gold with it" aria-hidden="true">
+              <div class="nether__corp"><svg><use href="#piglin"/></svg><svg class="nether__piglin-aur"><use href="#lingou-aur"/></svg></div>
+              <div class="nether__balon"><svg><use href="#lingou-aur"/></svg></div>
+            </div>
+            <div class="nether__blaze" style="--x: 66; --y: 6.5" data-eticheta="Blaze" aria-hidden="true">
+              <div class="nether__corp">
+                <i class="nether__bat" style="--i: 0"></i><i class="nether__bat" style="--i: 1"></i><i class="nether__bat" style="--i: 2"></i><i class="nether__bat" style="--i: 3"></i>
+                <svg class="nether__blaze-cap"><use href="#blaze"/></svg>
+                <i class="nether__bat nether__bat--jos" style="--i: 0"></i><i class="nether__bat nether__bat--jos" style="--i: 2"></i>
+              </div>
+            </div>
+            <div class="nether__ghast" style="--x: 94.5; --y: 7" data-eticheta="Ghast" aria-hidden="true"><div class="nether__corp"><svg><use href="#ghast"/></svg><i class="nether__lovit"></i></div></div>
           </div>
         </div>
 
-        <div class="nether__portal" aria-hidden="true">
-          <svg class="nether__portal-zid" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet"><rect width="100000" height="960" fill="url(#model-piatra)"/></svg>
-          <div class="nether__portal-umbra"></div>
-          <div class="nether__rama">
-            <svg class="nether__obsidian" viewBox="0 0 64 80"><rect width="64" height="16" fill="url(#model-obsidian)"/><rect y="64" width="64" height="16" fill="url(#model-obsidian)"/><rect y="16" width="16" height="48" fill="url(#model-obsidian)"/><rect x="48" y="16" width="16" height="48" fill="url(#model-obsidian)"/></svg>
-            <div class="nether__interior"><svg viewBox="0 0 32 96" preserveAspectRatio="xMinYMin meet"><rect width="32" height="96" fill="url(#model-portal)"/></svg></div>
-          </div>
-          <p class="nether__indiciu">Step through the portal</p>
-        </div>
-
+        <div class="nether__violet" aria-hidden="true"></div>
         <h2 class="eticheta nether__titlu">The Nether</h2>
+        <p class="nether__indiciu">Click or tap the mobs and the strange block: some of them drop loot</p>
       </div>
     </section>
 
@@ -715,7 +976,7 @@
           <li class="card">
             <svg class="card__icon" aria-hidden="true"><use href="#litera-a"/></svg>
             <h3 class="card__titlu">Accessible from the start</h3>
-            <p>With “reduce motion” turned on in your system, the page becomes static. Headings stay real text, the Nether mobs are real buttons, and animations only use <code>transform</code> and <code>opacity</code>.</p>
+            <p>With “reduce motion” turned on in your system, the page becomes static. Headings stay real text, the Nether mobs also work with the keyboard, and animations only use <code>transform</code> and <code>opacity</code>.</p>
           </li>
         </ul>
       </div>

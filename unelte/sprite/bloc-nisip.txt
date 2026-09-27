@@ -1,0 +1,22 @@
+# Nisip de suflete: maro, cu fete abia vizibile.
+id: bloc-nisip
+a = --lemn-3
+b = --lemn-4
+c = --lemn-2
+
+aaacaaaaaaaacaaa
+aabaabaaaaaaaaaa
+aaaaaaaaabaabaac
+acbbbbaaaaaaaaaa
+aaabbaaaacbbbbaa
+aaaaaaaaaaabbaaa
+aaaaacaaaaaaaaaa
+baabaaaaaaaaacaa
+aaaaaaaabaabaaaa
+bbbbaacaaaaaaaaa
+abbaaaaaabbbbaaa
+aaaaaaaaaabbaaca
+aacaabaabaaaaaaa
+aaaaaaaaaaaaaaaa
+acaabbbbaaaacaaa
+aaaaabbaaaaaaaaa

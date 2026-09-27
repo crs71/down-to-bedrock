@@ -1,0 +1,23 @@
+# Ciuperca luminoasa (shroomlight): portocaliu, cu pete galbene.
+id: bloc-lumina-rosie
+a = --nether-2
+b = --nether-1
+c = --apus-1
+d = --nether-3
+
+aabbaaaadaaabbaa
+abccbaaaaaabccba
+abccbaadaaabccba
+aabbaaaaaaaabbaa
+aaaaadaabbaaaaad
+daaaaaabccbaaaaa
+aaabbaabccbaabba
+aabccbaabbaabccb
+aabccbaaaaaabccb
+aaabbaaaadaaabba
+aaaaaaaaaaaaaaaa
+abbaaabbaaaabbaa
+bccbaabccbaabccb
+bccbaabccbaabccb
+abbaaaabbaaaabba
+aaaadaaaaadaaaaa

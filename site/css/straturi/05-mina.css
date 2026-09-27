@@ -1,12 +1,16 @@
 /*
-  Stratul 5: mina abandonată.
+  Stratul 5: mina abandonată, o plimbare cu vagonetul până la portalul spre Nether.
 
-  Cu JS și mișcare permisă: 260svh, scena sticky. Unde există animation-timeline, vagonetul merge pe
-  șine de la stânga la dreapta odată cu scroll-ul (view-timeline --mina), iar js/straturi/05-mina.js
-  rupe pânzele din drum când trece vagonetul peste ele.
-  Starea statică: vagonetul parcat la mijloc, pânzele întregi.
+  Galeria (.mina__lume) are --lungime: 68 de blocuri plus o jumătate de ecran, cu portalul la blocul 62.
+  Pozițiile sunt în blocuri (--x de la începutul galeriei, --y în rânduri deasupra podelei), deci
+  distanțele arată la fel pe telefon și pe desktop.
 
-  Blocurile au --bloc, ca în peșteră; podeaua are un rând de piatră și șinele deasupra.
+  Cu animație (JS, GSAP și mișcare permisă): secțiunea are 620svh, scena e
+  sticky, iar GSAP mută galeria spre stânga și vagonetul odată cu ea. La capăt, vagonetul oprește în
+  fața portalului, .mina__camera face zoom în interiorul lui, apoi .mina__violet acoperă ecranul.
+
+  Starea statică (reduced-motion / fără GSAP): scena de 100svh se derulează orizontal manual,
+  cu vagonetul parcat la intrare și pânzele întregi.
 */
 
 .strat--mina {
@@ -16,18 +20,35 @@
   min-height: 0;
   padding: 0;
   background: var(--pestera-3);
-  view-timeline-name: --mina;
-  view-timeline-axis: block;
 }
 
 .mina__scena {
   --podea: var(--bloc);
   --sine: calc(var(--pixel) * 6);
+  --sol: calc(var(--podea) + var(--sine));
+  --lungime: calc(var(--bloc) * 68 + 50vw);
   position: relative;
   height: 100vh;
   height: 100svh;
-  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
-  overflow: clip;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+}
+
+.mina__camera {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--lungime);
+  height: 100%;
+}
+
+.mina__lume {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--lungime);
+  height: 100%;
 }
 
 .mina__zid {
@@ -51,17 +72,46 @@
 }
 
 .mina__titlu {
-  position: absolute;
-  z-index: 2;
+  position: sticky;
+  z-index: 3;
   top: 1rem;
   left: 1rem;
+  margin: 1rem;
+}
+
+.mina__indiciu {
+  display: none;
+}
+
+/* Blocurile din perete (minereuri, netherrack): pe grila zidului, numărată de la podea în sus. */
+.mina__bloc {
+  position: absolute;
+  left: calc(var(--bloc) * var(--x));
+  top: calc(100% - var(--sol) - var(--bloc) * var(--y));
+  width: var(--bloc);
+  height: var(--bloc);
+}
+
+@supports (width: round(1px, 1px)) {
+  .mina__bloc {
+    top: calc(round(down, 100% - var(--sol), var(--bloc)) - var(--bloc) * var(--y));
+  }
+}
+
+/* Netherrack: piatra cu rampele din Nether (aceleași valori ca în base.css). */
+.mina__bloc--nether {
+  --piatra-1: #e43b44;
+  --piatra-2: #a22633;
+  --piatra-3: #68386c;
+  --piatra-4: #3e2731;
+  filter: brightness(0.8);
 }
 
 /* ---------- Cadrele de susținere ---------- */
 .mina__cadru {
   position: absolute;
-  left: calc(var(--bloc) * (1 + 6 * var(--i)));
-  bottom: calc(var(--podea) + var(--sine));
+  left: calc(var(--bloc) * var(--x));
+  bottom: var(--sol);
   width: calc(var(--bloc) * 4);
   height: calc(var(--bloc) * 5);
 }
@@ -115,11 +165,55 @@
   height: 100%;
 }
 
+/* ---------- Portalul de la capăt ---------- */
+.mina__portal {
+  position: absolute;
+  left: calc(var(--bloc) * var(--x));
+  bottom: var(--podea);
+  width: calc(var(--bloc) * 4);
+  height: calc(var(--bloc) * 5);
+}
+
+.mina__portal::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--bloc) * 9);
+  height: calc(var(--bloc) * 9);
+  background: radial-gradient(circle, rgb(181 80 136 / 0.35), rgb(104 56 108 / 0.15) 45%, transparent 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.mina__obsidian {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mina__interior {
+  position: absolute;
+  left: var(--bloc);
+  top: var(--bloc);
+  width: calc(var(--bloc) * 2);
+  height: calc(var(--bloc) * 3);
+  overflow: hidden; /* rezervă pentru browserele fără clip */
+  overflow: clip;
+}
+
+.mina__interior svg {
+  display: block;
+  width: 100%;
+  height: 200%;
+}
+
 /* ---------- Pânzele din calea vagonetului ---------- */
 .mina__piedica {
   position: absolute;
-  left: calc(var(--bloc) * (4.6 + 6 * var(--i)));
-  bottom: calc(var(--podea) + var(--sine));
+  left: calc(var(--bloc) * var(--x));
+  bottom: var(--sol);
   width: calc(var(--bloc) * 1.5);
   height: calc(var(--bloc) * 1.5);
 }
@@ -141,7 +235,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: calc(var(--podea) + var(--sine));
+  height: var(--sol);
 }
 
 .mina__sine {
@@ -163,11 +257,11 @@
 .mina__vagonet {
   position: absolute;
   z-index: 1;
-  left: 50%;
-  bottom: calc(var(--podea) + var(--sine));
+  left: 0;
+  bottom: var(--sol);
   width: calc(var(--pixel) * 24);
   height: calc(var(--pixel) * 14);
-  transform: translateX(-50%);
+  transform: translateX(calc(var(--bloc) * 1.5));
 }
 
 .mina__vagonet svg {
@@ -176,39 +270,75 @@
   height: 100%;
 }
 
+.mina__violet {
+  display: none;
+}
+
+/* ---------- Varianta animată: cu JS, cu GSAP (fără .fara-gsap, pusă de main.js) și cu mișcare permisă ----------
+   Stă în CSS, nu într-o clasă pusă din JS, ca înălțimea secțiunii să fie corectă de la primul cadru. */
 @media (prefers-reduced-motion: no-preference) {
   .js .mina__torta::before {
     animation: torta-palpaie 1.3s steps(1) infinite;
   }
 
-  @supports (animation-timeline: view()) {
-    /* Fără animation-timeline vagonetul n-ar avea ce să facă pe scroll, deci scena rămâne scurtă. */
-    .js .strat--mina {
-      height: 260vh;
-      height: 260svh;
-    }
-
-    .js .mina__scena {
-      position: sticky;
-      top: 0;
-    }
-
-    .js .mina__vagonet {
-      left: 0;
-      animation: vagonet-merge linear both;
-      animation-timeline: --mina;
-      animation-range: contain 0% contain 100%;
-    }
-
-    .js .mina__vagonet svg {
-      animation: vagonet-hurducaie 0.24s steps(2) infinite;
-    }
+  .js .mina__interior svg {
+    animation: portal-curge 2.5s linear infinite;
   }
-}
 
-@keyframes vagonet-merge {
-  from { transform: translateX(-110%); }
-  to   { transform: translateX(calc(100vw + 10%)); }
+  .js:not(.fara-gsap) .strat--mina {
+    height: 620vh;
+    height: 620svh;
+  }
+
+  .js:not(.fara-gsap) .mina__scena {
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+  }
+
+  .js:not(.fara-gsap) .mina__camera {
+    width: 100%;
+    will-change: transform;
+  }
+
+  .js:not(.fara-gsap) .mina__lume,
+  .js:not(.fara-gsap) .mina__vagonet {
+    will-change: transform;
+  }
+
+  .js:not(.fara-gsap) .mina__titlu {
+    position: absolute;
+    margin: 0;
+  }
+
+  .js:not(.fara-gsap) .mina__violet {
+    display: block;
+    position: absolute;
+    z-index: 4;
+    inset: 0;
+    background: var(--portal-2);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .js:not(.fara-gsap) .mina__indiciu {
+    display: block;
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    bottom: calc(var(--sol) + var(--bloc) * 5.5);
+    max-width: calc(100% - 2rem);
+    margin: 0;
+    padding: 0.25rem 0.75rem;
+    background: rgb(24 20 37 / 0.7);
+    color: var(--text-2);
+    text-align: center;
+    transform: translateX(-50%);
+  }
+
+  .js:not(.fara-gsap) .mina__vagonet svg {
+    animation: vagonet-hurducaie 0.24s steps(2) infinite;
+  }
 }
 
 @keyframes vagonet-hurducaie {
@@ -220,4 +350,9 @@
   35% { opacity: 0.8; }
   60% { opacity: 0.95; }
   85% { opacity: 0.75; }
+}
+
+@keyframes portal-curge {
+  from { transform: translateY(-50%); }
+  to   { transform: translateY(0); }
 }

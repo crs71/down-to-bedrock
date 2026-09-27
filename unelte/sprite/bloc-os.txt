@@ -1,0 +1,23 @@
+# Bloc de os (fosile din valea nisipului de suflete): dungi verticale, alb-gri.
+id: bloc-os
+w = --os-1
+g = --os-2
+s = --bedrock-0
+d = --bedrock-1
+
+sggwggsggwggsggd
+sggwggsggwggsggd
+sggwggsggwggsgwd
+sggwggsggwggsggd
+sggsggsggwggsggd
+sggwggsggwggsggd
+sggwggswgwggsggd
+sggwggsggwggsggd
+sggwggsggsggsggd
+sggwggsggwggsggd
+sggwgwsggwggsggd
+sggwggsggwggsggd
+sggwggsggwggsgsd
+sggwggsggwggsggd
+sggwggsggwsgsggd
+dssdssddsdssddsd

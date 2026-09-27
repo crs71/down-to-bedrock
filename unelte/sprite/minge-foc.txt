@@ -1,0 +1,15 @@
+# Mingea de foc a ghast-ului.
+id: minge-foc
+d = --nether-4
+r = --nether-3
+o = --nether-2
+y = --apus-1
+
+..drrd..
+.droord.
+drooyord
+royyyyor
+royyyyor
+drooyord
+.droord.
+..drrd..

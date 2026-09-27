@@ -1,0 +1,15 @@
+# Capul blaze-ului: galben incandescent, cu ochi si gura inchise.
+id: blaze
+r = --nether-2
+o = --apus-2
+b = --apus-1
+k = --lemn-4
+
+roooooor
+obbbbbbo
+bkkbbkkb
+bbbbbbbb
+obkkkkbo
+obbbbbbo
+roooooor
+.rrrrrr.

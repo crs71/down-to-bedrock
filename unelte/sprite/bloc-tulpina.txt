@@ -1,0 +1,23 @@
+# Tulpina de ciuperca rosie (padurea purpurie): dungi verticale.
+id: bloc-tulpina
+a = --nether-4
+b = --apus-5
+c = --nether-3
+d = --lemn-4
+
+bacabadacabacadb
+bacabadacabacadb
+bacbbadacabacadb
+bacabadaccbacadb
+bacabadacabacbdb
+babababacabacadb
+bacabadacabacadb
+bacabbdacabacadb
+bacabadacabbcadb
+bacabadacabacadb
+bccabadacabacadb
+bacabadabababadb
+bacabadacabacadb
+bacabadacacacadb
+bacabadacabacadb
+bacabddacabacadb

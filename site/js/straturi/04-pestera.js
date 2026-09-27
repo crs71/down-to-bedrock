@@ -9,7 +9,7 @@
   const scena = sectiune.querySelector('.pestera__scena');
   const intuneric = sectiune.querySelector('.pestera__intuneric');
   const torta = sectiune.querySelector('.pestera__torta');
-  const hotbar = document.querySelector('.hotbar');
+  const hotbar = window.Coborarea.hotbar;
   const areMouse = window.matchMedia('(hover: hover) and (pointer: fine)');
 
   const minereuri = [...sectiune.querySelectorAll('.minereu')].map((el) => ({
@@ -21,11 +21,6 @@
     x: 0,
     y: 0,
   }));
-
-  const sloturi = {};
-  hotbar.querySelectorAll('[data-tip]').forEach((el) => {
-    sloturi[el.dataset.tip] = { el, numar: 0, text: el.querySelector('.hotbar__numar'), icon: el.querySelector('svg') };
-  });
 
   let pornit = false;
   let vizibil = false;
@@ -98,32 +93,24 @@
     if (!bucla && vizibil && pornit) bucla = requestAnimationFrame(cadru);
   }
 
-  // ---------- Minereurile și hotbar-ul ----------
-  function adauga(tip, d, animat) {
-    const slot = sloturi[tip];
-    slot.numar = Math.max(0, slot.numar + d);
-    slot.el.classList.toggle('hotbar__slot--plin', slot.numar > 0);
-    slot.text.textContent = slot.numar > 1 ? String(slot.numar) : '';
-    if (animat && d > 0) gsap.fromTo(slot.icon, { scale: 1.5 }, { scale: 1, duration: 0.3, ease: 'back.out(3)' });
-  }
-
+  // ---------- Minereurile și hotbar-ul (js/util/hotbar.js) ----------
   function gaseste(m, animat) {
     m.el.classList.add('minereu--gasit');
     if (!animat) {
       m.stare = 'colectat';
       gsap.set(m.el, { opacity: 0 });
-      adauga(m.tip, 1, false);
+      hotbar.adauga(m.tip, 1, false);
       return;
     }
     m.stare = 'zbor';
     const a = m.el.getBoundingClientRect();
-    const b = sloturi[m.tip].el.getBoundingClientRect();
+    const b = hotbar.cutie(m.tip);
     const dx = b.left + b.width / 2 - (a.left + a.width / 2);
     const dy = b.top + b.height / 2 - (a.top + a.height / 2);
     m.tl = gsap.timeline({
       onComplete() {
         m.stare = 'colectat';
-        adauga(m.tip, 1, true);
+        hotbar.adauga(m.tip, 1, true);
       },
     })
       // Opacitatea separat: cu yoyo, pulsul ar readuce-o la sclipirea slabă de dinainte.
@@ -136,7 +123,7 @@
   function intoarce(m) {
     if (m.tl) m.tl.kill();
     m.tl = null;
-    if (m.stare === 'colectat') adauga(m.tip, -1, false);
+    if (m.stare === 'colectat') hotbar.adauga(m.tip, -1, false);
     m.stare = 'ascuns';
     gsap.set(m.el, { clearProps: 'transform,opacity' });
     m.el.classList.remove('minereu--gasit');
@@ -147,7 +134,7 @@
     // Fără GSAP minereurile nu pot zbura, deci nici hotbar-ul n-are ce arăta.
     if (!areGsap) return;
     const p = progres();
-    hotbar.classList.toggle('hotbar--vizibil', p > -0.12 && p < 1.02);
+    hotbar.arata('pestera', p > -0.12 && p < 1.02);
     for (const m of minereuri) {
       if (p >= m.prag && m.stare === 'ascuns') {
         // Animat doar când chiar treci prin prag cu scena pe ecran; la încărcare sau la un salt, direct în hotbar.
@@ -174,7 +161,7 @@
 
   function opreste() {
     pornit = false;
-    hotbar.classList.remove('hotbar--vizibil');
+    hotbar.arata('pestera', false);
     if (areGsap) minereuri.forEach(intoarce);
     intuneric.style.transform = '';
     torta.style.transform = '';

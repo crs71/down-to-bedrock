@@ -93,6 +93,12 @@
   --portal-2: #68386c;
   --portal-3: #3a4466;
 
+  /* Culori pentru Nether care NU se schimbă cu paleta (ghast, oase, cuarț, focul de suflete). */
+  --os-1: #ffffff;
+  --os-2: #c0cbdc;
+  --suflet-2: #0099db;
+  --suflet-3: #124e89;
+
   --minereu-carbune: #181425;
   --minereu-fier: #e8b796;
   --minereu-aur: #fee761;
@@ -337,9 +343,14 @@ a:focus-visible,
   }
 }
 
-/* ---------- Hotbar-ul din peșteră (js/straturi/04-pestera.js) ---------- */
+/* ---------- Hotbar-ul: minereurile din peșteră și prada din Nether (js/util/hotbar.js) ---------- */
 .hotbar {
   --slot: min(2.75rem, calc((100vw - 2.5rem) / 9));
+  /* Minereurile din sloturi păstrează piatra normală și după portal (paleta Nether schimbă --piatra-*). */
+  --piatra-1: #c0cbdc;
+  --piatra-2: #8b9bb4;
+  --piatra-3: #5a6988;
+  --piatra-4: #3a4466;
   position: fixed;
   z-index: 12;
   left: 50%;
@@ -384,6 +395,13 @@ a:focus-visible,
 
 .hotbar__slot--plin[data-tip] svg {
   opacity: 1;
+}
+
+/* Copia unui obiect care zboară spre un slot (js/util/hotbar.js). */
+.hotbar__zbor {
+  position: fixed;
+  z-index: 13;
+  pointer-events: none;
 }
 
 .hotbar__numar {

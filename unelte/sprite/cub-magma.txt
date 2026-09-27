@@ -1,0 +1,25 @@
+# Cub de magma: corp inchis, crapaturi incandescente, ochi galbeni.
+id: cub-magma
+k = --lemn-4
+o = --nether-2
+p = --nether-1
+y = --apus-1
+r = --nether-3
+d = --obsidian-4
+
+kkkkkkkkkkkkkkkk
+kopkkkkkkkkkkokk
+kkkkkkkookkkkkkk
+kkkkkkkkkkkkkkkk
+kkyyykkkkkkyyykk
+kkyrykkkkkkyrykk
+kkkkkkkkkkkkkkkk
+oppooookkoooppoo
+kkkkkkkkkkkkkkkk
+kkkkkkkkkkkkkkkk
+kkkkooppooookkkk
+kkkkkkkkkkkkkkkk
+ookkkkkkkkkkkkoo
+kkkkkkopkkkkkkkk
+kkkkkkkkkkkkkkkk
+dddddddddddddddd

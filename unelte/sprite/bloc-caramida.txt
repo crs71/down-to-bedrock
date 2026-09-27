@@ -1,0 +1,23 @@
+# Caramida din Nether: randuri de caramizi mici, decalate, cu mortar inchis.
+id: bloc-caramida
+m = --obsidian-4
+a = --lemn-4
+b = --apus-5
+d = --obsidian-3
+
+bbbbbbbmbbbbbbbm
+aaaaaaamaaaaaaam
+aaadaaamaaaaadam
+mmmmmmmmmmmmmmmm
+bbbmbbbbbbbmbbbb
+aaamaaaaaaamaaaa
+adamaaaaadamaaaa
+mmmmmmmmmmmmmmmm
+bbbbbbbmbbbbbbbm
+aadaaaamaaaaaaam
+aaaaadamadaaaaam
+mmmmmmmmmmmmmmmm
+bbbmbbbbbbbmbbbb
+aaamaaaadaamaaaa
+aaamaadaaaamaada
+mmmmmmmmmmmmmmmm
