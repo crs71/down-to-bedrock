@@ -74,6 +74,7 @@
     masoara();
 
     let nether = false;
+    let botAnterior = null;
     const tl = gsap.timeline({
       defaults: { ease: 'none' },
       scrollTrigger: {
@@ -84,14 +85,17 @@
         invalidateOnRefresh: true,
       },
       onUpdate() {
-        // Pânzele: se rup când botul vagonetului trece de o treime din ele.
+        // Pânzele: se rup când botul vagonetului trece de o treime din ele. Animat doar la mers normal;
+        // la un salt mare (un link, tasta End) pânza dispare direct.
         const bot = gsap.getProperty(vagonet, 'x') + m.vagonet;
+        const animat = botAnterior !== null && Math.abs(bot - botAnterior) < scena.clientWidth * 0.5;
+        botAnterior = bot;
         for (const p of piedici) {
           const trecut = bot > p.x + p.latime * 0.35;
           if (p.rupta === null) {
             if (trecut) rupe(p, false); else p.rupta = false;
           } else if (trecut && !p.rupta) {
-            rupe(p, this.isActive());
+            rupe(p, animat);
           } else if (!trecut && p.rupta) {
             repara(p);
           }

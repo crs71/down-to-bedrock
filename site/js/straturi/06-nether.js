@@ -120,7 +120,8 @@
     }
     masoara();
 
-    gsap.timeline({
+    const MERS = 0.3; // momentul din cronologie în care pornește mersul (după ce violetul s-a retras pe jumătate)
+    const tl = gsap.timeline({
       defaults: { ease: 'none' },
       scrollTrigger: {
         trigger: sectiune,
@@ -132,11 +133,26 @@
       onUpdate: () => window.Coborarea.actualizeazaHud?.(),
     })
       .fromTo(violet, { opacity: 1 }, { opacity: 0, duration: 0.6 }, 0)
-      .fromTo(lume, { x: 0 }, { x: () => -m.final, duration: 10 }, 0.3)
+      .fromTo(lume, { x: 0 }, { x: () => -m.final, duration: 10 }, MERS)
       .fromTo(indiciu, { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.3 }, 2.4);
 
     ScrollTrigger.addEventListener('refreshInit', masoara);
     curatenie.push(() => ScrollTrigger.removeEventListener('refreshInit', masoara));
+
+    // Cu tastatura: când focusul ajunge pe un mob din afara ecranului, pagina derulează până la el.
+    function laFocus(e) {
+      const el = e.target.closest('[role="button"]');
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      if (r.left >= 0 && r.right <= window.innerWidth) return;
+      const st = tl.scrollTrigger;
+      const inLume = r.left + r.width / 2 - scena.getBoundingClientRect().left - gsap.getProperty(lume, 'x');
+      const tinta = Math.min(m.final, Math.max(0, inLume - scena.clientWidth / 2));
+      const timp = MERS + (m.final > 0 ? (10 * tinta) / m.final : 0);
+      window.scrollTo({ top: st.start + (timp / tl.duration()) * (st.end - st.start) });
+    }
+    lume.addEventListener('focusin', laFocus);
+    curatenie.push(() => lume.removeEventListener('focusin', laFocus));
 
     // Hotbar-ul se vede cât ești în Nether.
     const arataHotbar = ScrollTrigger.create({

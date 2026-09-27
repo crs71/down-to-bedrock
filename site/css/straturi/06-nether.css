@@ -551,6 +551,7 @@
     position: sticky;
     top: 0;
     overflow: hidden;
+    overflow: clip; /* clip, nu hidden: focusul pe un mob din afara ecranului n-are voie să deruleze scena */
   }
 
   .js:not(.fara-gsap) .nether__lume {
