@@ -126,7 +126,9 @@
         adauga(m.tip, 1, true);
       },
     })
-      .to(m.el, { opacity: 1, scale: 1.3, duration: 0.14, repeat: 3, yoyo: true, ease: 'power1.inOut' })
+      // Opacitatea separat: cu yoyo, pulsul ar readuce-o la sclipirea slabă de dinainte.
+      .set(m.el, { opacity: 1 })
+      .to(m.el, { scale: 1.3, duration: 0.14, repeat: 3, yoyo: true, ease: 'power1.inOut' })
       .to(m.el, { x: dx, y: dy, scale: (b.width * 0.64) / a.width, duration: 0.6, ease: 'power2.in' })
       .set(m.el, { opacity: 0 });
   }

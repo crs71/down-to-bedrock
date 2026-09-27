@@ -1,6 +1,6 @@
 # Coborârea
 
-Site cu temă de lume din blocuri: cobori prin straturi (cer → suprafață → piatră → peșteră → mină → Nether → bedrock), fiecare cu animațiile lui la scroll.
+Site cu temă de lume din blocuri: cobori prin straturi (cer → suprafață → piatră → peșteră → mină → Nether → bedrock), fiecare cu animațiile lui la scroll. Un HUD arată adâncimea Y și biomul curent.
 
 Publicat automat pe Cloudflare Pages: https://down-to-bedrock.pages.dev
 
@@ -21,7 +21,8 @@ Tot ce se publică stă în `site/`; restul repo-ului e doar pentru dezvoltare.
 - `site/index.html`: pagina, câte o secțiune pe strat
 - `site/404.html`: pagina pentru adresele care nu există
 - `site/_headers`: headerele Cloudflare Pages (securitate, Content-Security-Policy, cache pentru fonturi)
-- `site/favicon.svg`: iconița (blocul de iarbă)
+- `site/favicon.svg`, `favicon-32.png`, `favicon.ico`, `apple-touch-icon.png`: iconițele (blocul de iarbă)
+- `site/og-image.png`: bannerul de previzualizare pentru linkuri (1200×630)
 - `site/css/base.css`: variabile, reset, elemente permanente, varianta reduced-motion
 - `site/css/straturi/NN-nume.css`: stilurile fiecărui strat
 - `site/js/main.js`: spațiul de nume `window.Coborarea`, bara de adâncime
