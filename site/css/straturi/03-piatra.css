@@ -6,24 +6,30 @@
   puțul (--sapat-faza), deci solul de la suprafață continuă fără margine. Rândurile: 0–2
   pământ, 3–11 piatră (cu pietriș și minereuri), 12 tavanul peșterii, cu goluri.
 
-  Cu animation-timeline și fără reduced-motion, fiecare bloc din puț crapă în 10 cadre
-  (view(), cover 25% → 50%) și dispare când ajunge cu centrul la mijlocul ecranului, unde
-  stă ținta (conturul și bara), lipită cu sticky. JS-ul adaugă particulele, bara și mesajele.
+  Cu JS și mișcare permisă, săpatul e lent: scena stă pe loc (sticky), iar fiecare bloc cere
+  --pas × data-duritate de scroll (suma duritatilor e 12, plus 0.6 la final). Blocul crapă în 10
+  cadre, se sparge, apoi „camera” (translateY pe .sapat) coboară un bloc, doar cât e nevoie ca
+  rândul săpat să rămână pe la mijlocul ecranului. Totul e calculat în js/straturi/03-piatra.js.
 
   Starea statică: puțul e deja săpat, de la crater până în peșteră.
 */
 
 .strat--piatra {
   --b2: calc(var(--bloc) * 2);
+  --lume: calc(var(--b2) * 13);
   position: relative;
   display: block;
   place-items: normal;
   min-height: 0;
-  height: calc(var(--b2) * 13);
   padding: 0;
   background: var(--pestera-3);
-  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
-  overflow: clip; /* clip, nu hidden: hidden ar face din secțiune un container de scroll pentru view() */
+}
+
+.sapat__scena {
+  position: relative;
+  height: var(--lume);
+  overflow: hidden; /* rezervă pentru browserele fără clip */
+  overflow: clip;
 }
 
 .piatra__titlu {
@@ -35,16 +41,19 @@
 
 .sapat {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--lume);
 }
 
-/* Zidul: aceeași tehnică ca .zid din base.css, la mărimea --b2, decalat ca grila să treacă prin puț. */
+/* Zidul: la mărimea --b2, decalat ca grila să treacă prin puț. */
 .sapat__zid {
   position: absolute;
   top: 0;
   left: var(--sapat-faza, 0px);
   width: calc(100% + var(--b2) * 2);
-  height: calc(var(--b2) * 13);
+  height: var(--lume);
 }
 
 .sapat__decor,
@@ -93,7 +102,7 @@
   display: none;
   position: absolute;
   inset: 0;
-  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
+  overflow: hidden; /* rezervă pentru browserele fără clip */
   overflow: clip;
   opacity: 0.85;
 }
@@ -104,17 +113,15 @@
   height: 100%;
 }
 
-/* Ținta: conturul blocului minat și bara de minerit, la mijlocul ecranului. */
+/* Ținta: conturul blocului minat și bara de minerit, pe rândul curent (transform din JS). */
 .sapat__tinta {
   display: none;
-  position: sticky;
-  z-index: 2;
-  top: calc(50vh - var(--b2) / 2);
-  top: calc(50svh - var(--b2) / 2);
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: var(--sapat-stanga, calc(50% - var(--b2) / 2));
   width: var(--b2);
   height: var(--b2);
-  margin-left: var(--sapat-stanga, calc(50% - var(--b2) / 2));
-  margin-bottom: calc(var(--b2) * -1);
 }
 
 .sapat__contur {
@@ -142,36 +149,73 @@
   transform-origin: left center;
 }
 
+.sapat__indiciu {
+  display: none;
+}
+
+/* ---------- Săpatul lent: doar cu JS și mișcare permisă ---------- */
 @media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .sapat__tinta,
-    .sapat__fisuri {
-      display: block;
-    }
+  .js .strat--piatra {
+    --pas: 26vh;
+    --scena: min(100vh, var(--lume));
+    height: calc(var(--scena) + var(--pas) * 12.6);
+  }
 
-    .sapat__intreg {
-      animation: sapat-sparge linear both;
-      animation-timeline: view();
-      animation-range: cover 25% cover 50%;
-    }
-
-    .sapat__foaie {
-      animation: sapat-fisuri steps(10, jump-none) both;
-      animation-timeline: view();
-      animation-range: cover 25% cover 50%;
+  @supports (height: 1svh) {
+    .js .strat--piatra {
+      --pas: 26svh;
+      --scena: min(100svh, var(--lume));
     }
   }
-}
 
-@keyframes sapat-sparge {
-  0%, 99.9% { opacity: 1; }
-  100%      { opacity: 0; }
-}
+  .js .sapat__scena {
+    position: sticky;
+    top: 0;
+    height: var(--scena);
+  }
 
-/* Cadrul 0 (gol) … cadrul 9: banda de fisuri se mută cu câte un cadru. */
-@keyframes sapat-fisuri {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-90%); }
+  .js .sapat {
+    will-change: transform;
+  }
+
+  .js .piatra__titlu {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    margin: 0;
+  }
+
+  .js .sapat__tinta,
+  .js .sapat__fisuri {
+    display: block;
+  }
+
+  .js .sapat__intreg {
+    opacity: 1;
+  }
+
+  .js .sapat__celula--spart .sapat__intreg {
+    opacity: 0;
+  }
+
+  .js .sapat__indiciu {
+    display: block;
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    bottom: 1.25rem;
+    margin: 0;
+    padding: 0.25rem 0.75rem;
+    background: rgb(24 20 37 / 0.7);
+    color: var(--text-2);
+    transform: translateX(-50%);
+    white-space: nowrap;
+    transition: opacity 0.3s steps(3);
+  }
+
+  .js .sapat__indiciu--ascuns {
+    opacity: 0;
+  }
 }
 
 /* ---------- Mesajele de realizare: cad de sus și aterizează jos, în mijloc ---------- */

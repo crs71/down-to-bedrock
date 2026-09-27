@@ -471,75 +471,81 @@
     </div>
 
     <!-- Pământ și piatră: secțiunea de sub crater. Blocurile au mărimea celor de la suprafață după zoom (2×),
-         iar puțul e aliniat cu craterul, deci solul continuă fără margine. Fiecare bloc din puț crapă și se
-         sparge când trece prin mijlocul ecranului (CSS view()); la capăt, puțul dă în tavanul peșterii. -->
+         iar puțul e aliniat cu craterul, deci solul continuă fără margine. Cu mișcare, scena stă pe loc (sticky)
+         și fiecare bloc cere o porțiune de scroll ca să crape și să se spargă (data-duritate: pământul e moale,
+         minereurile sunt tari); după spargere, camera cade un bloc. La capăt, puțul dă în tavanul peșterii. -->
     <section class="strat strat--piatra" id="piatra" data-biom="Underground" data-y="62 16">
-      <!-- Ținta: conturul blocului minat și bara, lipite de mijlocul ecranului cât sapi. -->
-      <div class="sapat__tinta" aria-hidden="true">
-        <div class="sapat__contur"></div>
-        <div class="sapat__bara"><i></i></div>
-      </div>
+      <div class="sapat__scena">
+        <div class="sapat" aria-hidden="true">
+          <svg class="sapat__zid" viewBox="0 0 16 208" preserveAspectRatio="xMinYMin meet">
+            <rect width="100000" height="48" fill="url(#model-pamant)"/>
+            <rect y="48" width="100000" height="144" fill="url(#model-piatra)"/>
+            <rect y="192" width="100000" height="16" fill="url(#model-tavan)"/>
+          </svg>
 
-      <h2 class="eticheta piatra__titlu">Dirt and Stone</h2>
+          <!-- Minereuri pe lângă puț: --r = rândul, --c = coloana față de puț. -->
+          <svg class="sapat__decor" style="--r: 3; --c: -3"><use href="#bloc-pietris"/></svg>
+          <svg class="sapat__decor" style="--r: 4; --c: 1"><use href="#bloc-pietris"/></svg>
+          <svg class="sapat__decor" style="--r: 4; --c: 2"><use href="#bloc-pietris"/></svg>
+          <svg class="sapat__decor" style="--r: 5; --c: -2"><use href="#bloc-carbune"/></svg>
+          <svg class="sapat__decor" style="--r: 6; --c: -3"><use href="#bloc-carbune"/></svg>
+          <svg class="sapat__decor" style="--r: 7; --c: 2"><use href="#bloc-carbune"/></svg>
+          <svg class="sapat__decor" style="--r: 7; --c: 3"><use href="#bloc-carbune"/></svg>
+          <svg class="sapat__decor" style="--r: 9; --c: -2"><use href="#bloc-fier"/></svg>
+          <svg class="sapat__decor" style="--r: 10; --c: 3"><use href="#bloc-fier"/></svg>
+          <svg class="sapat__decor" style="--r: 11; --c: -3"><use href="#bloc-aur"/></svg>
 
-      <div class="sapat" aria-hidden="true">
-        <svg class="sapat__zid" viewBox="0 0 16 208" preserveAspectRatio="xMinYMin meet">
-          <rect width="100000" height="48" fill="url(#model-pamant)"/>
-          <rect y="48" width="100000" height="144" fill="url(#model-piatra)"/>
-          <rect y="192" width="100000" height="16" fill="url(#model-tavan)"/>
-        </svg>
+          <!-- Puțul: data-duritate = cât scroll cere blocul (suma e 12, ca în 03-piatra.css),
+               data-culori = paleta particulelor, data-realizare = mesajul de după spargere. -->
+          <div class="sapat__celula sapat__celula--pamant" style="--r: 0" data-duritate="0.6" data-culori="--pamant-1 --pamant-2 --pamant-3" data-realizare="First block broken">
+            <div class="sapat__intreg"><svg><use href="#bloc-pamant"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+          </div>
+          <div class="sapat__celula sapat__celula--pamant" style="--r: 1" data-duritate="0.6" data-culori="--pamant-1 --pamant-2 --pamant-3">
+            <div class="sapat__intreg"><svg><use href="#bloc-pamant"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+          </div>
+          <div class="sapat__celula sapat__celula--pamant" style="--r: 2" data-duritate="0.6" data-culori="--pamant-1 --pamant-2 --pamant-3">
+            <div class="sapat__intreg"><svg><use href="#bloc-pamant"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+          </div>
+          <div class="sapat__celula" style="--r: 3" data-duritate="1" data-culori="--piatra-1 --piatra-2 --piatra-3" data-realizare="Harder than dirt">
+            <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+          </div>
+          <div class="sapat__celula" style="--r: 4" data-duritate="0.7" data-culori="--piatra-1 --piatra-2 --piatra-3 --pamant-3">
+            <div class="sapat__intreg"><svg><use href="#bloc-pietris"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+          </div>
+          <div class="sapat__celula" style="--r: 5" data-duritate="1" data-culori="--piatra-1 --piatra-2 --piatra-3">
+            <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+          </div>
+          <div class="sapat__celula" style="--r: 6" data-duritate="1.2" data-culori="--piatra-2 --piatra-3 --pestera-3" data-realizare="Coal for your torches">
+            <div class="sapat__intreg"><svg><use href="#bloc-carbune"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+          </div>
+          <div class="sapat__celula" style="--r: 7" data-duritate="1" data-culori="--piatra-1 --piatra-2 --piatra-3">
+            <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+          </div>
+          <div class="sapat__celula" style="--r: 8" data-duritate="1" data-culori="--piatra-1 --piatra-2 --piatra-3">
+            <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+          </div>
+          <div class="sapat__celula" style="--r: 9" data-duritate="1.3" data-culori="--piatra-2 --minereu-fier --lemn-2" data-realizare="Found some iron">
+            <div class="sapat__intreg"><svg><use href="#bloc-fier"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+          </div>
+          <div class="sapat__celula" style="--r: 10" data-duritate="1" data-culori="--piatra-1 --piatra-2 --piatra-3">
+            <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+          </div>
+          <div class="sapat__celula" style="--r: 11" data-duritate="1" data-culori="--piatra-1 --piatra-2 --piatra-3">
+            <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+          </div>
+          <div class="sapat__celula sapat__celula--pestera" style="--r: 12" data-duritate="1" data-culori="--piatra-2 --piatra-3 --piatra-4" data-realizare="You broke into a cave">
+            <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+          </div>
 
-        <!-- Minereuri pe lângă puț: --r = rândul, --c = coloana față de puț. -->
-        <svg class="sapat__decor" style="--r: 3; --c: -3"><use href="#bloc-pietris"/></svg>
-        <svg class="sapat__decor" style="--r: 4; --c: 1"><use href="#bloc-pietris"/></svg>
-        <svg class="sapat__decor" style="--r: 4; --c: 2"><use href="#bloc-pietris"/></svg>
-        <svg class="sapat__decor" style="--r: 5; --c: -2"><use href="#bloc-carbune"/></svg>
-        <svg class="sapat__decor" style="--r: 6; --c: -3"><use href="#bloc-carbune"/></svg>
-        <svg class="sapat__decor" style="--r: 7; --c: 2"><use href="#bloc-carbune"/></svg>
-        <svg class="sapat__decor" style="--r: 7; --c: 3"><use href="#bloc-carbune"/></svg>
-        <svg class="sapat__decor" style="--r: 9; --c: -2"><use href="#bloc-fier"/></svg>
-        <svg class="sapat__decor" style="--r: 10; --c: 3"><use href="#bloc-fier"/></svg>
+          <!-- Ținta: conturul blocului minat și bara; JS-ul o mută pe rândul care se sapă acum. -->
+          <div class="sapat__tinta">
+            <div class="sapat__contur"></div>
+            <div class="sapat__bara"><i></i></div>
+          </div>
+        </div>
 
-        <!-- Puțul: data-culori = paleta particulelor, data-realizare = mesajul de după spargere. -->
-        <div class="sapat__celula sapat__celula--pamant" style="--r: 0" data-culori="--pamant-1 --pamant-2 --pamant-3" data-realizare="First block broken">
-          <div class="sapat__intreg"><svg><use href="#bloc-pamant"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
-        </div>
-        <div class="sapat__celula sapat__celula--pamant" style="--r: 1" data-culori="--pamant-1 --pamant-2 --pamant-3">
-          <div class="sapat__intreg"><svg><use href="#bloc-pamant"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
-        </div>
-        <div class="sapat__celula sapat__celula--pamant" style="--r: 2" data-culori="--pamant-1 --pamant-2 --pamant-3">
-          <div class="sapat__intreg"><svg><use href="#bloc-pamant"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
-        </div>
-        <div class="sapat__celula" style="--r: 3" data-culori="--piatra-1 --piatra-2 --piatra-3" data-realizare="Harder than dirt">
-          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
-        </div>
-        <div class="sapat__celula" style="--r: 4" data-culori="--piatra-1 --piatra-2 --piatra-3 --pamant-3">
-          <div class="sapat__intreg"><svg><use href="#bloc-pietris"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
-        </div>
-        <div class="sapat__celula" style="--r: 5" data-culori="--piatra-1 --piatra-2 --piatra-3">
-          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
-        </div>
-        <div class="sapat__celula" style="--r: 6" data-culori="--piatra-2 --piatra-3 --pestera-3" data-realizare="Coal for your torches">
-          <div class="sapat__intreg"><svg><use href="#bloc-carbune"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
-        </div>
-        <div class="sapat__celula" style="--r: 7" data-culori="--piatra-1 --piatra-2 --piatra-3">
-          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
-        </div>
-        <div class="sapat__celula" style="--r: 8" data-culori="--piatra-1 --piatra-2 --piatra-3">
-          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
-        </div>
-        <div class="sapat__celula" style="--r: 9" data-culori="--piatra-2 --minereu-fier --lemn-2" data-realizare="Found some iron">
-          <div class="sapat__intreg"><svg><use href="#bloc-fier"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
-        </div>
-        <div class="sapat__celula" style="--r: 10" data-culori="--piatra-1 --piatra-2 --piatra-3">
-          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
-        </div>
-        <div class="sapat__celula" style="--r: 11" data-culori="--piatra-1 --piatra-2 --piatra-3">
-          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
-        </div>
-        <div class="sapat__celula sapat__celula--pestera" style="--r: 12" data-culori="--piatra-2 --piatra-3 --piatra-4" data-realizare="You broke into a cave">
-          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
-        </div>
+        <h2 class="eticheta piatra__titlu">Dirt and Stone</h2>
+        <p class="sapat__indiciu">Keep scrolling to mine</p>
       </div>
     </section>
 
