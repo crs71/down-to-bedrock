@@ -1,39 +1,36 @@
 /*
   Stratul 1: cerul.
-  Secțiunea are 250svh; scena (100svh) stă fixată cu sticky cât timp o traversezi.
-  Animațiile de scroll folosesc timeline-ul --cer (view-timeline al secțiunii), pe
-  intervalul `contain`: de la scroll 0 până când secțiunea iese pe la partea de sus.
+  .lumea-de-sus conține fundalul de cer (.cer__fundal), secțiunea cerului și suprafața.
+  Fundalul e sticky pe toată înălțimea învelișului, deci rămâne în spatele suprafeței:
+  pământul, dealurile și copacii urcă direct în apus, fără margine între secțiuni.
+
+  Cerul e animat pe scroll-ul paginii (scroll(root)), pe primele 150svh: exact cât stă
+  fixat conținutul secțiunii cerului (250svh - 100svh). Soarele apune pe linia orizontului
+  de pe suprafață: 2 rânduri de sol + 1 bloc de deal, de la marginea de jos.
 
   Starea statică (reduced-motion / browsere fără animation-timeline): cer de zi,
   soarele sus, norii la pozițiile --x. Apusul e varianta animată, nu starea de bază.
 */
 
-.strat--cer {
-  display: block;
-  place-items: normal; /* altfel Chrome centrează și micșorează scena și în layout de tip bloc */
-  min-height: 0;
-  height: 250vh;
-  height: 250svh;
-  padding: 0;
+.lumea-de-sus {
+  position: relative;
   background: var(--cer-2);
-  view-timeline-name: --cer;
-  view-timeline-axis: block;
 }
 
-.cer__scena {
+.lumea-de-sus > .strat {
+  position: relative;
+  z-index: 1;
+}
+
+.cer__fundal {
   position: sticky;
+  z-index: 0;
   top: 0;
   height: 100vh;
   height: 100svh;
+  margin-bottom: -100vh;
+  margin-bottom: -100svh;
   overflow: hidden;
-  display: grid;
-  place-items: center;
-}
-
-/* Straturile de fundal umplu toată scena (place-items: center le-ar micșora la conținut). */
-.cer__cer,
-.cer__plan {
-  place-self: stretch;
 }
 
 /* Cerul în benzi (componenta .benzi din base.css). */
@@ -105,11 +102,30 @@
   to   { transform: translateX(-100%); }
 }
 
-/* Titlul: 9 blocuri alăturate. Pixelul crește în trepte întregi, ca pixel art-ul să rămână clar. */
+/* Secțiunea cerului: transparentă, cu titlul și îndemnul fixate cât timp o traversezi. */
+.strat--cer {
+  display: block;
+  place-items: normal; /* altfel Chrome centrează și micșorează conținutul și în layout de tip bloc */
+  min-height: 0;
+  height: 250vh;
+  height: 250svh;
+  padding: 0;
+  background: none;
+}
+
+.cer__continut {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: grid;
+  place-items: center;
+}
+
+/* Titlul: 9 blocuri alăturate (scos temporar din index.html). Pixelul crește în trepte întregi. */
 .titlu {
   --p: 2px;
   position: relative;
-  z-index: 1;
   margin: 0;
 }
 
@@ -143,7 +159,6 @@
 
 .cer__indemn {
   position: absolute;
-  z-index: 1;
   bottom: 8%;
   margin: 0;
   padding: 0.25rem 0.75rem;
@@ -167,7 +182,7 @@
 }
 
 /* Animațiile legate de scroll: doar unde browserul le suportă, altfel rămâne starea statică. */
-@supports (animation-timeline: view()) {
+@supports (animation-timeline: scroll()) {
   .cer__cer--apus,
   .soare--apus,
   .cer__soare,
@@ -175,8 +190,8 @@
   .cer__indemn {
     animation-timing-function: linear;
     animation-fill-mode: both;
-    animation-timeline: --cer;
-    animation-range: contain 0% contain 100%;
+    animation-timeline: scroll(root);
+    animation-range: 0 150svh;
   }
 
   .cer__cer--apus      { animation-name: cer-apus; }
@@ -193,8 +208,9 @@
   85%, 100% { opacity: 1; }
 }
 
+/* Soarele ajunge cu centrul pe orizont: 100svh - 3 blocuri (sol + deal), minus jumătate din soare. */
 @keyframes soare-coboara {
-  to { transform: translate(-6vw, 62svh); }
+  to { transform: translate(-6vw, calc(88svh - var(--bloc) * 3 - var(--p) * 8)); }
 }
 
 @keyframes plan-departe { to { transform: translateY(-12svh); } }

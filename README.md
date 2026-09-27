@@ -20,6 +20,7 @@ Site cu temă de lume din blocuri: cobori prin straturi (cer → suprafață →
 - `js/main.js`: spațiul de nume `window.Coborarea`, bara de adâncime
 - `js/straturi/NN-nume.js`: animațiile fiecărui strat, scripturi clasice cu `defer`
 - `js/util/`: cod comun (de ex. bucla de particule)
+- `css/despre.css`, `js/despre.js`: „Cum e făcut site-ul”, la finalul paginii, sub bedrock
 - `assets/pixel/`: grafica pixel art care nu stă inline
 - `assets/fonts/`: fontul și licența lui (`OFL.txt`)
 - `serve.ps1`: server local pentru dezvoltare

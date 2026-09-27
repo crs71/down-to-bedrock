@@ -1,5 +1,7 @@
 // Stratul 2: suprafața. Secțiunea e fixată cu ScrollTrigger și o singură cronologie legată de scroll:
-// mers orizontal → creeper-ul clipește și se umflă → explozie (o dată, în timp real) → plonjare în crater.
+// mers orizontal → creeper-ul clipește și se umflă → explozie (o dată, în timp real) → zoom 2× pe crater.
+// Zoom-ul e ancorat la marginea de jos, în dreptul craterului: la final, solul mărit continuă exact cu
+// blocurile (tot 2×) din stratul 3, iar puțul de acolo se aliniază cu craterul (Coborarea.sapat).
 (() => {
   if (!window.Coborarea.areGsap) return;
 
@@ -12,7 +14,6 @@
   const creeper = sectiune.querySelector('.sup__creeper');
   const creeperAlb = sectiune.querySelector('.sup__creeper-alb');
   const crater = sectiune.querySelector('.sup__crater');
-  const intuneric = sectiune.querySelector('.sup__intuneric');
   const copaci = [...sectiune.querySelectorAll('.sup__copac')].map((el) => ({
     el,
     use: el.querySelector('use'),
@@ -37,7 +38,7 @@
     let explodat = false;
 
     // Poziția unui element în coordonatele pistei (SVG-urile nu au offsetLeft).
-    // Împărțirea la scale anulează zoom-ul, dacă măsurătoarea cade în timpul plonjării.
+    // Împărțirea la scale anulează zoom-ul, dacă măsurătoarea cade în timpul lui.
     function inPista(el) {
       const r = el.getBoundingClientRect();
       const p = pista.getBoundingClientRect();
@@ -55,10 +56,13 @@
         const r = inPista(copac.el);
         copac.centru = r.x + r.latime / 2;
       }
+      // Centrul craterului pe ecran, la finalul mersului orizontal. Zoom-ul pornește din punctul de jos
+      // de sub el, deci marginea de jos a solului rămâne pe loc, iar craterul rămâne în aceeași coloană.
       const c = inPista(crater);
-      gsap.set(lume, {
-        transformOrigin: `${c.x + c.latime / 2 - distanta()}px ${c.y + c.inaltime * 0.55}px`,
-      });
+      const centru = c.x + c.latime / 2 - distanta();
+      gsap.set(lume, { transformOrigin: `${centru}px ${fereastra.clientHeight}px` });
+      window.Coborarea.sapat = { centru };
+      window.Coborarea.aliniazaSapatul?.();
     }
 
     // Copacii cresc în 4 cadre pe măsură ce centrul lor trece de la 95% la 50% din lățimea ecranului.
@@ -101,14 +105,14 @@
       gsap.set(crater, { opacity: 0 });
     }
 
-    // Durate relative: mers 2, clipit 0.8, pauză 0.3, plonjare 1.2.
+    // Durate relative: mers 2, clipit 0.8, pauză 0.35, zoom 0.8, oprire 0.25.
     const tl = gsap.timeline({
       defaults: { ease: 'none' },
       scrollTrigger: {
         trigger: sectiune,
         pin: true,
         start: 'top top',
-        end: () => `+=${Math.max(distanta(), window.innerHeight * 2) + window.innerHeight * 2.3}`,
+        end: () => `+=${Math.max(distanta(), window.innerHeight * 2) + window.innerHeight * 2.2}`,
         scrub: 0.5,
         invalidateOnRefresh: true,
       },
@@ -128,11 +132,10 @@
       .to(creeperAlb, { opacity: 0.85, duration: 0.07, repeat: 1, yoyo: true }, 'clipit+=0.35')
       .to(creeperAlb, { opacity: 0.85, duration: 0.04, repeat: 3, yoyo: true }, 'clipit+=0.56')
       .addLabel('explozie', 'clipit+=0.8')
-      .addLabel('plonjare', 'explozie+=0.3')
-      .to(lume, { scale: 16, duration: 1.2, ease: 'power2.in' }, 'plonjare')
-      .to(intuneric, { opacity: 1, duration: 0.35 }, 'plonjare+=0.85');
+      .addLabel('zoom', 'explozie+=0.35')
+      .to(lume, { scale: 2, duration: 0.8, ease: 'power1.inOut' }, 'zoom')
+      .to({}, { duration: 0.25 });
 
-    // Zoom-ul pornește din centrul craterului, calculat pentru poziția de la finalul mersului orizontal.
     masoara();
     cresteCopacii();
     ScrollTrigger.addEventListener('refresh', masoara);
@@ -140,6 +143,8 @@
     // Revenire la varianta statică dacă utilizatorul activează reduced-motion cu pagina deschisă.
     return () => {
       ScrollTrigger.removeEventListener('refresh', masoara);
+      delete window.Coborarea.sapat;
+      window.Coborarea.aliniazaSapatul?.();
       sectiune.classList.remove('sup--animat');
       fereastra.setAttribute('tabindex', '0');
       copaci.forEach((copac) => seteazaCadru(copac, 3));

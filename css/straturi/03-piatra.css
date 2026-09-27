@@ -1,364 +1,217 @@
 /*
-  Stratul 3: pământ și piatră.
+  Stratul 3: pământ și piatră. Secțiunea de sub crater, ca o secțiune transversală prin sol.
 
-  Partea 1, mineritul. Doar cu animation-timeline și fără reduced-motion: .piatra__minerit
-  are 400svh, iar scena e sticky. Pe timeline-ul --minerit se sparg pe rând 3 blocuri
-  (pământ, pietriș, piatră): fisurile trec prin 10 cadre în pași, bara se umple la fiecare
-  bloc, iar zidul din spate trece din pământ în piatră. La final rămâne obiectul „+1 Piatră”.
-  Pragurile de spargere (30%, 58%, 86%) sunt repetate în js/straturi/03-piatra.js (particule).
+  Blocurile au --b2 = 2 × --bloc: mărimea blocurilor de la suprafață după zoom-ul 2×.
+  js/straturi/03-piatra.js aliniază puțul cu craterul (--sapat-stanga) și grila zidului cu
+  puțul (--sapat-faza), deci solul de la suprafață continuă fără margine. Rândurile: 0–2
+  pământ, 3–11 piatră (cu pietriș și minereuri), 12 tavanul peșterii, cu goluri.
 
-  Partea 2, cardurile: GSAP le aruncă de sus când intră în ecran (js/straturi/03-piatra.js).
+  Cu animation-timeline și fără reduced-motion, fiecare bloc din puț crapă în 10 cadre
+  (view(), cover 25% → 50%) și dispare când ajunge cu centrul la mijlocul ecranului, unde
+  stă ținta (conturul și bara), lipită cu sticky. JS-ul adaugă particulele, bara și mesajele.
 
-  Starea statică: cele trei blocuri întregi, unul lângă altul; cardurile la locul lor.
+  Starea statică: puțul e deja săpat, de la crater până în peșteră.
 */
 
 .strat--piatra {
+  --b2: calc(var(--bloc) * 2);
+  position: relative;
   display: block;
   place-items: normal;
   min-height: 0;
+  height: calc(var(--b2) * 13);
   padding: 0;
-  background: var(--pamant-4);
-}
-
-/* Zidurile de fundal (componenta .zid din base.css), întunecate de .piatra__umbra. */
-.piatra__ziduri,
-.piatra__umbra {
-  position: absolute;
-  inset: 0;
-  place-self: stretch;
-  overflow: hidden;
-}
-
-.piatra__umbra {
-  background: rgb(24 20 37 / 0.62);
-}
-
-/* ---------- Partea 1: mineritul ---------- */
-
-.piatra__scena {
-  position: relative;
-  overflow: hidden;
-  display: grid;
-  place-items: center;
-  min-height: 100vh;
-  min-height: 100svh;
-  padding: 5rem 1rem;
+  background: var(--pestera-3);
+  overflow: clip; /* clip, nu hidden: hidden ar face din secțiune un container de scroll pentru view() */
 }
 
 .piatra__titlu {
-  position: absolute;
-  z-index: 1;
+  position: sticky;
+  z-index: 2;
   top: 1rem;
-  left: 1rem;
+  margin: 1rem;
 }
 
-.piatra__atelier {
-  --p: 6px;
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: 1.5rem;
+.sapat {
+  position: absolute;
+  inset: 0;
 }
 
-.piatra__blocuri {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: calc(var(--p) * 2);
+/* Zidul: aceeași tehnică ca .zid din base.css, la mărimea --b2, decalat ca grila să treacă prin puț. */
+.sapat__zid {
+  position: absolute;
+  top: 0;
+  left: var(--sapat-faza, 0px);
+  width: calc(100% + var(--b2) * 2);
+  height: calc(var(--b2) * 13);
 }
 
-.piatra__bloc {
-  position: relative;
-  width: calc(16 * var(--p));
-  height: calc(16 * var(--p));
-  filter: drop-shadow(0 var(--p) 0 rgb(24 20 37 / 0.5));
+.sapat__decor,
+.sapat__celula {
+  position: absolute;
+  top: calc(var(--r) * var(--b2));
+  left: calc(var(--sapat-stanga, calc(50% - var(--b2) / 2)) + var(--c, 0) * var(--b2));
+  width: var(--b2);
+  height: var(--b2);
 }
 
-.piatra__textura {
+/* Celula din puț: fundalul e peretele din spate (golul rămas), cu margini ca ale craterului. */
+.sapat__celula {
+  --margine: calc(var(--b2) / 16);
+  background: var(--pestera-2);
+  box-shadow:
+    inset var(--margine) 0 0 var(--piatra-4),
+    inset calc(var(--margine) * -1) 0 0 var(--piatra-4);
+}
+
+.sapat__celula--pamant {
+  background: var(--pamant-4);
+  box-shadow:
+    inset var(--margine) 0 0 var(--pamant-3),
+    inset calc(var(--margine) * -1) 0 0 var(--pamant-3);
+}
+
+.sapat__celula--pestera {
+  background: var(--pestera-3);
+  box-shadow: none;
+}
+
+.sapat__intreg {
+  position: absolute;
+  inset: 0;
+  opacity: 0; /* starea statică: blocul e deja spart */
+}
+
+.sapat__intreg > svg {
   display: block;
   width: 100%;
   height: 100%;
 }
 
-/* Fereastra fisurilor: banda de 10 cadre e de 10 ori mai lată decât blocul. */
-.piatra__fisuri {
+.sapat__fisuri {
   display: none;
   position: absolute;
   inset: 0;
-  overflow: hidden;
+  overflow: clip;
   opacity: 0.85;
 }
 
-.piatra__foaie {
+.sapat__foaie {
   display: block;
   width: 1000%;
   height: 100%;
 }
 
-.piatra__bara,
-.piatra__indiciu,
-.piatra__obiect {
+/* Ținta: conturul blocului minat și bara de minerit, la mijlocul ecranului. */
+.sapat__tinta {
   display: none;
+  position: sticky;
+  z-index: 2;
+  top: calc(50vh - var(--b2) / 2);
+  top: calc(50svh - var(--b2) / 2);
+  width: var(--b2);
+  height: var(--b2);
+  margin-left: var(--sapat-stanga, calc(50% - var(--b2) / 2));
+  margin-bottom: calc(var(--b2) * -1);
 }
 
-/* Bara de minerit: ramă închisă, umplutură verde în 10 pași (ca fisurile). */
-.piatra__bara {
-  width: calc(16 * var(--p));
-  height: calc(3 * var(--p));
-  padding: calc(var(--p) * 0.75);
+.sapat__contur {
+  position: absolute;
+  inset: 0;
+  border: calc(var(--b2) / 32) solid rgb(24 20 37 / 0.85);
+}
+
+.sapat__bara {
+  position: absolute;
+  top: calc(100% + var(--b2) / 8);
+  left: 0;
+  width: 100%;
+  height: calc(var(--b2) / 8);
+  padding: calc(var(--b2) / 48);
   background: var(--pestera-3);
-  box-shadow: 0 0 0 calc(var(--p) * 0.5) var(--piatra-4);
+  box-shadow: 0 0 0 calc(var(--b2) / 64) var(--piatra-4);
 }
 
-.piatra__bara i {
+.sapat__bara i {
   display: block;
   height: 100%;
   background: var(--iarba-1);
+  transform: scaleX(0);
   transform-origin: left center;
 }
 
-.piatra__indiciu {
-  margin: 0;
-  padding: 0.25rem 0.75rem;
-  background: rgb(24 20 37 / 0.6);
-}
-
-.piatra__obiect {
-  position: absolute;
-  inset: 0;
-  place-content: center;
-  justify-items: center;
-  gap: 0.5rem;
-}
-
-.piatra__obiect svg {
-  width: calc(6 * var(--p));
-  height: calc(6 * var(--p));
-  filter: drop-shadow(0 calc(var(--p) * 0.5) 0 rgb(24 20 37 / 0.5));
-  animation: obiect-pluteste 1.6s ease-in-out infinite;
-}
-
-.piatra__obiect span {
-  padding: 0.125rem 0.5rem;
-  background: rgb(24 20 37 / 0.6);
-  font-weight: 700;
-}
-
-@keyframes obiect-pluteste {
-  50% { transform: translateY(calc(var(--p) * -1)); }
-}
-
-/* Mineritul animat: doar unde există animation-timeline și mișcarea e permisă. */
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    .piatra__minerit {
-      height: 400vh;
-      height: 400svh;
-      view-timeline-name: --minerit;
-      view-timeline-axis: block;
-    }
-
-    .piatra__scena {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      height: 100svh;
-      min-height: 0;
-      padding: 0 1rem;
-    }
-
-    .piatra__atelier {
-      --p: 8px;
-    }
-
-    .piatra__blocuri {
-      display: block;
-      position: relative;
-      width: calc(16 * var(--p));
-      height: calc(16 * var(--p));
-    }
-
-    .piatra__bloc {
-      position: absolute;
-      inset: 0;
-    }
-
-    .piatra__fisuri,
-    .piatra__bara,
-    .piatra__indiciu {
+    .sapat__tinta,
+    .sapat__fisuri {
       display: block;
     }
 
-    .piatra__obiect {
-      display: grid;
+    .sapat__intreg {
+      animation: sapat-sparge linear both;
+      animation-timeline: view();
+      animation-range: cover 25% cover 50%;
     }
 
-    .piatra__zid,
-    .piatra__bloc,
-    .piatra__foaie,
-    .piatra__bara i,
-    .piatra__indiciu,
-    .piatra__obiect {
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: --minerit;
-      animation-range: contain 0% contain 100%;
-    }
-
-    .piatra__zid--pamant { animation-name: zid-apare; }
-    .piatra__zid--piatra { animation-name: zid-piatra; }
-    .piatra__bloc--1     { animation-name: bloc-1; }
-    .piatra__bloc--2     { animation-name: bloc-2; }
-    .piatra__bloc--3     { animation-name: bloc-3; }
-    .piatra__indiciu     { animation-name: indiciu-dispare; }
-    .piatra__obiect      { animation-name: obiect-apare; }
-
-    .piatra__foaie,
-    .piatra__bara i {
-      animation-timing-function: steps(10, jump-none);
-    }
-
-    .piatra__bloc--1 .piatra__foaie { animation-name: fisuri-1; }
-    .piatra__bloc--2 .piatra__foaie { animation-name: fisuri-2; }
-    .piatra__bloc--3 .piatra__foaie { animation-name: fisuri-3; }
-    .piatra__bara i                 { animation-name: bara-minerit; }
-  }
-
-  @supports (animation-timeline: view()) {
-    @media (min-width: 640px) {
-      .piatra__atelier { --p: 12px; }
+    .sapat__foaie {
+      animation: sapat-fisuri steps(10, jump-none) both;
+      animation-timeline: view();
+      animation-range: cover 25% cover 50%;
     }
   }
 }
 
-/* Zidul de pământ apare treptat, ca trecerea din craterul de la suprafață să nu aibă margine. */
-@keyframes zid-apare {
-  0%        { opacity: 0; }
-  6%, 100%  { opacity: 1; }
+@keyframes sapat-sparge {
+  0%, 99.9% { opacity: 1; }
+  100%      { opacity: 0; }
 }
 
-@keyframes zid-piatra {
-  0%, 30%   { opacity: 0; }
-  60%, 100% { opacity: 1; }
+/* Cadrul 0 (gol) … cadrul 9: banda de fisuri se mută cu câte un cadru. */
+@keyframes sapat-fisuri {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-90%); }
 }
 
-@keyframes bloc-1 {
-  0%, 30%       { opacity: 1; }
-  30.01%, 100%  { opacity: 0; }
-}
+/* ---------- Mesajele de realizare: cad de sus și aterizează jos, în mijloc ---------- */
 
-@keyframes bloc-2 {
-  0%, 30%       { opacity: 0; }
-  30.01%, 58%   { opacity: 1; }
-  58.01%, 100%  { opacity: 0; }
-}
-
-@keyframes bloc-3 {
-  0%, 58%       { opacity: 0; }
-  58.01%, 86%   { opacity: 1; }
-  86.01%, 100%  { opacity: 0; }
-}
-
-/* Cadrul 0 (gol) … cadrul 9: translateX de la 0 la -90% din bandă, în 10 pași. */
-@keyframes fisuri-1 {
-  0%, 5%    { transform: translateX(0); }
-  30%, 100% { transform: translateX(-90%); }
-}
-
-@keyframes fisuri-2 {
-  0%, 33%   { transform: translateX(0); }
-  58%, 100% { transform: translateX(-90%); }
-}
-
-@keyframes fisuri-3 {
-  0%, 61%   { transform: translateX(0); }
-  86%, 100% { transform: translateX(-90%); }
-}
-
-@keyframes bara-minerit {
-  0%, 5%        { transform: scaleX(0); }
-  30%           { transform: scaleX(1); }
-  30.01%, 33%   { transform: scaleX(0); }
-  58%           { transform: scaleX(1); }
-  58.01%, 61%   { transform: scaleX(0); }
-  86%           { transform: scaleX(1); }
-  86.01%, 100%  { transform: scaleX(0); }
-}
-
-@keyframes indiciu-dispare {
-  0%, 3%    { opacity: 1; }
-  9%, 100%  { opacity: 0; }
-}
-
-@keyframes obiect-apare {
-  0%, 86%       { opacity: 0; }
-  86.01%, 100%  { opacity: 1; }
-}
-
-/* ---------- Partea 2: cardurile ---------- */
-
-.piatra__carduri {
-  position: relative;
-  overflow: hidden;
-  padding: 5rem 1rem 7rem;
-}
-
-.piatra__carduri-continut {
-  position: relative;
-  max-width: 60rem;
-  margin: 0 auto;
-}
-
-.piatra__carduri-continut > .eticheta {
-  margin-bottom: 2rem;
-}
-
-.carduri {
+.realizari {
+  position: fixed;
+  z-index: 11;
+  left: 50%;
+  bottom: 1.25rem;
   display: grid;
-  gap: 1.5rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  gap: 0.5rem;
+  width: min(20rem, calc(100% - 2rem));
+  transform: translateX(-50%);
+  pointer-events: none;
 }
 
-/* 4 carduri: o coloană pe telefon, 2×2 de la tabletă în sus. */
-@media (min-width: 40rem) {
-  .carduri {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Panou în stilul interfeței din joc: ramă închisă și margini teșite (lumină sus-stânga, umbră jos-dreapta). */
-.card {
+.realizare {
   --p: 3px;
-  padding: 1.25rem;
-  background: var(--piatra-4);
-  border: calc(var(--p) * 1.5) solid var(--pestera-3);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--pestera-2);
+  border: var(--p) solid var(--pestera-3);
   box-shadow:
-    inset var(--p) var(--p) 0 var(--piatra-3),
-    inset calc(var(--p) * -1) calc(var(--p) * -1) 0 var(--pestera-2),
+    inset var(--p) var(--p) 0 var(--piatra-4),
     0 calc(var(--p) * 2) 0 rgb(24 20 37 / 0.5);
 }
 
-.card__icon {
+.realizare svg {
+  flex: none;
+  width: calc(var(--p) * 11);
+  height: calc(var(--p) * 11);
+}
+
+.realizare__eticheta {
   display: block;
-  width: calc(16 * var(--p));
-  height: calc(16 * var(--p));
-  margin-bottom: 0.75rem;
-}
-
-.card__titlu {
-  margin: 0 0 0.5rem;
-  font-size: 1.25rem;
-}
-
-.card p {
-  margin: 0;
-  color: var(--text-2);
-  line-height: 1.5;
-}
-
-.card code {
-  font-family: inherit;
   color: var(--apus-1);
+  font-size: 0.8125rem;
+}
+
+.realizare__nume {
+  display: block;
+  font-weight: 700;
 }

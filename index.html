@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/straturi/01-cer.css">
   <link rel="stylesheet" href="css/straturi/02-suprafata.css">
   <link rel="stylesheet" href="css/straturi/03-piatra.css">
+  <link rel="stylesheet" href="css/despre.css">
 
   <!-- GSAP + ScrollTrigger (versiune fixată, cu SRI). Fără ele, pagina rămâne pe varianta statică. -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous" defer></script>
@@ -23,12 +24,25 @@
   <script src="js/straturi/01-cer.js" defer></script>
   <script src="js/straturi/02-suprafata.js" defer></script>
   <script src="js/straturi/03-piatra.js" defer></script>
+  <script src="js/despre.js" defer></script>
 </head>
 <body>
   <!-- Sprite-uri pixel art. Culorile vin din variabilele CSS (paleta din base.css).
        Zona dintre marcaje e generată de unelte/pixel.ps1 din unelte/sprite/*.txt; nu o edita de mână. -->
   <svg class="sprite" aria-hidden="true" focusable="false">
     <!-- sprite:inceput -->
+    <symbol id="bloc-carbune" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <use href="#bloc-piatra" width="16" height="16"/>
+      <path style="fill:var(--pestera-3)" d="M4 2h1v1h-1zM10 2h1v1h-1zM3 4h1v1h-1zM7 7h1v1h-1zM14 8h1v1h-1zM6 9h1v1h-1zM13 9h1v1h-1zM4 12h1v1h-1zM11 12h1v1h-1zM3 13h1v1h-1zM10 13h1v1h-1z"/>
+      <path style="fill:var(--piatra-4)" d="M9 1h1v1h-1zM2 2h1v1h-1zM1 3h1v1h-1zM5 7h1v1h-1zM4 8h1v1h-1zM12 8h1v1h-1zM2 12h1v1h-1zM9 12h1v1h-1zM1 13h1v1h-1zM8 13h1v1h-1z"/>
+      <path style="fill:var(--pestera-3)" d="M10 1h1v1h-1zM3 2h1v1h-1zM9 2h1v1h-1zM2 3h2v1h-2zM6 7h1v1h-1zM5 8h2v1h-2zM13 8h1v1h-1zM12 9h1v1h-1zM3 12h1v1h-1zM10 12h1v1h-1zM2 13h1v1h-1zM9 13h1v1h-1z"/>
+    </symbol>
+    <symbol id="bloc-fier" viewBox="0 0 16 16" shape-rendering="crispEdges">
+      <use href="#bloc-piatra" width="16" height="16"/>
+      <path style="fill:var(--lemn-2)" d="M5 2h1v1h-1zM12 3h1v1h-1zM4 4h1v1h-1zM11 5h1v1h-1zM8 8h1v1h-1zM7 9h1v1h-1zM14 10h1v1h-1zM4 11h1v1h-1zM13 11h1v1h-1zM3 12h1v1h-1z"/>
+      <path style="fill:var(--pamant-1)" d="M3 2h1v1h-1zM2 3h1v1h-1zM10 3h1v1h-1zM9 4h1v1h-1zM6 8h1v1h-1zM12 10h1v1h-1zM2 11h1v1h-1zM11 11h1v1h-1zM1 12h1v1h-1z"/>
+      <path style="fill:var(--minereu-fier)" d="M4 2h1v1h-1zM3 3h2v1h-2zM11 3h1v1h-1zM10 4h2v1h-2zM7 8h1v1h-1zM6 9h1v1h-1zM13 10h1v1h-1zM3 11h1v1h-1zM12 11h1v1h-1zM2 12h1v1h-1z"/>
+    </symbol>
     <symbol id="bloc-iarba" viewBox="0 0 16 16" shape-rendering="crispEdges">
       <path style="fill:var(--pamant-2)" d="M0 0h16v16h-16z"/>
       <path style="fill:var(--pamant-1)" d="M5 5h1v1h-1zM12 6h1v1h-1zM3 8h1v1h-1zM10 9h1v1h-1zM2 10h1v1h-1zM8 12h1v1h-1zM14 12h1v1h-1zM4 14h1v1h-1zM12 15h1v1h-1z"/>
@@ -88,9 +102,9 @@
       <path style="fill:var(--lemn-4)" d="M17 32h1v1h-1zM17 33h1v1h-1zM17 34h1v1h-1zM17 35h1v1h-1zM17 36h1v1h-1zM17 37h1v1h-1zM17 38h1v1h-1zM17 39h1v1h-1zM17 40h1v1h-1zM17 41h1v1h-1zM17 42h1v1h-1zM17 43h1v1h-1zM17 44h1v1h-1zM17 45h1v1h-1zM17 46h1v1h-1zM17 47h1v1h-1z"/>
     </symbol>
     <symbol id="crater" viewBox="0 0 48 32" shape-rendering="crispEdges">
-      <path style="fill:var(--pamant-3)" d="M6 0h1v1h-1zM40 0h2v1h-2zM6 1h2v1h-2zM41 1h1v1h-1zM6 2h1v1h-1zM40 2h2v1h-2zM6 3h2v1h-2zM41 3h1v1h-1zM6 4h1v1h-1zM40 4h2v1h-2zM6 5h2v1h-2zM41 5h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM36 6h1v1h-1zM38 6h1v1h-1zM40 6h2v1h-2zM6 7h6v1h-6zM37 7h5v1h-5zM10 8h1v1h-1zM36 8h2v1h-2zM10 9h2v1h-2zM37 9h1v1h-1zM10 10h1v1h-1zM36 10h2v1h-2zM10 11h2v1h-2zM37 11h1v1h-1zM10 12h1v1h-1zM36 12h2v1h-2zM10 13h2v1h-2zM37 13h1v1h-1zM10 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM32 14h1v1h-1zM34 14h1v1h-1zM36 14h2v1h-2zM10 15h6v1h-6zM33 15h5v1h-5zM14 16h1v1h-1zM32 16h2v1h-2zM14 17h2v1h-2zM33 17h1v1h-1zM14 18h1v1h-1zM32 18h2v1h-2zM14 19h2v1h-2zM33 19h1v1h-1zM14 20h1v1h-1zM32 20h2v1h-2zM14 21h2v1h-2zM33 21h1v1h-1zM14 22h1v1h-1zM16 22h1v1h-1zM18 22h1v1h-1zM20 22h1v1h-1zM28 22h1v1h-1zM30 22h1v1h-1zM32 22h2v1h-2zM14 23h6v1h-6zM27 23h7v1h-7zM19 24h2v1h-2zM28 24h1v1h-1zM19 25h1v1h-1zM27 25h2v1h-2zM19 26h2v1h-2zM28 26h1v1h-1zM19 27h1v1h-1zM27 27h2v1h-2zM19 28h2v1h-2zM28 28h1v1h-1zM19 29h1v1h-1zM27 29h2v1h-2zM19 30h2v1h-2zM22 30h1v1h-1zM24 30h1v1h-1zM26 30h1v1h-1zM28 30h1v1h-1zM19 31h10v1h-10z"/>
-      <path style="fill:var(--pamant-4)" d="M7 0h33v1h-33zM8 1h33v1h-33zM7 2h33v1h-33zM8 3h33v1h-33zM7 4h33v1h-33zM8 5h33v1h-33zM7 6h1v1h-1zM9 6h1v1h-1zM11 6h25v1h-25zM37 6h1v1h-1zM39 6h1v1h-1zM12 7h25v1h-25zM11 8h25v1h-25zM12 9h25v1h-25zM11 10h25v1h-25zM12 11h25v1h-25zM11 12h25v1h-25zM12 13h25v1h-25zM11 14h1v1h-1zM13 14h1v1h-1zM15 14h17v1h-17zM33 14h1v1h-1zM35 14h1v1h-1zM16 15h17v1h-17zM15 16h17v1h-17zM16 17h17v1h-17zM15 18h17v1h-17zM16 19h17v1h-17zM15 20h17v1h-17zM16 21h17v1h-17zM15 22h1v1h-1zM17 22h1v1h-1zM19 22h1v1h-1zM21 22h7v1h-7zM29 22h1v1h-1zM31 22h1v1h-1zM20 23h7v1h-7zM21 24h7v1h-7zM20 25h7v1h-7zM21 26h7v1h-7zM20 27h7v1h-7zM21 28h7v1h-7zM20 29h7v1h-7zM21 30h1v1h-1zM23 30h1v1h-1zM25 30h1v1h-1zM27 30h1v1h-1z"/>
-      <path style="fill:var(--pamant-2)" d="M1 0h5v1h-5zM42 0h5v1h-5zM1 1h5v1h-5zM42 1h5v1h-5zM1 2h5v1h-5zM42 2h5v1h-5zM2 3h4v1h-4zM42 3h4v1h-4z"/>
+      <path style="fill:var(--pamant-3)" d="M3 0h2v1h-2zM44 0h1v1h-1zM3 1h1v1h-1zM43 1h2v1h-2zM3 2h2v1h-2zM44 2h1v1h-1zM3 3h1v1h-1zM43 3h2v1h-2zM3 4h2v1h-2zM6 4h1v1h-1zM42 4h1v1h-1zM44 4h1v1h-1zM3 5h4v1h-4zM41 5h4v1h-4zM7 6h2v1h-2zM40 6h1v1h-1zM7 7h1v1h-1zM39 7h2v1h-2zM7 8h2v1h-2zM40 8h1v1h-1zM7 9h1v1h-1zM39 9h2v1h-2zM7 10h2v1h-2zM10 10h1v1h-1zM38 10h1v1h-1zM40 10h1v1h-1zM7 11h4v1h-4zM37 11h4v1h-4zM11 12h2v1h-2zM36 12h1v1h-1zM11 13h1v1h-1zM35 13h2v1h-2zM11 14h2v1h-2zM36 14h1v1h-1zM11 15h2v1h-2zM35 15h2v1h-2zM13 16h2v1h-2zM34 16h1v1h-1zM13 17h1v1h-1zM33 17h2v1h-2zM13 18h2v1h-2zM34 18h1v1h-1zM13 19h1v1h-1zM33 19h2v1h-2zM13 20h2v1h-2zM32 20h1v1h-1zM34 20h1v1h-1zM13 21h3v1h-3zM32 21h3v1h-3zM16 22h1v1h-1zM30 22h2v1h-2zM16 23h2v1h-2zM31 23h1v1h-1zM16 24h1v1h-1zM30 24h2v1h-2zM16 25h2v1h-2zM31 25h1v1h-1zM16 26h1v1h-1zM30 26h2v1h-2zM16 27h2v1h-2zM31 27h1v1h-1zM16 28h1v1h-1zM30 28h2v1h-2zM16 29h2v1h-2zM31 29h1v1h-1zM16 30h1v1h-1zM30 30h2v1h-2zM16 31h2v1h-2zM31 31h1v1h-1z"/>
+      <path style="fill:var(--pamant-4)" d="M5 0h39v1h-39zM4 1h39v1h-39zM5 2h39v1h-39zM4 3h39v1h-39zM5 4h1v1h-1zM7 4h35v1h-35zM43 4h1v1h-1zM7 5h34v1h-34zM9 6h31v1h-31zM8 7h31v1h-31zM9 8h31v1h-31zM8 9h31v1h-31zM9 10h1v1h-1zM11 10h27v1h-27zM39 10h1v1h-1zM11 11h26v1h-26zM13 12h23v1h-23zM12 13h23v1h-23zM13 14h23v1h-23zM13 15h22v1h-22zM15 16h19v1h-19zM14 17h19v1h-19zM15 18h19v1h-19zM14 19h19v1h-19zM15 20h17v1h-17zM33 20h1v1h-1zM16 21h16v1h-16zM17 22h13v1h-13zM18 23h13v1h-13zM17 24h13v1h-13zM18 25h13v1h-13zM17 26h13v1h-13zM18 27h13v1h-13zM17 28h13v1h-13zM18 29h13v1h-13zM17 30h13v1h-13zM18 31h13v1h-13z"/>
+      <path style="fill:var(--pamant-2)" d="M0 0h3v1h-3zM45 0h3v1h-3zM0 1h3v1h-3zM45 1h3v1h-3zM0 2h3v1h-3zM45 2h3v1h-3zM0 3h3v1h-3zM45 3h3v1h-3z"/>
     </symbol>
     <symbol id="creeper" viewBox="0 0 8 26" shape-rendering="crispEdges">
       <path style="fill:var(--iarba-2)" d="M0 0h8v26h-8z"/>
@@ -160,211 +174,204 @@
       <pattern id="model-iarba" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-iarba" width="16" height="16"/></pattern>
       <pattern id="model-pamant" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-pamant" width="16" height="16"/></pattern>
       <pattern id="model-piatra" width="16" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-piatra" width="16" height="16"/></pattern>
+      <!-- Tavanul peșterii: rând de piatră cu goluri (5 blocuri, 3 pline), prin care se vede întunericul de dedesubt. -->
+      <pattern id="model-tavan" width="80" height="16" patternUnits="userSpaceOnUse"><use href="#bloc-piatra" width="16" height="16"/><use href="#bloc-piatra" x="16" width="16" height="16"/><use href="#bloc-piatra" x="48" width="16" height="16"/></pattern>
     </defs>
   </svg>
+
+  <!-- Mesajele de realizare din stratul 3 (js/straturi/03-piatra.js); decorative. -->
+  <div class="realizari" aria-hidden="true"></div>
 
   <aside class="adancime" aria-hidden="true">
     <span class="adancime__y">Y: 64</span>
   </aside>
 
   <main>
-    <section class="strat strat--cer" id="cer">
-      <div class="cer__scena">
+    <!-- Cerul și suprafața împart același fundal: cerul rămâne lipit (sticky) în spatele ambelor
+         secțiuni, așa că pământul suprafeței urcă direct în apus, fără margine între ele. -->
+    <div class="lumea-de-sus">
+      <div class="cer__fundal" aria-hidden="true">
         <!-- Cerul în benzi, cu tranziții în tablă de șah (dithering). Apusul apare peste zi prin opacity. -->
-        <div class="cer__cer benzi" aria-hidden="true">
+        <div class="cer__cer benzi">
           <i style="--c: var(--cer-2); flex-grow: 72"></i>
           <i class="dither" style="--c: var(--cer-2); --c2: var(--cer-1); flex-grow: 5"></i>
           <i style="--c: var(--cer-1); flex-grow: 23"></i>
         </div>
-        <div class="cer__cer cer__cer--apus benzi" aria-hidden="true">
-          <i style="--c: var(--apus-5); flex-grow: 26"></i>
+        <div class="cer__cer cer__cer--apus benzi">
+          <i style="--c: var(--apus-5); flex-grow: 22"></i>
           <i class="dither" style="--c: var(--apus-5); --c2: var(--apus-4); flex-grow: 4"></i>
-          <i style="--c: var(--apus-4); flex-grow: 20"></i>
+          <i style="--c: var(--apus-4); flex-grow: 18"></i>
           <i class="dither" style="--c: var(--apus-4); --c2: var(--apus-3); flex-grow: 4"></i>
-          <i style="--c: var(--apus-3); flex-grow: 20"></i>
+          <i style="--c: var(--apus-3); flex-grow: 14"></i>
           <i class="dither" style="--c: var(--apus-3); --c2: var(--apus-2); flex-grow: 4"></i>
-          <i style="--c: var(--apus-2); flex-grow: 16"></i>
+          <i style="--c: var(--apus-2); flex-grow: 14"></i>
           <i class="dither" style="--c: var(--apus-2); --c2: var(--apus-1); flex-grow: 3"></i>
-          <i style="--c: var(--apus-1); flex-grow: 3"></i>
+          <i style="--c: var(--apus-1); flex-grow: 17"></i>
         </div>
 
-        <div class="cer__soare" aria-hidden="true">
+        <div class="cer__soare">
           <svg class="soare soare--zi"><use href="#soare"/></svg>
           <svg class="soare soare--apus"><use href="#soare"/></svg>
         </div>
 
         <!-- Nori pe 3 planuri: --x e poziția statică, --durata și --intarziere controlează plutirea. -->
-        <div class="cer__plan cer__plan--departe" aria-hidden="true">
+        <div class="cer__plan cer__plan--departe">
           <svg class="nor nor--mic" style="--y: 10%; --x: 6vw; --durata: 170s; --intarziere: -20s"><use href="#nor-mic"/></svg>
           <svg class="nor nor--mediu" style="--y: 20%; --x: 58vw; --durata: 190s; --intarziere: -95s"><use href="#nor-mediu"/></svg>
           <svg class="nor nor--mic" style="--y: 32%; --x: 34vw; --durata: 160s; --intarziere: -130s"><use href="#nor-mic"/></svg>
           <svg class="nor nor--mic" style="--y: 44%; --x: 80vw; --durata: 180s; --intarziere: -60s"><use href="#nor-mic"/></svg>
         </div>
-        <div class="cer__plan cer__plan--mijloc" aria-hidden="true">
+        <div class="cer__plan cer__plan--mijloc">
           <svg class="nor nor--mediu" style="--y: 14%; --x: 70vw; --durata: 120s; --intarziere: -10s"><use href="#nor-mediu"/></svg>
           <svg class="nor nor--mare" style="--y: 38%; --x: 4vw; --durata: 135s; --intarziere: -70s"><use href="#nor-mare"/></svg>
           <svg class="nor nor--mic" style="--y: 58%; --x: 46vw; --durata: 110s; --intarziere: -45s"><use href="#nor-mic"/></svg>
         </div>
-        <div class="cer__plan cer__plan--aproape" aria-hidden="true">
+        <div class="cer__plan cer__plan--aproape">
           <svg class="nor nor--mare" style="--y: 66%; --x: 52vw; --durata: 80s; --intarziere: -30s"><use href="#nor-mare"/></svg>
           <svg class="nor nor--mediu" style="--y: 84%; --x: -4vw; --durata: 90s; --intarziere: -75s"><use href="#nor-mediu"/></svg>
         </div>
-
-        <h1 class="titlu">
-          <span class="vizual-ascuns">Coborârea</span>
-          <span class="titlu__blocuri" aria-hidden="true">
-            <svg class="titlu__bloc"><use href="#litera-c"/></svg>
-            <svg class="titlu__bloc"><use href="#litera-o"/></svg>
-            <svg class="titlu__bloc"><use href="#litera-b"/></svg>
-            <svg class="titlu__bloc"><use href="#litera-o"/></svg>
-            <svg class="titlu__bloc"><use href="#litera-r"/></svg>
-            <svg class="titlu__bloc"><use href="#litera-a-circumflex"/></svg>
-            <svg class="titlu__bloc"><use href="#litera-r"/></svg>
-            <svg class="titlu__bloc"><use href="#litera-e"/></svg>
-            <svg class="titlu__bloc"><use href="#litera-a"/></svg>
-          </span>
-        </h1>
-
-        <p class="cer__indemn">Derulează ca să cobori <span class="cer__sageata" aria-hidden="true">↓</span></p>
       </div>
-    </section>
 
-    <section class="strat strat--suprafata" id="suprafata">
-      <!-- Fără animație, fereastra se derulează orizontal manual (de aceea tabindex); cu GSAP, e fixată și se mișcă singură. -->
-      <div class="sup__fereastra" role="region" aria-label="Peisajul suprafeței" tabindex="0">
-        <h2 class="eticheta sup__titlu">Suprafața</h2>
+      <section class="strat strat--cer" id="cer">
+        <div class="cer__continut">
+          <h1 class="titlu">
+            <span class="vizual-ascuns">Coborârea</span>
+            <!-- Titlul din blocuri, scos temporar. Pentru a-l readuce, șterge comentariul din jur.
+            <span class="titlu__blocuri" aria-hidden="true">
+              <svg class="titlu__bloc"><use href="#litera-c"/></svg>
+              <svg class="titlu__bloc"><use href="#litera-o"/></svg>
+              <svg class="titlu__bloc"><use href="#litera-b"/></svg>
+              <svg class="titlu__bloc"><use href="#litera-o"/></svg>
+              <svg class="titlu__bloc"><use href="#litera-r"/></svg>
+              <svg class="titlu__bloc"><use href="#litera-a-circumflex"/></svg>
+              <svg class="titlu__bloc"><use href="#litera-r"/></svg>
+              <svg class="titlu__bloc"><use href="#litera-e"/></svg>
+              <svg class="titlu__bloc"><use href="#litera-a"/></svg>
+            </span>
+            -->
+          </h1>
 
-        <div class="sup__scutura">
-          <div class="sup__lume">
-            <div class="sup__cer benzi" aria-hidden="true">
-              <i style="--c: var(--apus-5); flex-grow: 20"></i>
-              <i class="dither" style="--c: var(--apus-5); --c2: var(--apus-4); flex-grow: 4"></i>
-              <i style="--c: var(--apus-4); flex-grow: 16"></i>
-              <i class="dither" style="--c: var(--apus-4); --c2: var(--apus-3); flex-grow: 4"></i>
-              <i style="--c: var(--apus-3); flex-grow: 18"></i>
-              <i class="dither" style="--c: var(--apus-3); --c2: var(--apus-2); flex-grow: 4"></i>
-              <i style="--c: var(--apus-2); flex-grow: 34"></i>
-            </div>
-            <svg class="sup__soare" aria-hidden="true"><use href="#soare"/></svg>
+          <p class="cer__indemn">Derulează ca să cobori <span class="cer__sageata" aria-hidden="true">↓</span></p>
+        </div>
+      </section>
 
-            <!-- Planul îndepărtat: un deal și copaci mici, mai întunecați, care se mișcă mai încet (parallax). -->
-            <div class="sup__departe" aria-hidden="true">
-              <svg class="sup__copac-departe" style="--x: 4vw"><use href="#copac-3"/></svg>
-              <svg class="sup__copac-departe" style="--x: 22vw"><use href="#copac-2"/></svg>
-              <svg class="sup__copac-departe" style="--x: 31vw"><use href="#copac-3"/></svg>
-              <svg class="sup__copac-departe" style="--x: 57vw"><use href="#copac-3"/></svg>
-              <svg class="sup__copac-departe" style="--x: 83vw"><use href="#copac-2"/></svg>
-              <svg class="sup__copac-departe" style="--x: 96vw"><use href="#copac-3"/></svg>
-              <svg class="sup__copac-departe" style="--x: 128vw"><use href="#copac-3"/></svg>
-              <svg class="sup__copac-departe" style="--x: 151vw"><use href="#copac-2"/></svg>
-              <svg class="sup__copac-departe" style="--x: 188vw"><use href="#copac-3"/></svg>
-              <svg class="sup__copac-departe" style="--x: 214vw"><use href="#copac-3"/></svg>
-            </div>
+      <section class="strat strat--suprafata" id="suprafata">
+        <!-- Fără animație, fereastra se derulează orizontal manual (de aceea tabindex); cu GSAP, e fixată și se mișcă singură. -->
+        <div class="sup__fereastra" role="region" aria-label="Peisajul suprafeței" tabindex="0">
+          <h2 class="eticheta sup__titlu">Suprafața</h2>
 
-            <!-- Pista: 300vw, deplasată spre stânga odată cu scroll-ul. Copacii cresc când intră în ecran. -->
-            <div class="sup__pista" aria-hidden="true">
-              <svg class="sup__sol" viewBox="0 0 16 64" preserveAspectRatio="xMinYMin meet">
-                <rect width="100000" height="16" fill="url(#model-iarba)"/>
-                <rect y="16" width="100000" height="48" fill="url(#model-pamant)"/>
-              </svg>
+          <div class="sup__scutura">
+            <div class="sup__lume">
+              <!-- Planul îndepărtat: un deal și copaci mici, mai întunecați, care se mișcă mai încet (parallax). -->
+              <div class="sup__departe" aria-hidden="true">
+                <svg class="sup__copac-departe" style="--x: 4vw"><use href="#copac-3"/></svg>
+                <svg class="sup__copac-departe" style="--x: 22vw"><use href="#copac-2"/></svg>
+                <svg class="sup__copac-departe" style="--x: 31vw"><use href="#copac-3"/></svg>
+                <svg class="sup__copac-departe" style="--x: 57vw"><use href="#copac-3"/></svg>
+                <svg class="sup__copac-departe" style="--x: 83vw"><use href="#copac-2"/></svg>
+                <svg class="sup__copac-departe" style="--x: 96vw"><use href="#copac-3"/></svg>
+                <svg class="sup__copac-departe" style="--x: 128vw"><use href="#copac-3"/></svg>
+                <svg class="sup__copac-departe" style="--x: 151vw"><use href="#copac-2"/></svg>
+                <svg class="sup__copac-departe" style="--x: 188vw"><use href="#copac-3"/></svg>
+                <svg class="sup__copac-departe" style="--x: 214vw"><use href="#copac-3"/></svg>
+              </div>
 
-              <svg class="sup__copac" style="--x: 14vw"><use href="#copac-3"/></svg>
-              <svg class="sup__copac" style="--x: 42vw"><use href="#copac-3"/></svg>
-              <svg class="sup__copac" style="--x: 78vw"><use href="#copac-3"/></svg>
-              <svg class="sup__copac" style="--x: 112vw"><use href="#copac-3"/></svg>
-              <svg class="sup__copac" style="--x: 146vw"><use href="#copac-3"/></svg>
-              <svg class="sup__copac" style="--x: 184vw"><use href="#copac-3"/></svg>
-              <svg class="sup__copac" style="--x: 216vw"><use href="#copac-3"/></svg>
+              <!-- Pista: 300vw, deplasată spre stânga odată cu scroll-ul. Copacii cresc când intră în ecran. -->
+              <div class="sup__pista" aria-hidden="true">
+                <svg class="sup__sol" viewBox="0 0 16 32" preserveAspectRatio="xMinYMin meet">
+                  <rect width="100000" height="16" fill="url(#model-iarba)"/>
+                  <rect y="16" width="100000" height="16" fill="url(#model-pamant)"/>
+                </svg>
 
-              <svg class="sup__crater"><use href="#crater"/></svg>
-              <div class="sup__creeper">
-                <svg><use href="#creeper"/></svg>
-                <i class="sup__creeper-alb"></i>
+                <svg class="sup__copac" style="--x: 14vw"><use href="#copac-3"/></svg>
+                <svg class="sup__copac" style="--x: 42vw"><use href="#copac-3"/></svg>
+                <svg class="sup__copac" style="--x: 78vw"><use href="#copac-3"/></svg>
+                <svg class="sup__copac" style="--x: 112vw"><use href="#copac-3"/></svg>
+                <svg class="sup__copac" style="--x: 146vw"><use href="#copac-3"/></svg>
+                <svg class="sup__copac" style="--x: 184vw"><use href="#copac-3"/></svg>
+                <svg class="sup__copac" style="--x: 216vw"><use href="#copac-3"/></svg>
+
+                <svg class="sup__crater"><use href="#crater"/></svg>
+                <div class="sup__creeper">
+                  <svg><use href="#creeper"/></svg>
+                  <i class="sup__creeper-alb"></i>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </section>
+    </div>
 
-        <!-- La finalul plonjării în crater, ecranul ajunge la culoarea de început a stratului de piatră. -->
-        <div class="sup__intuneric" aria-hidden="true"></div>
-      </div>
-    </section>
-
+    <!-- Pământ și piatră: secțiunea de sub crater. Blocurile au mărimea celor de la suprafață după zoom (2×),
+         iar puțul e aliniat cu craterul, deci solul continuă fără margine. Fiecare bloc din puț crapă și se
+         sparge când trece prin mijlocul ecranului (CSS view()); la capăt, puțul dă în tavanul peșterii. -->
     <section class="strat strat--piatra" id="piatra">
-      <!-- Mineritul: scenă fixată (sticky) în care se sparg pe rând 3 blocuri, cu fisuri legate de scroll. -->
-      <div class="piatra__minerit">
-        <div class="piatra__scena">
-          <div class="piatra__ziduri" aria-hidden="true">
-            <svg class="zid piatra__zid piatra__zid--pamant" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet">
-              <rect width="100000" height="960" fill="url(#model-pamant)"/>
-            </svg>
-            <svg class="zid piatra__zid piatra__zid--piatra" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet">
-              <rect width="100000" height="960" fill="url(#model-piatra)"/>
-            </svg>
-            <div class="piatra__umbra"></div>
-          </div>
-
-          <h2 class="eticheta piatra__titlu">Pământ și piatră</h2>
-
-          <div class="piatra__atelier">
-            <!-- data-culori: paleta particulelor la spargere (js/straturi/03-piatra.js). -->
-            <div class="piatra__blocuri" aria-hidden="true">
-              <div class="piatra__bloc piatra__bloc--1" data-culori="--pamant-1 --pamant-2 --pamant-3 --pamant-4">
-                <svg class="piatra__textura"><use href="#bloc-pamant"/></svg>
-                <div class="piatra__fisuri"><svg class="piatra__foaie"><use href="#fisuri"/></svg></div>
-              </div>
-              <div class="piatra__bloc piatra__bloc--2" data-culori="--piatra-1 --piatra-2 --piatra-3 --pamant-3">
-                <svg class="piatra__textura"><use href="#bloc-pietris"/></svg>
-                <div class="piatra__fisuri"><svg class="piatra__foaie"><use href="#fisuri"/></svg></div>
-              </div>
-              <div class="piatra__bloc piatra__bloc--3" data-culori="--piatra-1 --piatra-2 --piatra-3 --piatra-4">
-                <svg class="piatra__textura"><use href="#bloc-piatra"/></svg>
-                <div class="piatra__fisuri"><svg class="piatra__foaie"><use href="#fisuri"/></svg></div>
-              </div>
-              <div class="piatra__obiect">
-                <svg><use href="#bloc-piatra"/></svg>
-                <span>+1 Piatră</span>
-              </div>
-            </div>
-            <div class="piatra__bara" aria-hidden="true"><i></i></div>
-            <p class="piatra__indiciu">Derulează ca să spargi blocurile</p>
-          </div>
-        </div>
+      <!-- Ținta: conturul blocului minat și bara, lipite de mijlocul ecranului cât sapi. -->
+      <div class="sapat__tinta" aria-hidden="true">
+        <div class="sapat__contur"></div>
+        <div class="sapat__bara"><i></i></div>
       </div>
 
-      <!-- Cardurile cad cu gravitație când intră în ecran. -->
-      <div class="piatra__carduri">
-        <div class="piatra__ziduri" aria-hidden="true">
-          <svg class="zid" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet">
-            <rect width="100000" height="960" fill="url(#model-piatra)"/>
-          </svg>
-          <div class="piatra__umbra"></div>
-        </div>
+      <h2 class="eticheta piatra__titlu">Pământ și piatră</h2>
 
-        <div class="piatra__carduri-continut">
-          <h3 class="eticheta">Cum e făcut site-ul</h3>
-          <ul class="carduri">
-            <li class="card">
-              <svg class="card__icon soare--zi" aria-hidden="true"><use href="#soare"/></svg>
-              <h4 class="card__titlu">Animații CSS legate de scroll</h4>
-              <p>Cerul, fisurile și bara de minerit se mișcă doar din CSS, cu <code>animation-timeline</code>. Browserele care nu îl suportă primesc o variantă statică, completă.</p>
-            </li>
-            <li class="card">
-              <svg class="card__icon" aria-hidden="true"><use href="#creeper"/></svg>
-              <h4 class="card__titlu">Scene fixate cu GSAP</h4>
-              <p>Suprafața folosește GSAP ScrollTrigger: secțiunea se fixează, peisajul merge orizontal, iar explozia pornește o singură dată, în timp real.</p>
-            </li>
-            <li class="card">
-              <svg class="card__icon" aria-hidden="true"><use href="#bloc-iarba"/></svg>
-              <h4 class="card__titlu">Pixel art scris ca text</h4>
-              <p>Fiecare sprite e o grilă de caractere, transformată în SVG de un script PowerShell. Culorile vin din variabile CSS, deci paleta întregii pagini se schimbă dintr-un singur loc.</p>
-            </li>
-            <li class="card">
-              <svg class="card__icon" aria-hidden="true"><use href="#litera-a"/></svg>
-              <h4 class="card__titlu">Accesibil din start</h4>
-              <p>Cu „reducerea mișcării” activată în sistem, pagina devine statică. Titlurile rămân text real, iar animațiile folosesc doar <code>transform</code> și <code>opacity</code>.</p>
-            </li>
-          </ul>
+      <div class="sapat" aria-hidden="true">
+        <svg class="sapat__zid" viewBox="0 0 16 208" preserveAspectRatio="xMinYMin meet">
+          <rect width="100000" height="48" fill="url(#model-pamant)"/>
+          <rect y="48" width="100000" height="144" fill="url(#model-piatra)"/>
+          <rect y="192" width="100000" height="16" fill="url(#model-tavan)"/>
+        </svg>
+
+        <!-- Minereuri pe lângă puț: --r = rândul, --c = coloana față de puț. -->
+        <svg class="sapat__decor" style="--r: 3; --c: -3"><use href="#bloc-pietris"/></svg>
+        <svg class="sapat__decor" style="--r: 4; --c: 1"><use href="#bloc-pietris"/></svg>
+        <svg class="sapat__decor" style="--r: 4; --c: 2"><use href="#bloc-pietris"/></svg>
+        <svg class="sapat__decor" style="--r: 5; --c: -2"><use href="#bloc-carbune"/></svg>
+        <svg class="sapat__decor" style="--r: 6; --c: -3"><use href="#bloc-carbune"/></svg>
+        <svg class="sapat__decor" style="--r: 7; --c: 2"><use href="#bloc-carbune"/></svg>
+        <svg class="sapat__decor" style="--r: 7; --c: 3"><use href="#bloc-carbune"/></svg>
+        <svg class="sapat__decor" style="--r: 9; --c: -2"><use href="#bloc-fier"/></svg>
+        <svg class="sapat__decor" style="--r: 10; --c: 3"><use href="#bloc-fier"/></svg>
+
+        <!-- Puțul: data-culori = paleta particulelor, data-realizare = mesajul de după spargere. -->
+        <div class="sapat__celula sapat__celula--pamant" style="--r: 0" data-culori="--pamant-1 --pamant-2 --pamant-3" data-realizare="Primul bloc spart">
+          <div class="sapat__intreg"><svg><use href="#bloc-pamant"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+        </div>
+        <div class="sapat__celula sapat__celula--pamant" style="--r: 1" data-culori="--pamant-1 --pamant-2 --pamant-3">
+          <div class="sapat__intreg"><svg><use href="#bloc-pamant"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+        </div>
+        <div class="sapat__celula sapat__celula--pamant" style="--r: 2" data-culori="--pamant-1 --pamant-2 --pamant-3">
+          <div class="sapat__intreg"><svg><use href="#bloc-pamant"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+        </div>
+        <div class="sapat__celula" style="--r: 3" data-culori="--piatra-1 --piatra-2 --piatra-3" data-realizare="Mai tare ca pământul">
+          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+        </div>
+        <div class="sapat__celula" style="--r: 4" data-culori="--piatra-1 --piatra-2 --piatra-3 --pamant-3">
+          <div class="sapat__intreg"><svg><use href="#bloc-pietris"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+        </div>
+        <div class="sapat__celula" style="--r: 5" data-culori="--piatra-1 --piatra-2 --piatra-3">
+          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+        </div>
+        <div class="sapat__celula" style="--r: 6" data-culori="--piatra-2 --piatra-3 --pestera-3" data-realizare="Cărbune pentru torțe">
+          <div class="sapat__intreg"><svg><use href="#bloc-carbune"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+        </div>
+        <div class="sapat__celula" style="--r: 7" data-culori="--piatra-1 --piatra-2 --piatra-3">
+          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+        </div>
+        <div class="sapat__celula" style="--r: 8" data-culori="--piatra-1 --piatra-2 --piatra-3">
+          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+        </div>
+        <div class="sapat__celula" style="--r: 9" data-culori="--piatra-2 --minereu-fier --lemn-2" data-realizare="Fier găsit">
+          <div class="sapat__intreg"><svg><use href="#bloc-fier"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+        </div>
+        <div class="sapat__celula" style="--r: 10" data-culori="--piatra-1 --piatra-2 --piatra-3">
+          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+        </div>
+        <div class="sapat__celula" style="--r: 11" data-culori="--piatra-1 --piatra-2 --piatra-3">
+          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
+        </div>
+        <div class="sapat__celula sapat__celula--pestera" style="--r: 12" data-culori="--piatra-2 --piatra-3 --piatra-4" data-realizare="Ai dat de o peșteră">
+          <div class="sapat__intreg"><svg><use href="#bloc-piatra"/></svg><div class="sapat__fisuri"><svg class="sapat__foaie"><use href="#fisuri"/></svg></div></div>
         </div>
       </div>
     </section>
@@ -384,6 +391,35 @@
     <section class="strat strat--bedrock" id="bedrock">
       <h2>Bedrock</h2>
       <a class="respawn" href="#cer">Respawn</a>
+    </section>
+
+    <!-- Sub bedrock, în afara lumii: cum e făcut site-ul. Cardurile cad cu gravitație când intră în ecran. -->
+    <section class="despre" id="despre" aria-labelledby="despre-titlu">
+      <div class="despre__continut">
+        <h2 class="eticheta" id="despre-titlu">Cum e făcut site-ul</h2>
+        <ul class="carduri">
+          <li class="card">
+            <svg class="card__icon soare--zi" aria-hidden="true"><use href="#soare"/></svg>
+            <h3 class="card__titlu">Animații CSS legate de scroll</h3>
+            <p>Cerul, soarele, norii și fisurile din piatră se mișcă doar din CSS, cu <code>animation-timeline</code>. Browserele care nu îl suportă primesc o variantă statică, completă.</p>
+          </li>
+          <li class="card">
+            <svg class="card__icon" aria-hidden="true"><use href="#creeper"/></svg>
+            <h3 class="card__titlu">Scene fixate cu GSAP</h3>
+            <p>Suprafața folosește GSAP ScrollTrigger: secțiunea se fixează, peisajul merge orizontal, iar explozia pornește o singură dată, în timp real.</p>
+          </li>
+          <li class="card">
+            <svg class="card__icon" aria-hidden="true"><use href="#bloc-iarba"/></svg>
+            <h3 class="card__titlu">Pixel art scris ca text</h3>
+            <p>Fiecare sprite e o grilă de caractere, transformată în SVG de un script PowerShell. Culorile vin din variabile CSS, deci paleta întregii pagini se schimbă dintr-un singur loc.</p>
+          </li>
+          <li class="card">
+            <svg class="card__icon" aria-hidden="true"><use href="#litera-a"/></svg>
+            <h3 class="card__titlu">Accesibil din start</h3>
+            <p>Cu „reducerea mișcării” activată în sistem, pagina devine statică. Titlurile rămân text real, iar animațiile folosesc doar <code>transform</code> și <code>opacity</code>.</p>
+          </li>
+        </ul>
+      </div>
     </section>
   </main>
 

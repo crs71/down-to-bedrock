@@ -2,7 +2,9 @@
   Stratul 2: suprafața.
   Cu animație (clasa .sup--animat, pusă de js/straturi/02-suprafata.js): secțiunea e
   fixată de GSAP, pista de 300vw se deplasează orizontal, copacii cresc, creeper-ul
-  clipește și explodează, apoi „camera” plonjează în crater.
+  clipește și explodează, apoi „camera” face zoom 2× pe crater, ancorat la marginea de jos.
+  Cerul nu e aici: e fundalul comun din 01-cer.css (.cer__fundal), vizibil prin secțiune.
+  Solul are 2 rânduri, iar craterul îl sapă pe tot, deci puțul din stratul 3 continuă direct din el.
 
   Starea statică (reduced-motion / fără GSAP): fereastra de 100svh se derulează
   orizontal manual; copacii sunt mari, creeper-ul stă în picioare, craterul nu există.
@@ -13,7 +15,7 @@
   place-items: normal;
   min-height: 0;
   padding: 0;
-  background: var(--pamant-4);
+  background: none;
 }
 
 .sup__fereastra {
@@ -47,29 +49,16 @@
 }
 
 .sup__lume,
-.sup__cer,
 .sup__pista {
   position: absolute;
   inset: 0;
-}
-
-.sup__soare {
-  --p: 6px;
-  --soare-1: var(--apus-1);
-  --soare-2: var(--apus-2);
-  --soare-3: var(--nether-2);
-  position: absolute;
-  left: 70vw;
-  bottom: calc(var(--bloc) * 4.4);
-  width: calc(16 * var(--p));
-  height: calc(16 * var(--p));
 }
 
 /* Planul îndepărtat: un deal închis la culoare, cu copaci mici. */
 .sup__departe {
   position: absolute;
   left: 0;
-  bottom: calc(var(--bloc) * 4);
+  bottom: calc(var(--bloc) * 2);
   width: 100%;
   height: var(--bloc);
   background: var(--iarba-4);
@@ -95,7 +84,7 @@
 
 /* Pista. --centru = locul creeper-ului, aliniat la grila de blocuri acolo unde browserul știe round(). */
 .sup__pista {
-  --sol: calc(var(--bloc) * 4);
+  --sol: calc(var(--bloc) * 2);
   --centru: 250vw;
 }
 
@@ -152,13 +141,4 @@
   inset: 0;
   background: var(--nor-1);
   opacity: 0;
-}
-
-.sup__intuneric {
-  position: absolute;
-  z-index: 3;
-  inset: 0;
-  background: var(--pamant-4);
-  opacity: 0;
-  pointer-events: none;
 }

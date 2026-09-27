@@ -1,0 +1,68 @@
+/*
+  „Cum e făcut site-ul”: sub bedrock, în afara lumii, la finalul coborârii.
+  Cardurile cad cu gravitație când intră în ecran (js/despre.js); static, stau la locul lor.
+*/
+
+.despre {
+  padding: 5rem 1rem 6rem;
+  background: var(--bedrock-3);
+}
+
+.despre__continut {
+  max-width: 60rem;
+  margin: 0 auto;
+}
+
+.despre__continut > .eticheta {
+  margin-bottom: 2rem;
+}
+
+.carduri {
+  display: grid;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 4 carduri: o coloană pe telefon, 2×2 de la tabletă în sus. */
+@media (min-width: 40rem) {
+  .carduri {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Panou în stilul interfeței din joc: ramă închisă și margini teșite (lumină sus-stânga, umbră jos-dreapta). */
+.card {
+  --p: 3px;
+  padding: 1.25rem;
+  background: var(--piatra-4);
+  border: calc(var(--p) * 1.5) solid var(--pestera-3);
+  box-shadow:
+    inset var(--p) var(--p) 0 var(--piatra-3),
+    inset calc(var(--p) * -1) calc(var(--p) * -1) 0 var(--pestera-2),
+    0 calc(var(--p) * 2) 0 rgb(24 20 37 / 0.5);
+}
+
+.card__icon {
+  display: block;
+  width: calc(16 * var(--p));
+  height: calc(16 * var(--p));
+  margin-bottom: 0.75rem;
+}
+
+.card__titlu {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.card p {
+  margin: 0;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+.card code {
+  font-family: inherit;
+  color: var(--apus-1);
+}

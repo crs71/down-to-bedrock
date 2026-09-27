@@ -1,93 +1,105 @@
-// Stratul 3: pământ și piatră.
-// 1) Fisurile, bara și schimbarea blocurilor sunt doar în CSS (css/straturi/03-piatra.css). Aici urmărim
-//    progresul aceluiași interval (contain 0–100% al .piatra__minerit) și aruncăm particule la fiecare spargere.
-// 2) Cardurile cad cu gravitație (GSAP) când intră în ecran și sar puțin la aterizare, cu puțin praf.
+// Stratul 3: pământ și piatră, puțul săpat sub crater.
+// Fisurile și spargerea fiecărui bloc sunt doar în CSS (view(), cover 25% → 50%, în 03-piatra.css). Aici:
+// 1) aliniem puțul cu craterul de la suprafață și grila zidului cu puțul;
+// 2) bara de minerit urmează blocul care crapă acum;
+// 3) la fiecare spargere aruncăm particule, iar la unele blocuri cade de sus un mesaj de realizare.
 (() => {
   const { miscareRedusa, areGsap } = window.Coborarea;
   const variabila = (nume) => getComputedStyle(document.documentElement).getPropertyValue(nume).trim();
 
-  // ---------- Spargerea blocurilor ----------
-  const minerit = document.querySelector('.piatra__minerit');
-  const blocuri = [...minerit.querySelectorAll('.piatra__bloc')];
-  const praguri = [0.30, 0.58, 0.86]; // aceleași ca în keyframes bloc-1/2/3 din 03-piatra.css
+  const sectiune = document.querySelector('.strat--piatra');
+  const celule = [...sectiune.querySelectorAll('.sapat__celula')];
+  const bara = sectiune.querySelector('.sapat__bara i');
+  const realizari = document.querySelector('.realizari');
   const areTimeline = CSS.supports('animation-timeline: view()');
-  let progresAnterior = null;
+  const INCEPUT = 0.25;  // aceleași valori ca animation-range: cover 25% cover 50%
+  const SPARGERE = 0.5;
 
-  function progresMinerit() {
-    const r = minerit.getBoundingClientRect();
-    const drum = r.height - window.innerHeight;
-    return drum > 0 ? -r.top / drum : 0;
+  // ---------- 1) Alinierea ----------
+  // Centrul puțului vine de la suprafață (Coborarea.sapat, la finalul zoom-ului), altfel e mijlocul ecranului.
+  // Faza zidului mută grila de blocuri ca o margine de bloc să cadă exact pe marginea puțului.
+  function aliniaza() {
+    const b2 = celule[0].offsetWidth;
+    if (!b2) return;
+    const centru = window.Coborarea.sapat?.centru ?? sectiune.clientWidth / 2;
+    const stanga = centru - b2 / 2;
+    const faza = (((stanga % b2) + b2) % b2) - b2;
+    sectiune.style.setProperty('--sapat-stanga', `${stanga}px`);
+    sectiune.style.setProperty('--sapat-faza', `${faza}px`);
   }
 
-  function sparge(bloc) {
-    const r = bloc.getBoundingClientRect();
+  window.Coborarea.aliniazaSapatul = aliniaza;
+  aliniaza();
+  window.addEventListener('resize', aliniaza);
+
+  // ---------- 3) Mesajele de realizare ----------
+  const aratate = new Set();
+
+  function realizare(nume, icon) {
+    if (!areGsap || aratate.has(nume)) return;
+    aratate.add(nume);
+
+    const el = document.createElement('div');
+    el.className = 'realizare';
+    el.innerHTML = `<svg><use href="${icon}"/></svg><span><span class="realizare__eticheta">Realizare deblocată</span><span class="realizare__nume"></span></span>`;
+    el.querySelector('.realizare__nume').textContent = nume;
+    realizari.appendChild(el);
+
+    // Cade de deasupra ecranului, sare puțin la aterizare, stă 2 secunde și dispare.
+    const inaltime = el.getBoundingClientRect().bottom + 20;
+    gsap.timeline({ onComplete: () => el.remove() })
+      .fromTo(el, { y: -inaltime, rotation: -3 }, { y: 0, rotation: 0, duration: 0.7, ease: 'power2.in' })
+      .to(el, { y: -8, duration: 0.1, ease: 'power1.out' })
+      .to(el, { y: 0, duration: 0.14, ease: 'power1.in' })
+      .to(el, { autoAlpha: 0, duration: 0.4 }, '+=2.2');
+  }
+
+  // ---------- Spargerea ----------
+  function sparge(celula) {
+    const r = celula.getBoundingClientRect();
     const pixel = r.width / 16;
     window.Coborarea.particule.explozie(r.left + r.width / 2, r.top + r.height / 2, {
-      culori: bloc.dataset.culori.split(' ').map(variabila),
-      numar: 60,
+      culori: celula.dataset.culori.split(' ').map(variabila),
+      numar: 50,
       viteza: 45 * pixel,
-      marime: Math.round(pixel * 1.5),
+      marime: Math.max(3, Math.round(pixel * 1.2)),
       gravitatie: 120 * pixel,
       viata: 0.9,
     });
-  }
-
-  function verificaSpargeri() {
-    if (!areTimeline || miscareRedusa.matches) return;
-    const p = progresMinerit();
-    if (progresAnterior !== null) {
-      praguri.forEach((prag, i) => {
-        if (progresAnterior < prag && p >= prag) sparge(blocuri[i]);
-      });
+    if (celula.dataset.realizare) {
+      realizare(celula.dataset.realizare, celula.querySelector('.sapat__intreg use').getAttribute('href'));
     }
-    progresAnterior = p;
   }
 
-  window.addEventListener('scroll', verificaSpargeri, { passive: true });
+  // ---------- 2) Bara și pragurile, la fiecare scroll ----------
+  // Progresul unei celule = poziția ei în intervalul `cover` al view(): 0 când intră pe jos, 1 când iese pe sus.
+  const anterior = celule.map(() => null);
 
-  // ---------- Cardurile cu gravitație ----------
-  if (!areGsap) return;
-  const lista = document.querySelector('.carduri');
-  const carduri = [...lista.querySelectorAll('.card')];
-
-  function praf(card) {
-    const r = card.getBoundingClientRect();
-    const optiuni = {
-      culori: ['--piatra-1', '--piatra-2'].map(variabila),
-      numar: 6,
-      viteza: 140,
-      marime: 4,
-      gravitatie: 500,
-      viata: 0.5,
-    };
-    window.Coborarea.particule.explozie(r.left + 8, r.bottom, optiuni);
-    window.Coborarea.particule.explozie(r.right - 8, r.bottom, optiuni);
+  function progres(el) {
+    const r = el.getBoundingClientRect();
+    return (window.innerHeight - r.top) / (window.innerHeight + r.height);
   }
 
-  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
-    gsap.set(carduri, { autoAlpha: 0 });
-
-    ScrollTrigger.create({
-      trigger: lista,
-      start: 'top 80%',
-      once: true,
-      onEnter() {
-        const tl = gsap.timeline();
-        // Distanțele se măsoară o singură dată, înainte de animație: o funcție ar fi reevaluată
-        // de GSAP la prima redare, când cardul e deja mutat în sus.
-        const inaltimi = carduri.map((card) => card.getBoundingClientRect().bottom + 40);
-        carduri.forEach((card, i) => {
-          const start = i * 0.16;
-          const cadere = 0.6;
-          tl.fromTo(card,
-            { y: -inaltimi[i], rotation: i % 2 ? 4 : -4, autoAlpha: 1 },
-            { y: 0, rotation: 0, duration: cadere, ease: 'power2.in' },
-            start)
-            .call(praf, [card], start + cadere)
-            .to(card, { y: -10, duration: 0.1, ease: 'power1.out' }, start + cadere)
-            .to(card, { y: 0, duration: 0.14, ease: 'power1.in' }, start + cadere + 0.1);
-        });
-      },
+  function laScroll() {
+    if (!areTimeline || miscareRedusa.matches) return;
+    let umplere = 0;
+    celule.forEach((celula, i) => {
+      const p = progres(celula);
+      const pAnterior = anterior[i];
+      // Spargem doar blocul care chiar a trecut prin zona de crăpare: nu la prima măsurătoare
+      // (pagina deschisă la mijloc) și nu când un salt (tasta End, un link) trece peste el.
+      if (pAnterior !== null && pAnterior < SPARGERE && p >= SPARGERE
+        && pAnterior >= INCEPUT - 0.1 && p < 0.8) {
+        sparge(celula);
+      }
+      anterior[i] = p;
+      if (p >= INCEPUT && p < SPARGERE) {
+        umplere = Math.min(9, Math.floor(((p - INCEPUT) / (SPARGERE - INCEPUT)) * 10)) / 9;
+      }
     });
-  });
+    bara.style.transform = `scaleX(${umplere})`;
+  }
+
+  window.addEventListener('scroll', laScroll, { passive: true });
+  laScroll();
 })();

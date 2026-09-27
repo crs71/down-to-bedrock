@@ -155,16 +155,6 @@ img {
   font-size: 1.25rem;
 }
 
-/* Zid de blocuri pe tot fundalul: <svg class="zid" viewBox="0 0 16 960" preserveAspectRatio="xMinYMin meet">.
-   Cu înălțimea de 60 de blocuri și viewBox-ul îngust, scara iese mereu --bloc / 16, oricât de lat e ecranul. */
-.zid {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: calc(var(--bloc) * 60);
-}
-
 /* Subsolul paginii. */
 .subsol {
   padding: 1.5rem 1rem 2rem;
@@ -221,10 +211,7 @@ img {
   padding: 4rem 1rem;
 }
 
-.strat--cer       { background: var(--cer-2); }
-.strat--suprafata { background: var(--iarba-2); }
-/* Piatra începe cu --pamant-4: aceeași culoare ca interiorul craterului din stratul 2. */
-.strat--piatra    { background: linear-gradient(var(--pamant-4), var(--piatra-3)); }
+/* Cerul, suprafața și piatra își au fundalul în css/straturi/. */
 .strat--pestera   { background: var(--pestera-3); }
 .strat--mina      { background: var(--lemn-4); }
 .strat--nether    { background: var(--nether-fundal); }
