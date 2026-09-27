@@ -22,6 +22,7 @@
   min-height: 100vh;
   min-height: 100svh;
   padding: 5rem 1rem 6rem;
+  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
   overflow: clip;
 }
 
@@ -81,6 +82,7 @@
 .bedrock__fisuri {
   position: absolute;
   inset: 0;
+  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
   overflow: clip;
   opacity: 0.85;
 }

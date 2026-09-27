@@ -26,6 +26,7 @@
   position: relative;
   height: 100vh;
   height: 100svh;
+  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
   overflow: clip;
 }
 
@@ -176,21 +177,22 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .js .strat--mina {
-    height: 260vh;
-    height: 260svh;
-  }
-
-  .js .mina__scena {
-    position: sticky;
-    top: 0;
-  }
-
   .js .mina__torta::before {
     animation: torta-palpaie 1.3s steps(1) infinite;
   }
 
   @supports (animation-timeline: view()) {
+    /* Fără animation-timeline vagonetul n-ar avea ce să facă pe scroll, deci scena rămâne scurtă. */
+    .js .strat--mina {
+      height: 260vh;
+      height: 260svh;
+    }
+
+    .js .mina__scena {
+      position: sticky;
+      top: 0;
+    }
+
     .js .mina__vagonet {
       left: 0;
       animation: vagonet-merge linear both;

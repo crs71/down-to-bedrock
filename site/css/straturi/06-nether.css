@@ -25,6 +25,7 @@
   position: relative;
   height: 100vh;
   height: 100svh;
+  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
   overflow: clip;
 }
 
@@ -51,6 +52,7 @@
   top: 40vh;
   top: 40svh;
   bottom: calc(var(--bloc) * 2);
+  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
   overflow: clip;
   filter: url(#caldura);
   -webkit-mask-image: linear-gradient(transparent, #000 40%);
@@ -85,6 +87,7 @@
   left: 74%;
   bottom: calc(var(--bloc) * 2);
   width: var(--bloc);
+  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
   overflow: clip;
   box-shadow: 0 0 calc(var(--bloc) / 2) rgb(247 118 34 / 0.5);
 }
@@ -185,6 +188,7 @@
   top: var(--bloc);
   width: calc(var(--bloc) * 2);
   height: calc(var(--bloc) * 3);
+  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
   overflow: clip;
   box-shadow: 0 0 calc(var(--bloc) * 0.75) calc(var(--bloc) * 0.2) rgb(181 80 136 / 0.55);
 }
@@ -207,16 +211,6 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .js .strat--nether {
-    height: 400vh;
-    height: 400svh;
-  }
-
-  .js .nether__scena {
-    position: sticky;
-    top: 0;
-  }
-
   .js .nether__cascada svg {
     animation: lava-cade 16s linear infinite;
   }
@@ -230,6 +224,17 @@
   }
 
   @supports (animation-timeline: view()) {
+    /* Fără animation-timeline nu există portal, deci nici drumul lung prin secțiune. */
+    .js .strat--nether {
+      height: 400vh;
+      height: 400svh;
+    }
+
+    .js .nether__scena {
+      position: sticky;
+      top: 0;
+    }
+
     .js .nether__portal {
       display: block;
       animation: portal-intra linear both;

@@ -22,6 +22,7 @@
   height: calc(var(--b2) * 13);
   padding: 0;
   background: var(--pestera-3);
+  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
   overflow: clip; /* clip, nu hidden: hidden ar face din secțiune un container de scroll pentru view() */
 }
 
@@ -92,6 +93,7 @@
   display: none;
   position: absolute;
   inset: 0;
+  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
   overflow: clip;
   opacity: 0.85;
 }

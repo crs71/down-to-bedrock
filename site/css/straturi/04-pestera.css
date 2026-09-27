@@ -22,6 +22,7 @@
   position: relative;
   height: 100vh;
   height: 100svh;
+  overflow: hidden; /* rezervă pentru browserele fără clip (care n-au nici view()) */
   overflow: clip;
 }
 

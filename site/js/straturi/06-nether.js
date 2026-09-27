@@ -30,12 +30,10 @@
     return drum > 0 ? -r.top / drum : 0;
   }
 
-  function animat() {
-    return !miscareRedusa.matches && areTimeline;
-  }
-
+  // Paleta se schimbă doar prin portal, care există numai cu animation-timeline. Scânteile și căldura
+  // merg și fără el: atunci secțiunea e scurtă, fără portal, deci Nether-ul e vizibil de la început.
   function actualizeazaPaleta() {
-    const nether = animat() && progres() >= PRAG_PALETA;
+    const nether = !miscareRedusa.matches && areTimeline && progres() >= PRAG_PALETA;
     if (nether !== radacina.classList.contains('paleta-nether')) {
       radacina.classList.toggle('paleta-nether', nether);
       culoareTema.content = nether ? '#a22633' : temaNormala;
@@ -43,7 +41,7 @@
   }
 
   function scantei() {
-    const p = progres();
+    const p = areTimeline ? progres() : 1;
     if (p >= PRAG_LUME && p <= 1.05) {
       const r = lava.getBoundingClientRect();
       window.Coborarea.particule.emite(r.left + Math.random() * r.width, r.top + 4, {
@@ -70,7 +68,7 @@
   }
 
   function actualizeazaMiscarea() {
-    const merge = vizibil && animat();
+    const merge = vizibil && !miscareRedusa.matches;
     if (merge && !emitator) {
       emitator = setInterval(scantei, 110);
       sprite.unpauseAnimations();

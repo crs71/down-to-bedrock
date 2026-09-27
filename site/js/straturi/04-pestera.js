@@ -142,9 +142,10 @@
 
   function laScroll() {
     if (!pornit) return;
+    // Fără GSAP minereurile nu pot zbura, deci nici hotbar-ul n-are ce arăta.
+    if (!areGsap) return;
     const p = progres();
     hotbar.classList.toggle('hotbar--vizibil', p > -0.12 && p < 1.02);
-    if (!areGsap) return;
     for (const m of minereuri) {
       if (p >= m.prag && m.stare === 'ascuns') {
         // Animat doar când chiar treci prin prag cu scena pe ecran; la încărcare sau la un salt, direct în hotbar.
