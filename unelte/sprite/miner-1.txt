@@ -1,0 +1,43 @@
+# Minerul in mers: acelasi corp, picioarele departate.
+id: miner-1
+h = --apus-2
+l = --apus-1
+k = --lemn-4
+r = --lemn-3
+s = --lemn-1
+e = --obsidian-4
+m = --lemn-2
+b = --suflet-2
+c = --suflet-3
+g = --lemn-4
+p = --portal-3
+o = --obsidian-4
+
+...hhhhh....
+..hhhhhhhh..
+..hhhhhhhhhl
+..kkkkkkkkk.
+..rrsssssss.
+..rrssssess.
+..rssssssss.
+..rssssmmss.
+...sssssss..
+....bbbb....
+...bbbbbbb..
+...bbbbcbb..
+...bbbbcbb..
+...bbbbbcb..
+...bbbbbsb..
+...bbbbbsb..
+...gggmggg..
+...ppppppp..
+...ppppppp..
+..pppp.ppp..
+..ppp...ppp.
+..ppp...ppp.
+.ppp.....pp.
+.ppp.....pp.
+.pp......pp.
+.oo......oo.
+ooo......ooo
+............

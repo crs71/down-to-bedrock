@@ -202,3 +202,30 @@
 @keyframes bedrock-tremura {
   50% { transform: translateX(calc(var(--p) / 3)); }
 }
+
+.bedrock__butoane {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Butonul spre joc: aceeași formă, în verde. Culori fixe: sub paleta Nether, --iarba-* devine roșu. */
+.buton-respawn--joc {
+  background: #3e8948;
+  box-shadow:
+    inset 3px 3px 0 #63c74d,
+    inset -3px -3px 0 #265c42,
+    0 6px 0 rgb(0 0 0 / 0.45);
+}
+
+.buton-respawn--joc:hover {
+  background: #63c74d;
+}
+
+.buton-respawn--joc:active {
+  box-shadow:
+    inset 3px 3px 0 #63c74d,
+    inset -3px -3px 0 #265c42,
+    0 3px 0 rgb(0 0 0 / 0.45);
+}

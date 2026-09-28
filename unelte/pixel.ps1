@@ -1,5 +1,6 @@
 # Genereaza sprite-urile SVG din grilele de caractere din unelte/sprite/*.txt
 # si le scrie in site/index.html, intre <!-- sprite:inceput --> si <!-- sprite:sfarsit -->.
+# Tot de aici iese site/play/js/sprite.js: aceleasi grile, cu paleta din css/base.css, pentru joc.
 #
 # Rulare (din folderul proiectului):
 #   powershell -ExecutionPolicy Bypass -File unelte/pixel.ps1
@@ -24,7 +25,8 @@ $sursa = Join-Path $PSScriptRoot 'sprite'
 $pagina = Join-Path (Join-Path $proiect 'site') 'index.html'
 
 function Read-Sprite([string]$cale) {
-  $s = @{ id = $null; baza = $null; culori = @{}; grila = @() }
+  # culori face diferenta intre litere mari si mici (c si C pot fi culori diferite); @{} simplu nu o face.
+  $s = @{ id = $null; baza = $null; culori = (New-Object System.Collections.Hashtable ([StringComparer]::Ordinal)); grila = @() }
   $inGrila = $false
   foreach ($linie in [IO.File]::ReadAllLines($cale)) {
     $l = $linie.TrimEnd()
@@ -59,7 +61,7 @@ function ConvertTo-Symbol($s) {
   }
   $baza = if ($numar.ContainsKey([char]'.')) { $null } else { [string]$baza }
 
-  $trasee = [ordered]@{}
+  $trasee = New-Object System.Collections.Specialized.OrderedDictionary ([StringComparer]::Ordinal)
   if ($baza) { $trasee[$baza] = New-Object Text.StringBuilder("M0 0h${w}v${h}h-${w}z") }
   $chei = [string[]]@($s.culori.Keys)
   [Array]::Sort($chei, [StringComparer]::Ordinal)
@@ -90,7 +92,12 @@ function ConvertTo-Symbol($s) {
 $simboluri = ''
 $fisiere = [string[]]@(Get-ChildItem $sursa -Filter *.txt | ForEach-Object { $_.FullName })
 [Array]::Sort($fisiere, [StringComparer]::Ordinal)
-foreach ($f in $fisiere) { $simboluri += ConvertTo-Symbol (Read-Sprite $f) }
+$sprite = @()
+foreach ($f in $fisiere) {
+  $s = Read-Sprite $f
+  $sprite += $s
+  $simboluri += ConvertTo-Symbol $s
+}
 
 $utf8 = New-Object Text.UTF8Encoding($false)
 $html = [IO.File]::ReadAllText($pagina, $utf8)
@@ -99,4 +106,39 @@ if ($html -notmatch $tipar) { throw 'site/index.html: lipsesc marcajele sprite:i
 $html = [regex]::Replace($html, $tipar, { param($m) $m.Groups[1].Value + "`n" + $simboluri + $m.Groups[2].Value })
 [IO.File]::WriteAllText($pagina, $html, $utf8)
 
-Write-Host "$($fisiere.Count) sprite-uri scrise in site/index.html"
+# ---------- Aceleasi sprite-uri pentru joc (site/play/js/sprite.js) ----------
+# Jocul deseneaza pe <canvas>, deci are nevoie de grile si de culorile concrete, nu de variabile CSS.
+# Paleta vine din blocul :root din css/base.css; PALETA_NETHER, din blocul html.paleta-nether.
+function ConvertTo-Paleta([string]$bloc) {
+  $perechi = @()
+  foreach ($m in [regex]::Matches($bloc, '(--[\w-]+):\s*(#[0-9a-fA-F]{3,8})\s*;')) {
+    $perechi += "`"$($m.Groups[1].Value)`": `"$($m.Groups[2].Value.ToLowerInvariant())`""
+  }
+  '{ ' + ($perechi -join ', ') + ' }'
+}
+
+$css = [IO.File]::ReadAllText((Join-Path (Join-Path (Join-Path $proiect 'site') 'css') 'base.css'), $utf8)
+$radacina = [regex]::Match($css, '(?s)\n:root \{(.*?)\n\}').Groups[1].Value
+$nether = [regex]::Match($css, '(?s)\nhtml\.paleta-nether,\s*\.strat--nether \{(.*?)\n\}').Groups[1].Value
+if (-not $radacina -or -not $nether) { throw 'site/css/base.css: nu gasesc blocurile :root si html.paleta-nether' }
+
+$js = New-Object Text.StringBuilder
+[void]$js.Append("// Generat de unelte/pixel.ps1 din unelte/sprite/*.txt si din paleta din css/base.css. Nu edita de mana.`n")
+[void]$js.Append("// SPRITE[id] = { l, h, baza, culori: { caracter: variabila }, grila: [randuri] }; '.' = transparent.`n")
+[void]$js.Append("export const PALETA = $(ConvertTo-Paleta $radacina);`n")
+[void]$js.Append("export const PALETA_NETHER = $(ConvertTo-Paleta $nether);`n")
+[void]$js.Append("export const SPRITE = {`n")
+foreach ($s in $sprite) {
+  $chei = [string[]]@($s.culori.Keys)
+  [Array]::Sort($chei, [StringComparer]::Ordinal)
+  $culori = ($chei | ForEach-Object { "`"$_`": `"$($s.culori[$_])`"" }) -join ', '
+  $baza = if ($s.baza) { "`"$($s.baza)`"" } else { 'null' }
+  $randuri = ($s.grila | ForEach-Object { "`"$_`"" }) -join ', '
+  [void]$js.Append("  `"$($s.id)`": { l: $($s.grila[0].Length), h: $($s.grila.Count), baza: $baza, culori: { $culori }, grila: [$randuri] },`n")
+}
+[void]$js.Append("};`n")
+$dosarJoc = Join-Path (Join-Path (Join-Path $proiect 'site') 'play') 'js'
+if (-not (Test-Path -LiteralPath $dosarJoc)) { New-Item -ItemType Directory -Path $dosarJoc | Out-Null }
+[IO.File]::WriteAllText((Join-Path $dosarJoc 'sprite.js'), $js.ToString(), $utf8)
+
+Write-Host "$($fisiere.Count) sprite-uri scrise in site/index.html si site/play/js/sprite.js"

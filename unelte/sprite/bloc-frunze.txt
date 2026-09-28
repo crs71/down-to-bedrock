@@ -1,0 +1,23 @@
+# Frunze: verde in trei tonuri, cu goluri prin care se vede ce e in spate.
+id: bloc-frunze
+a = --iarba-1
+b = --iarba-2
+c = --iarba-3
+d = --iarba-4
+
+bbab.bbcbbabb.bc
+bcbbbbbbcbbbbbbb
+.bbbcbabbbb.cbba
+bbabbbbbbcbbbbbb
+bcbb.dbbbbbbabbd
+bbbbbbbcbbbb.bbb
+abbcbbbbbabbbbcb
+bbbbabb.bbbcbbbb
+.cbbbbbbbbbbbabb
+bbbbcbbabbd.bbbb
+bbabbbbbbbbbbcbb
+bdbbb.cbbbabbbbb
+bbbbbbbbcbbbbb.b
+bcbabbbbbbbcbbbb
+.bbbbcbb.bbbbbab
+bbcbbbbbbbabbcbb

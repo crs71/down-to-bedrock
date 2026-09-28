@@ -1,0 +1,43 @@
+# Minerul din joc, in picioare, cu fata spre dreapta: casca cu lampa, camasa albastra.
+id: miner-0
+h = --apus-2
+l = --apus-1
+k = --lemn-4
+r = --lemn-3
+s = --lemn-1
+e = --obsidian-4
+m = --lemn-2
+b = --suflet-2
+c = --suflet-3
+g = --lemn-4
+p = --portal-3
+o = --obsidian-4
+
+...hhhhh....
+..hhhhhhhh..
+..hhhhhhhhhl
+..kkkkkkkkk.
+..rrsssssss.
+..rrssssess.
+..rssssssss.
+..rssssmmss.
+...sssssss..
+....bbbb....
+...bbbbbbb..
+...bbbcbbb..
+...bbbcbbb..
+...bbbcbbb..
+...bbbsbbb..
+...bbbsbbb..
+...gggmggg..
+...ppppppp..
+...ppppppp..
+...ppp.ppp..
+...ppp.ppp..
+...ppp.ppp..
+...ppp.ppp..
+...ppp.ppp..
+...ppp.ppp..
+...ooo.ooo..
+...ooo.oooo.
+............

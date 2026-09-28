@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Down to Bedrock: The Game</title>
+  <meta name="description" content="A small 2D mining game in pixel art: dig from the grass all the way down to bedrock, mine ores and build with the blocks you collect.">
+  <meta name="theme-color" content="#181425">
+  <link rel="canonical" href="https://down-to-bedrock.pages.dev/play/">
+
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Down to Bedrock">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://down-to-bedrock.pages.dev/play/">
+  <meta property="og:title" content="Down to Bedrock: The Game">
+  <meta property="og:description" content="A small 2D mining game in pixel art: dig from the grass all the way down to bedrock.">
+  <meta property="og:image" content="https://down-to-bedrock.pages.dev/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Down to Bedrock: a cross-section of the world, from grass and stone down to lava and bedrock">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preload" href="../assets/fonts/pixelify-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="joc.css">
+  <!-- Modul ES, fără build: js/joc.js importă restul (atlas, lume, jucător, control, particule, sprite). -->
+  <script type="module" src="js/joc.js"></script>
+</head>
+<body class="joc">
+  <canvas class="joc__ecran" role="img" aria-label="The game world: a miner standing on grass, above layers of dirt and stone"></canvas>
+
+  <!-- HUD: adâncimea Y și biomul, ca pe site. -->
+  <div class="hud" aria-live="off">
+    <span class="hud__y">Y: 64</span>
+    <span class="hud__biom">Plains</span>
+  </div>
+
+  <button class="joc__pauza" type="button">Menu</button>
+  <div class="joc__mesaje" aria-live="polite"></div>
+
+  <!-- Hotbar-ul: blocurile adunate. Un click (sau 1–9, rotița) alege blocul de construit. -->
+  <div class="hotbar hotbar--vizibil" aria-label="Hotbar"></div>
+
+  <!-- Butoanele de pe ecran, doar pe ecranele tactile (joc.css). -->
+  <div class="joc__butoane">
+    <div class="joc__grup">
+      <button class="joc__buton" type="button" data-control="stanga" aria-label="Walk left">◀</button>
+      <button class="joc__buton" type="button" data-control="dreapta" aria-label="Walk right">▶</button>
+    </div>
+    <div class="joc__grup">
+      <button class="joc__buton joc__buton--mod" type="button" data-control="mod" aria-pressed="false">Mine</button>
+      <button class="joc__buton" type="button" data-control="sus" aria-label="Jump">▲</button>
+    </div>
+  </div>
+
+  <!-- Meniul: la început, la pauză (Menu sau Esc) și la final. -->
+  <div class="joc__meniu" role="dialog" aria-modal="true" aria-labelledby="joc-titlu">
+    <section class="joc__panou joc__panou--start">
+      <h1 class="joc__titlu" id="joc-titlu">Down to Bedrock</h1>
+      <p class="joc__subtitlu">The game · early version</p>
+      <p>Dig from the grass all the way down to bedrock. Mine ores on the way and build with the blocks you collect.</p>
+      <ul class="joc__taste joc__taste--mouse">
+        <li><b>A D</b> or <b>← →</b> walk, <b>W</b>, <b>↑</b> or <b>Space</b> jump</li>
+        <li><b>Hold left click</b> on a block to mine it</li>
+        <li><b>Right click</b> to build, <b>1–9</b> or the wheel to pick a block</li>
+        <li><b>Esc</b> pauses the game</li>
+      </ul>
+      <ul class="joc__taste joc__taste--atingere">
+        <li><b>◀ ▶</b> walk, <b>▲</b> jump (you also hop up single blocks)</li>
+        <li><b>Touch and hold</b> a block to mine it</li>
+        <li>Switch to <b>Build</b>, then tap to place the block picked in the hotbar</li>
+      </ul>
+      <div class="joc__actiuni">
+        <button class="joc__joaca" type="button">Play</button>
+        <button class="joc__nou joc__secundar" type="button">New world</button>
+      </div>
+      <a class="joc__inapoi" href="../">← Back to the site</a>
+    </section>
+    <section class="joc__panou joc__panou--final" hidden>
+      <h2 class="joc__titlu">You reached bedrock!</h2>
+      <p class="joc__rezultat"></p>
+      <div class="joc__actiuni">
+        <button class="joc__continua" type="button">Keep exploring</button>
+        <button class="joc__nou joc__secundar" type="button">New world</button>
+      </div>
+      <a class="joc__inapoi" href="../">← Back to the site</a>
+    </section>
+  </div>
+</body>
+</html>

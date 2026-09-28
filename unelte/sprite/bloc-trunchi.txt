@@ -1,0 +1,22 @@
+# Trunchi de copac vazut din lateral: scoarta cu dungi verticale.
+id: bloc-trunchi
+a = --lemn-3
+b = --lemn-4
+c = --lemn-2
+
+abacaabcaabaacab
+abacaabbaabaacab
+abacbabcaabaacab
+abacaabcaabbacab
+abbcaabcaabaacab
+abacaabcaabacabb
+abacaabcbabaacab
+abacaabcaabaacab
+abacaabcaabaabab
+abacabbcaabaacab
+abbcaabcaabaacab
+abacaabcaabacacb
+abacaabcabbaacab
+abacaabcaabaacab
+abacaabbaabaacbb
+abacaabcaabaacab

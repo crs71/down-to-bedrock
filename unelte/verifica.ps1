@@ -4,7 +4,8 @@
 #  1. Caile locale din HTML (href/src) si din CSS (url()) exista, cu literele mari/mici exacte:
 #     serverele Cloudflare (Linux) fac diferenta intre ele, Windows nu.
 #  2. Fiecare trimitere interna (href="#id", url(#id)) are un element cu acel id.
-#  3. Sprite-urile din site/index.html sunt la zi fata de unelte/sprite/*.txt.
+#  3. Sprite-urile din site/index.html si din site/play/js/sprite.js sunt la zi fata de unelte/sprite/*.txt;
+#     importurile relative din modulele JS exista.
 #  4. Content-Security-Policy din site/_headers permite scripturile paginii: hash-ul fiecarui
 #     script inline si domeniul fiecarui script extern; scripturile externe au SRI.
 #  5. Fara handlere inline (onclick=...) sau linkuri javascript:, pe care CSP le-ar bloca.
@@ -79,15 +80,26 @@ foreach ($f in $css) {
   }
 }
 
+# Importurile relative din modulele JS (jocul din site/play/js/) trebuie sa existe, cu literele exacte.
+foreach ($f in @(Get-ChildItem -LiteralPath $site -Recurse -File -Filter *.js)) {
+  $text = Citeste $f.FullName
+  foreach ($m in [regex]::Matches($text, '(?m)^\s*(?:import|export)\b[^;''"]*?[''"](\.{1,2}/[^''"]+)[''"]')) {
+    if (-not (Test-CaleExacta $f.DirectoryName $m.Groups[1].Value)) { $erori.Add("$(Relativ $f.FullName): importul '$($m.Groups[1].Value)' nu exista sau are alte litere mari/mici") }
+  }
+}
+
 # ---------- 3: sprite-urile sunt la zi ----------
-# pixel.ps1 regenereaza zona dintre marcaje; daca iese altceva decat ce e in fisier, sursa si pagina nu se potrivesc.
-$pagina = Join-Path $site 'index.html'
-$inainte = Citeste $pagina
+# pixel.ps1 regenereaza zona dintre marcaje din index.html si site/play/js/sprite.js; daca iese altceva
+# decat ce e in fisiere, sursele si paginile nu se potrivesc.
+$generate = @((Join-Path $site 'index.html'), (Join-Path (Join-Path (Join-Path $site 'play') 'js') 'sprite.js'))
+$inainte = @{}
+foreach ($g in $generate) { $inainte[$g] = if (Test-Path -LiteralPath $g) { Citeste $g } else { $null } }
 & (Join-Path $PSScriptRoot 'pixel.ps1') 6>$null | Out-Null
-$dupa = Citeste $pagina
-if ($dupa -cne $inainte) {
-  [IO.File]::WriteAllText($pagina, $inainte, $utf8)
-  $erori.Add('site/index.html: sprite-urile nu sunt la zi; ruleaza unelte/pixel.ps1 si fa commit')
+foreach ($g in $generate) {
+  if ((Citeste $g) -cne $inainte[$g]) {
+    if ($null -eq $inainte[$g]) { Remove-Item -LiteralPath $g } else { [IO.File]::WriteAllText($g, $inainte[$g], $utf8) }
+    $erori.Add("$(Relativ $g): sprite-urile nu sunt la zi; ruleaza unelte/pixel.ps1 si fa commit")
+  }
 }
 
 # ---------- 4: Content-Security-Policy ----------
