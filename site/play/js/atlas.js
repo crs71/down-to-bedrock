@@ -71,12 +71,12 @@ export function creeazaAtlas(p) {
   return { p, imagine };
 }
 
-// O iconiță la mărimea naturală (16×16), pentru sloturile din hotbar; CSS-ul o mărește pixelat.
-export function iconita(id) {
+// O iconiță la mărimea naturală (de ex. 16×16), pentru hotbar și crafting; CSS-ul o mărește pixelat.
+export function iconita(id, paleta) {
   const s = SPRITE[id];
   const c = document.createElement('canvas');
   c.width = s.l;
   c.height = s.h;
-  deseneazaGrila(c.getContext('2d'), id, 0, 0, 1);
+  deseneazaGrila(c.getContext('2d'), id, 0, 0, 1, paleta ? { ...PALETA, ...paleta } : PALETA);
   return c;
 }

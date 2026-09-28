@@ -1,5 +1,6 @@
 // Intrările, adunate într-o singură stare pe care o citește bucla jocului.
-// - Tastatură: A/D sau săgeți pentru mers, W, săgeata sus sau Space pentru săritură, 1–9 pentru slot.
+// - Tastatură: A/D sau săgeți pentru mers, W, săgeata sus sau Space pentru săritură, 1–9 pentru slot,
+//   E pentru crafting.
 // - Mouse: ținta e sub cursor; click stânga ținut apăsat sapă, click dreapta pune blocul din slot.
 // - Atingere: butoanele de pe ecran pentru mers și săritură; atingi un bloc și ții apăsat ca să-l sapi.
 //   Butonul de mod trece între săpat și construit (în modul construit, o atingere pune un bloc).
@@ -24,6 +25,7 @@ export function creeazaIntrare(canvas, butoane) {
     constructie: false, // modul de pe telefon
     slot: null,         // slotul ales de la tastatură (consumat de joc)
     roata: 0,           // pași de rotiță (consumați de joc)
+    atelier: false,     // cerere de a deschide sau închide crafting-ul, tasta E (consumată de joc)
     tactil: false,      // ultima intrare a fost o atingere
   };
 
@@ -34,12 +36,17 @@ export function creeazaIntrare(canvas, butoane) {
   };
 
   window.addEventListener('keydown', (e) => {
-    if (e.target.closest && e.target.closest('button, a, input')) return;
+    // Pe un buton (de exemplu un slot apăsat cu mouse-ul), Space și Enter rămân ale butonului;
+    // tastele de mers merg în continuare.
+    const peButon = e.target.closest && e.target.closest('button, a');
+    if (peButon && (e.code === 'Space' || e.code === 'Enter')) return;
     if (taste[e.code]) {
       stare[taste[e.code]] = true;
       e.preventDefault();
     } else if (/^Digit[1-9]$/.test(e.code)) {
       stare.slot = Number(e.code.slice(5)) - 1;
+    } else if (e.code === 'KeyE' && !e.repeat) {
+      stare.atelier = true;
     }
   });
   window.addEventListener('keyup', (e) => {

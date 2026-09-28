@@ -11,15 +11,16 @@ Site cu temă de lume din blocuri (textul paginii e în engleză): cobori prin s
 - Bedrock: blocul care nu se sparge, Respawn și butonul spre joc
 
 ## Jocul (`site/play/`)
-Un joc 2D de minat, în aceeași lume: sapi de la iarbă până la bedrock, strângi blocuri și construiești. Adresa: https://down-to-bedrock.pages.dev/play/
+Un joc 2D de minat, în aceeași lume: sapi de la iarbă până la bedrock, strângi blocuri și construiești. Peșterile sunt întunecate (torțe, lampa de pe cască), târnăcoapele se fac la crafting (lemn, piatră, fier, diamant), iar adânc sunt lacuri de lavă. Jocul se salvează singur în browser. Adresa: https://down-to-bedrock.pages.dev/play/
 
 - Canvas 2D și module ES (`<script type="module">`), fără build și fără biblioteci
-- `js/joc.js`: bucla (fizică la pas fix de 1/120 s), camera, săpatul, construitul, hotbar-ul, meniul
-- `js/lume.js`: generarea lumii dintr-o sămânță (relief, peșteri, minereuri pe adâncimi, copaci, bedrock)
+- `js/joc.js`: bucla (fizică la pas fix de 1/120 s), camera, săpatul, construitul, hotbar-ul, crafting-ul, salvarea, meniul
+- `js/lume.js`: generarea lumii dintr-o sămânță (relief, peșteri, minereuri pe adâncimi, stratul adânc, lava, copaci, bedrock)
+- `js/lumina.js`: lumina pe celule (cer, torțe, lavă), recalculată la fiecare bloc schimbat, și lampa minerului
 - `js/jucator.js`: minerul, cu gravitație, coliziuni și săritură automată pe trepte de un bloc
 - `js/control.js`: tastatură, mouse și atingere (butoane pe ecran pe telefon)
 - `js/atlas.js`: desenează sprite-urile o dată, la mărimea de pe ecran; `js/sprite.js` e generat de `unelte/pixel.ps1`
-- Etapele următoare: lumină și torțe, unelte și salvare, mina și Nether-ul cu mobi, sunete
+- Etapele următoare: mina, portalul și Nether-ul cu mobi; apoi sunete, particule și realizări
 
 Publicat automat pe Cloudflare Pages: https://down-to-bedrock.pages.dev
 

@@ -39,10 +39,14 @@
     <span class="hud__biom">Plains</span>
   </div>
 
-  <button class="joc__pauza" type="button">Menu</button>
+  <div class="joc__bara">
+    <button class="joc__pauza" type="button">Menu</button>
+    <button class="joc__buton-atelier" type="button" aria-haspopup="dialog">Craft</button>
+  </div>
   <div class="joc__mesaje" aria-live="polite"></div>
 
   <!-- Hotbar-ul: blocurile adunate. Un click (sau 1–9, rotița) alege blocul de construit. -->
+  <p class="joc__nume-slot" hidden></p>
   <div class="hotbar hotbar--vizibil" aria-label="Hotbar"></div>
 
   <!-- Butoanele de pe ecran, doar pe ecranele tactile (joc.css). -->
@@ -57,22 +61,36 @@
     </div>
   </div>
 
+  <!-- Crafting: rețetele se construiesc din JS (js/joc.js), cu ce ai în hotbar. -->
+  <div class="joc__atelier" role="dialog" aria-modal="true" aria-labelledby="atelier-titlu" hidden>
+    <section class="joc__panou">
+      <h2 class="joc__titlu" id="atelier-titlu">Crafting</h2>
+      <p>Your tool: <b class="joc__unealta">Wooden pickaxe</b></p>
+      <ul class="joc__retete"></ul>
+      <div class="joc__actiuni">
+        <button class="joc__inchide" type="button">Back to the game</button>
+      </div>
+    </section>
+  </div>
+
   <!-- Meniul: la început, la pauză (Menu sau Esc) și la final. -->
   <div class="joc__meniu" role="dialog" aria-modal="true" aria-labelledby="joc-titlu">
     <section class="joc__panou joc__panou--start">
       <h1 class="joc__titlu" id="joc-titlu">Down to Bedrock</h1>
       <p class="joc__subtitlu">The game · early version</p>
-      <p>Dig from the grass all the way down to bedrock. Mine ores on the way and build with the blocks you collect.</p>
+      <p>Dig from the grass all the way down to bedrock. Caves are dark: chop trees for wood, find coal and craft torches. Better pickaxes dig faster and reach rarer ores. Watch out for lava.</p>
       <ul class="joc__taste joc__taste--mouse">
         <li><b>A D</b> or <b>← →</b> walk, <b>W</b>, <b>↑</b> or <b>Space</b> jump</li>
         <li><b>Hold left click</b> on a block to mine it</li>
         <li><b>Right click</b> to build, <b>1–9</b> or the wheel to pick a block</li>
+        <li><b>E</b> opens crafting: torches, planks and better pickaxes</li>
         <li><b>Esc</b> pauses the game</li>
       </ul>
       <ul class="joc__taste joc__taste--atingere">
         <li><b>◀ ▶</b> walk, <b>▲</b> jump (you also hop up single blocks)</li>
         <li><b>Touch and hold</b> a block to mine it</li>
         <li>Switch to <b>Build</b>, then tap to place the block picked in the hotbar</li>
+        <li><b>Craft</b> makes torches, planks and better pickaxes</li>
       </ul>
       <div class="joc__actiuni">
         <button class="joc__joaca" type="button">Play</button>
