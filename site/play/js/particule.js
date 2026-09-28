@@ -16,14 +16,20 @@ export class Particule {
         viata: 0.4 + Math.random() * 0.4,
         marime: Math.random() < 0.3 ? 2 : 1,
         culoare: culori[i % culori.length],
+        gravitatie: 500,
       });
     }
+  }
+
+  // O singură particulă cu viteza dată (de ex. sclipirile care urcă din portal: gravitație negativă).
+  emite(x, y, culoare, vx, vy, viata = 1, gravitatie = -40) {
+    this.lista.push({ x, y, vx, vy, viata, marime: 1, culoare, gravitatie });
   }
 
   actualizeaza(dt) {
     this.lista = this.lista.filter((p) => (p.viata -= dt) > 0);
     for (const p of this.lista) {
-      p.vy += 500 * dt;
+      p.vy += p.gravitatie * dt;
       p.x += p.vx * dt;
       p.y += p.vy * dt;
     }

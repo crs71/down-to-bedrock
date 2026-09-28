@@ -393,3 +393,8 @@ button {
   outline: 3px solid var(--apus-1);
   outline-offset: 3px;
 }
+
+/* Efectul activ (rezistența la foc), sub biom în HUD. */
+.joc__efect {
+  color: var(--nether-1);
+}

@@ -47,7 +47,8 @@ export function calculeazaLumina(lume) {
   const coada = [];
 
   // Cerul: pe fiecare coloană, în jos până la primul bloc opac sau până la frunze (inclusiv ele).
-  for (let x = 0; x < L; x++) {
+  // Nether-ul nu are cer.
+  for (let x = 0; x < L && lume.tip !== 'nether'; x++) {
     for (let y = 0; y < H; y++) {
       const i = y * L + x;
       const b = blocuri[i];
@@ -67,6 +68,9 @@ export function calculeazaLumina(lume) {
   }
 
   propaga(lume, lumina, coada);
+
+  // Lumina minimă a lumii (în Nether nu e niciodată beznă totală).
+  if (lume.ambient) for (let i = 0; i < lumina.length; i++) if (lumina[i] < lume.ambient) lumina[i] = lume.ambient;
   return lumina;
 }
 
