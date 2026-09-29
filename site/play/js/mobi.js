@@ -30,7 +30,8 @@ export class Vagonet extends Corp {
       const cadeInEl = jucator.vy >= 0 && jucator.y + jucator.h <= this.y + this.h + 2;
       if (!this.pauza && jucator.suprapune(this) && cadeInEl) {
         this.ocupat = true;
-        j.mesaj('Hop in! Ride with ← →, jump to get out', 'vagonet');
+        j.mesaj('Hop in! Ride with ← →, jump to get out', 'vagonet-sfat');
+        j.realizare('vagonet');
       }
     } else {
       const dir = (intrare.dreapta ? 1 : 0) - (intrare.stanga ? 1 : 0);
@@ -54,6 +55,11 @@ export class Vagonet extends Corp {
       else this.vx = 0;
     } else {
       this.vx = 0;
+    }
+    // Scântei de la roți, la viteză mare.
+    if (Math.abs(this.vx) > 110 && Math.random() < 0.35) {
+      const roata = this.vx > 0 ? this.x + 4 : this.x + this.l - 4;
+      j.particule.emite(roata, this.y + this.h - 1, Math.random() < 0.5 ? '#fee761' : '#feae34', -Math.sign(this.vx) * 40, -50, 0.3, 300);
     }
     if (this.ocupat) {
       jucator.x = this.centruX - jucator.l / 2;
@@ -92,6 +98,11 @@ export class CubMagma extends Corp {
       if (!eraPeSol) {
         this.turtit = 0.15;
         this.vx *= 0.2;
+        // La aterizare: un „plici” și câteva scântei, doar dacă e aproape de miner.
+        if (distanta(this, j.jucator) < 10 * BLOC) {
+          j.sunet('magma');
+          j.particule.explozie(this.centruX, this.y + this.h, j.culori('cub-magma'), 2 + this.marime * 2, 30);
+        }
       }
       this.vx *= Math.max(0, 1 - 6 * dt);
       this.asteapta -= dt;
@@ -108,6 +119,7 @@ export class CubMagma extends Corp {
   }
 
   loveste(j) {
+    j.sunet('lovitura');
     j.particule.explozie(this.centruX, this.centruY, j.culori('cub-magma'), 8 + this.marime * 6, 70);
     j.scoate(this);
     if (this.marime > 1) {
@@ -121,7 +133,7 @@ export class CubMagma extends Corp {
       }
     } else {
       j.adauga(CREMA);
-      j.mesaj('Magma cream!', 'crema');
+      j.realizare('crema');
     }
   }
 
@@ -182,6 +194,7 @@ export class MingeFoc extends Corp {
   loveste(j) {
     if (this.intoarsa) return;
     this.intoarsa = true;
+    j.sunet('lovitura');
     this.viata = 6;
     const ghasti = j.mobi.filter((m) => m.tip === 'ghast' && !m.mort);
     const g = ghasti.sort((a, b) => distanta(a, this) - distanta(b, this))[0];
@@ -249,6 +262,7 @@ export class Ghast extends Corp {
     if (this.trage <= 0 && d < 15 * BLOC && d > 3 * BLOC) {
       this.trage = 4 + Math.random() * 2.5;
       this.gura = 0.6;
+      j.sunet('ghast');
       j.adaugaMob(new MingeFoc(this.centruX, this.y + 20, pl.centruX, pl.centruY));
     }
   }
@@ -258,7 +272,7 @@ export class Ghast extends Corp {
     this.mort = 1.2;
     j.particule.explozie(this.centruX, this.centruY, j.culori('ghast'), 40, 110);
     j.adauga(LACRIMA);
-    j.mesaj('Ghast down! It dropped a tear', 'ghast');
+    j.realizare('ghast');
   }
 
   loveste(j) {
@@ -313,6 +327,7 @@ export class Piglin extends Corp {
 
   loveste(j) {
     if (this.admira > 0) return;
+    j.sunet('piglin');
     if (j.numara(AUR) > 0) {
       j.consuma(AUR, 1);
       this.admira = 1.6;

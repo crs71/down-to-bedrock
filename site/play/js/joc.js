@@ -5,14 +5,17 @@ import { creeazaAtlas, culorileSpriteului, iconita } from './atlas.js';
 import { PALETA_NETHER } from './sprite.js';
 import {
   Lume, BLOC, BLOCURI, AER, SUPRAFATA, Y_ADANC, PALETA_ADANC, coordonataY, randul,
-  PIATRA, PIETRIS, CARBUNE, FIER, AUR, REDSTONE, DIAMANT, BEDROCK, TRUNCHI, TORTA, SCANDURA, LAVA,
-  SINA, OBSIDIAN, PORTAL, RAMA, CUART, RESTURI, GLOWSTONE, CREMA, LACRIMA,
+  IARBA, PAMANT, PIATRA, PIETRIS, CARBUNE, FIER, AUR, REDSTONE, DIAMANT, BEDROCK, TRUNCHI, FRUNZE, TORTA,
+  SCANDURA, LAVA, SINA, PANZA, GARD, OBSIDIAN, PORTAL, RAMA, NYLIUM, NISIP, CUART, RESTURI, GLOWSTONE,
+  TULPINA, NEGI, CIUPERCA, LIANE, FOC_SUFLET, CREMA, LACRIMA,
 } from './lume.js';
 import { calculeazaLumina, luminaLampii, UMBRA } from './lumina.js';
 import { Jucator } from './jucator.js';
 import { Vagonet, CubMagma, Ghast, Piglin, Strider } from './mobi.js';
 import { creeazaIntrare } from './control.js';
 import { Particule } from './particule.js';
+import { REALIZARI, DIN_MESAJE } from './realizari.js';
+import * as sunet from './sunet.js';
 
 const canvas = document.querySelector('.joc__ecran');
 const ctx = canvas.getContext('2d', { alpha: false });
@@ -25,7 +28,10 @@ const numeSlot = document.querySelector('.joc__nume-slot');
 const meniu = document.querySelector('.joc__meniu');
 const panouStart = meniu.querySelector('.joc__panou--start');
 const panouFinal = meniu.querySelector('.joc__panou--final');
+const panouRealizari = meniu.querySelector('.joc__panou--realizari');
 const butonJoaca = meniu.querySelector('.joc__joaca');
+const butonSunet = meniu.querySelector('.joc__sunet');
+const statistici = meniu.querySelector('.joc__statistici');
 const atelier = document.querySelector('.joc__atelier');
 const listaRetete = atelier.querySelector('.joc__retete');
 const butonAtelier = document.querySelector('.joc__buton-atelier');
@@ -36,6 +42,16 @@ const PAS = 1 / 120;
 const LAMPA = 7;              // lumina lămpii de pe cască
 const TIMP_PORTAL = 1.5;      // secunde în portal până la călătorie
 const SALVARE = 'down-to-bedrock:joc:2';
+const SALVARE_REALIZARI = 'down-to-bedrock:realizari'; // rămân și după o lume nouă
+const SALVARE_SUNET = 'down-to-bedrock:sunet';
+const miscareRedusa = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+// Cum sună fiecare bloc (sunet.js): pământ, piatră, lemn sau frunze.
+const MATERIAL = {};
+for (const b of [IARBA, PAMANT, PIETRIS, NISIP, NYLIUM]) MATERIAL[b] = 'pamant';
+for (const b of [TRUNCHI, SCANDURA, GARD, TULPINA]) MATERIAL[b] = 'lemn';
+for (const b of [FRUNZE, NEGI, LIANE, PANZA, CIUPERCA]) MATERIAL[b] = 'frunze';
+const materialul = (bloc) => MATERIAL[bloc] || 'piatra';
 const SOARE = { '--soare-1': '#ffffff', '--soare-2': '#fee761', '--soare-3': '#feae34' };
 const NORI = [
   { id: 'nor-mare', x: 30, y: 6 }, { id: 'nor-mediu', x: 70, y: 11 }, { id: 'nor-mic', x: 110, y: 4 },
@@ -46,7 +62,6 @@ const MINEREURI = {
   [FIER]: 'Iron, for a better pickaxe',
   [AUR]: 'Gold! Piglins love it',
   [REDSTONE]: 'Redstone, glowing red',
-  [DIAMANT]: 'Diamonds!',
   [RESTURI]: 'Ancient debris! Two make a netherite pickaxe',
   [GLOWSTONE]: 'Glowstone: a block that shines',
 };
@@ -108,7 +123,13 @@ let pauza = true;
 let timp = 0;
 let ultimaSalvare = 0;
 let terminat = false;
-let realizari = new Set();
+let realizari = new Set();  // mesajele și sfaturile deja arătate (o singură dată fiecare)
+let realizate = new Set();  // realizările deblocate (realizari.js), salvate separat
+let sapaTimp = 0;           // cronometre pentru sunetele de săpat și de pași
+let pasTimp = 0;
+let peSolInainte = true;
+let vyInainte = 0;
+let ultimObiect = 0;
 let culori = {};
 const culoriSprite = {};
 let biomCurent = '';
@@ -276,6 +297,9 @@ function incarca() {
     ultimaSalvare = timp;
     terminat = !!d.terminat;
     realizari = new Set(d.realizari || []);
+    // Salvările din etapa 3 aveau doar mesajele arătate: unele dintre ele devin realizări.
+    for (const cheie of realizari) if (DIN_MESAJE[cheie]) realizate.add(DIN_MESAJE[cheie]);
+    salveazaRealizari();
     sapat.progres = 0;
     pregatesteJocul();
     return true;
@@ -329,6 +353,7 @@ function lovesteMob(dt, tinta) {
 function lovesteJucator(dinX, putere = 1) {
   if (lovit > 0 || mobi.some((m) => m.tip === 'vagonet' && m.ocupat)) return;
   lovit = 0.5;
+  sunet.sunete.lovitura();
   const dir = Math.sign(jucator.centruX - dinX) || 1;
   jucator.vx = dir * 170 * putere;
   jucator.vy = -150 * putere;
@@ -339,6 +364,7 @@ function lovesteJucator(dinX, putere = 1) {
 // Mingea de foc explodează: particule, ecranul tremură; lovind un perete, sparge blocurile din jur.
 function explozie(x, y, strica) {
   particule.explozie(x, y, EXPLOZIE, 40, 110);
+  sunet.sunete.explozie();
   tremur = 0.4;
   if (strica) {
     const cx = Math.floor(x / BLOC);
@@ -359,6 +385,7 @@ function schimbPiglin(piglin) {
   adauga(bloc, numar);
   particule.explozie(piglin.centruX, piglin.y + 10, ['#fee761', '#feae34'], 10, 40);
   mesaj(`The piglin gave you ${numar} × ${BLOCURI[bloc].nume.toLowerCase()}`);
+  realizare('schimb');
 }
 
 // Legătura dintre mobi și joc (vezi mobi.js).
@@ -377,6 +404,8 @@ const legatura = {
   loveste: lovesteJucator,
   culori: (id) => (culoriSprite[id] = culoriSprite[id] || culorileSpriteului(id)),
   schimb: schimbPiglin,
+  sunet: (nume) => sunet.sunete[nume]?.(),
+  realizare: (id) => realizare(id),
 };
 
 function actualizeazaMobi(dt) {
@@ -429,8 +458,9 @@ function calatoreste() {
   jucator.vx = 0;
   jucator.vy = 0;
   actualizeazaCamera(0, true);
+  sunet.sunete.calatorie();
   if (dest === 'nether') {
-    mesaj('Welcome to the Nether', 'nether');
+    realizare('nether');
     mesaj('Hit magma cubes, send fireballs back, give gold to piglins', 'nether-sfat');
   } else {
     mesaj('Back in the Overworld');
@@ -463,6 +493,13 @@ function actualizeazaSapat(dt, tinta) {
     }
     return;
   }
+  // Un „tic” și câteva așchii la fiecare lovitură de târnăcop.
+  sapaTimp -= dt;
+  if (sapaTimp <= 0) {
+    sapaTimp = 0.22;
+    sunet.sunete.sapa(materialul(bloc));
+    particule.explozie((tinta.x + 0.5) * BLOC, (tinta.y + 0.5) * BLOC, culori[bloc], 3, 35);
+  }
   // Cu un târnăcop prea slab, blocul se sparge de trei ori mai greu și nu lasă nimic.
   const potrivit = (def.nivel || 0) <= unealta;
   sapat.progres += (dt * UNELTE[unealta].viteza) / (def.duritate * (potrivit ? 1 : 3));
@@ -475,7 +512,8 @@ function sparge(x, y, bloc, potrivit) {
   luminaVeche = true;
   sapat.progres = 0;
   particule.explozie((x + 0.5) * BLOC, (y + 0.5) * BLOC, culori[bloc]);
-  mesaj('First block broken', 'primul');
+  sunet.sunete.sparge(materialul(bloc));
+  realizare('primul');
   if (!potrivit) {
     mesaj(`You need ${UNELTE[def.nivel].scurt} pickaxe to collect ${def.nume.toLowerCase()}`, `nivel-${bloc}`);
     return;
@@ -483,7 +521,11 @@ function sparge(x, y, bloc, potrivit) {
   const drop = def.drop === undefined ? bloc : def.drop;
   if (drop !== null) adauga(drop);
   if (MINEREURI[bloc]) mesaj(MINEREURI[bloc], `minereu-${bloc}`);
-  if (bloc === TRUNCHI) mesaj('Wood! Open Craft to make torches and tools', 'lemn');
+  if (bloc === DIAMANT) realizare('diamante');
+  if (bloc === TRUNCHI) {
+    realizare('lemn');
+    mesaj('Open Craft to make torches and tools', 'lemn-sfat');
+  }
 }
 
 // ---------- Construitul ----------
@@ -511,12 +553,15 @@ function actualizeazaConstructie(tinta) {
   if (def.solid && (jucator.atinge(tinta.x, tinta.y) || mobi.some((m) => m.atinge(tinta.x, tinta.y)))) return;
   lume.set(tinta.x, tinta.y, slot.bloc);
   luminaVeche = true;
-  if (slot.bloc === TORTA) mesaj('Let there be light', 'prima-torta');
+  sunet.sunete.pune(materialul(slot.bloc));
+  if (slot.bloc === TORTA) realizare('prima-torta');
   consuma(slot.bloc, 1, selectat);
 }
 
 // ---------- Inventarul și hotbar-ul ----------
 function adauga(bloc, numar = 1) {
+  if (timp - ultimObiect > 0.06) sunet.sunete.obiect();
+  ultimObiect = timp;
   for (let k = 0; k < numar; k++) {
     let slot = inventar.find((s) => s.bloc === bloc && s.numar > 0 && s.numar < 64);
     if (!slot) slot = inventar.find((s) => !s.numar);
@@ -665,10 +710,12 @@ function construiesteRetete() {
     buton.addEventListener('click', () => {
       if (!poateFace(r)) return;
       for (const [bloc, n] of r.cere) consuma(bloc, n);
+      sunet.sunete.crafting();
       if (r.unealta) {
         unealta = r.unealta;
         actualizeazaButonAtelier();
         mesaj(`Crafted ${UNELTE[unealta].scurt} pickaxe`);
+        realizare(`unealta-${unealta}`);
       } else if (r.efect) {
         efectFoc = r.efect;
         mesaj('Fire resistance: lava can’t hurt you for 90 s');
@@ -701,6 +748,65 @@ function inchideAtelier() {
 
 butonAtelier.addEventListener('click', () => (atelier.hidden ? deschideAtelier() : inchideAtelier()));
 atelier.querySelector('.joc__inchide').addEventListener('click', inchideAtelier);
+
+// ---------- Realizări ----------
+function incarcaRealizari() {
+  try {
+    realizate = new Set(JSON.parse(localStorage.getItem(SALVARE_REALIZARI) || '[]'));
+  } catch {
+    realizate = new Set();
+  }
+}
+
+function salveazaRealizari() {
+  try {
+    localStorage.setItem(SALVARE_REALIZARI, JSON.stringify([...realizate]));
+  } catch {
+    // nimic de făcut
+  }
+}
+
+function iconitaRealizare(r) {
+  return r.unealta ? iconitaUnelte(r.unealta) : iconita(r.icon);
+}
+
+// O realizare nouă: notificare cu iconiță, un mic arpegiu și salvare imediată.
+function realizare(id) {
+  if (realizate.has(id)) return;
+  const r = REALIZARI.find((x) => x.id === id);
+  if (!r) return;
+  realizate.add(id);
+  salveazaRealizari();
+  sunet.sunete.realizare();
+  const el = document.createElement('div');
+  el.className = 'joc__mesaj joc__realizare';
+  const icon = iconitaRealizare(r);
+  icon.setAttribute('aria-hidden', 'true');
+  const text = document.createElement('span');
+  text.innerHTML = '<span class="joc__realizare-eticheta">Achievement unlocked</span><b></b>';
+  text.querySelector('b').textContent = r.nume;
+  el.append(icon, text);
+  mesaje.appendChild(el);
+  setTimeout(() => el.remove(), 3400);
+}
+
+function construiesteListaRealizari() {
+  const lista = panouRealizari.querySelector('.joc__lista-realizari');
+  panouRealizari.querySelector('.joc__numar-realizari').textContent = `${realizate.size} of ${REALIZARI.length} unlocked`;
+  lista.replaceChildren();
+  for (const r of REALIZARI) {
+    const li = document.createElement('li');
+    li.className = realizate.has(r.id) ? 'joc__rl joc__rl--gata' : 'joc__rl';
+    const icon = iconitaRealizare(r);
+    icon.setAttribute('aria-hidden', 'true');
+    const text = document.createElement('span');
+    text.innerHTML = '<b></b><span></span>';
+    text.querySelector('b').textContent = r.nume;
+    text.querySelector('span').textContent = realizate.has(r.id) ? r.text : `${r.text} (locked)`;
+    li.append(icon, text);
+    lista.append(li);
+  }
+}
 
 // ---------- Mesaje și obiective ----------
 function mesaj(text, cheie) {
@@ -745,9 +851,12 @@ function actualizeazaHud() {
 
   // Sfaturi, câte o singură dată.
   const cap = Math.floor(jucator.ochiY / BLOC) * lume.latime + col;
-  if (lume.tip === 'lume' && lumina[cap] < 4 && !realizari.has('prima-torta')) mesaj('It’s dark down here. Place a torch, or craft some: coal + log', 'intuneric');
-  if (biom === 'Abandoned Mineshaft') mesaj('An abandoned mineshaft! Find the minecart and follow the rails', 'mina');
-  if (lume.tip === 'lume' && y <= 0) mesaj('Halfway down', 'jumatate');
+  if (lume.tip === 'lume' && lumina[cap] < 4 && !realizate.has('prima-torta')) mesaj('It’s dark down here. Place a torch, or craft some: coal + log', 'intuneric');
+  if (biom === 'Abandoned Mineshaft') {
+    realizare('mina');
+    mesaj('Find the minecart and follow the rails', 'mina-sfat');
+  }
+  if (lume.tip === 'lume' && y <= 0) realizare('jumatate');
   if (lume.tip === 'lume' && y <= -60 && !terminat) castiga();
 }
 
@@ -769,10 +878,11 @@ function durata(secunde) {
 
 function castiga() {
   terminat = true;
+  realizare('final');
   const obiecte = inventar.reduce((n, s) => n + s.numar, 0);
-  const nether = realizari.has('nether') ? ', after a trip to the Nether' : '';
+  const nether = realizate.has('nether') ? ', after a trip to the Nether' : '';
   panouFinal.querySelector('.joc__rezultat').textContent =
-    `You dug down to bedrock in ${durata(timp)}${nether}, with ${UNELTE[unealta].scurt} pickaxe and ${obiecte} ${obiecte === 1 ? 'item' : 'items'} in your hotbar.`;
+    `You dug down to bedrock in ${durata(timp)}${nether}, with ${UNELTE[unealta].scurt} pickaxe and ${obiecte} ${obiecte === 1 ? 'item' : 'items'} in your hotbar. Achievements: ${realizate.size} of ${REALIZARI.length}.`;
   arataMeniu(panouFinal);
 }
 
@@ -781,20 +891,39 @@ function arataMeniu(panou = panouStart) {
   pauza = true;
   intrare.mina = false;
   atelier.hidden = true;
-  panouStart.hidden = panou !== panouStart;
-  panouFinal.hidden = panou !== panouFinal;
+  if (panou === panouRealizari) construiesteListaRealizari();
+  statistici.textContent = `${timp > 0 ? `Time played ${durata(timp)} · ` : ''}Achievements ${realizate.size}/${REALIZARI.length}`;
+  for (const pn of [panouStart, panouFinal, panouRealizari]) pn.hidden = pn !== panou;
   meniu.hidden = false;
   panou.querySelector('button').focus({ preventScroll: true });
+  sunet.portal(0);
+  sunet.vagonet(0);
   if (timp > 0) salveaza(); // o lume abia creată, în care nu s-a jucat nimeni, nu se salvează
 }
 
 function ascundeMeniu() {
   meniu.hidden = true;
   pauza = false;
+  sunet.porneste(); // primul „Play” e gestul după care browserul lasă sunetul să pornească
   butonJoaca.textContent = 'Resume';
   mesaj('Dig all the way down to bedrock', 'start');
 }
 
+// Sunetul: pornit sau oprit, ținut minte în browser.
+function seteazaSunet(da) {
+  sunet.activeaza(da);
+  butonSunet.textContent = da ? 'Sound: on' : 'Sound: off';
+  butonSunet.setAttribute('aria-pressed', String(da));
+  try {
+    localStorage.setItem(SALVARE_SUNET, da ? '1' : '0');
+  } catch {
+    // nimic de făcut
+  }
+}
+
+butonSunet.addEventListener('click', () => seteazaSunet(!sunet.esteActiv()));
+meniu.querySelector('.joc__buton-realizari').addEventListener('click', () => arataMeniu(panouRealizari));
+panouRealizari.querySelector('.joc__inapoi-meniu').addEventListener('click', () => arataMeniu(panouStart));
 butonJoaca.addEventListener('click', ascundeMeniu);
 meniu.querySelectorAll('.joc__nou').forEach((b) => b.addEventListener('click', () => {
   if (timp > 10 && !window.confirm('Start a new world? The current one will be lost.')) return;
@@ -805,11 +934,18 @@ meniu.querySelectorAll('.joc__nou').forEach((b) => b.addEventListener('click', (
 meniu.querySelector('.joc__continua').addEventListener('click', ascundeMeniu);
 document.querySelector('.joc__pauza').addEventListener('click', () => arataMeniu());
 window.addEventListener('keydown', (e) => {
+  sunet.porneste();
+  if (e.code === 'KeyM' && !e.repeat) {
+    seteazaSunet(!sunet.esteActiv());
+    mesaj(sunet.esteActiv() ? 'Sound on' : 'Sound off');
+  }
   if (e.code !== 'Escape') return;
   if (!atelier.hidden) inchideAtelier();
   else if (meniu.hidden) arataMeniu();
+  else if (!panouRealizari.hidden) arataMeniu(panouStart);
   else if (!panouStart.hidden) ascundeMeniu();
 });
+canvas.addEventListener('pointerdown', () => sunet.porneste());
 document.addEventListener('visibilitychange', () => {
   if (document.hidden && meniu.hidden) arataMeniu();
 });
@@ -827,15 +963,31 @@ function imagineBloc(bloc, adanc, umbra, c, r) {
     opt.numePaleta = 'adanc';
   }
   // Lava și portalul licăresc: celulele vecine își schimbă pe rând desenul cu oglindirea lui.
-  if (bloc === LAVA || bloc === PORTAL) opt.oglindit = ((Math.floor(timp * 1.5) + c + r) & 1) === 1;
+  if ((bloc === LAVA || bloc === PORTAL) && !miscareRedusa.matches) opt.oglindit = ((Math.floor(timp * 1.5) + c + r) & 1) === 1;
   return atlas.imagine(def.sprite, opt);
+}
+
+function scantei(bloc, c, r) {
+  const x = (c + 0.2 + Math.random() * 0.6) * BLOC;
+  if (bloc === PORTAL && Math.random() < 0.01) {
+    particule.emite(x, (r + Math.random()) * BLOC, Math.random() < 0.5 ? '#b55088' : '#68386c', 0, -18, 1.2);
+  } else if (bloc === TORTA && Math.random() < 0.025) {
+    particule.emite(x, (r + 0.3) * BLOC, Math.random() < 0.5 ? '#feae34' : '#fee761', (Math.random() - 0.5) * 8, -22, 0.6, -10);
+  } else if (bloc === FOC_SUFLET && Math.random() < 0.03) {
+    particule.emite(x, (r + 0.4) * BLOC, Math.random() < 0.5 ? '#2ce8f5' : '#0099db', (Math.random() - 0.5) * 8, -26, 0.7, -10);
+  } else if (bloc === LAVA && lume.get(c, r - 1) === AER && Math.random() < 0.004) {
+    particule.emite(x, r * BLOC, Math.random() < 0.5 ? '#f77622' : '#fee761', (Math.random() - 0.5) * 30, -60 - Math.random() * 40, 1, 160);
+    // Bolborositul lavei, doar dacă e aproape.
+    if (Math.abs(x - jucator.centruX) < 8 * BLOC && Math.abs(r * BLOC - jucator.centruY) < 6 * BLOC) sunet.sunete.lava();
+  }
 }
 
 function deseneaza() {
   const W = canvas.width;
   const H = canvas.height;
   const b = BLOC * p;
-  const zgaltaie = tremur > 0 ? Math.round((Math.random() * 2 - 1) * tremur * 8 * p) : 0;
+  const zgaltaie = tremur > 0 && !miscareRedusa.matches ? Math.round((Math.random() * 2 - 1) * tremur * 8 * p) : 0;
+  const ambient = !pauza && !miscareRedusa.matches; // scântei din torțe, lavă și foc
   const camX = Math.round(camera.x * p) + zgaltaie;
   const camY = Math.round(camera.y * p) + zgaltaie;
 
@@ -858,7 +1010,7 @@ function deseneaza() {
     // Soarele și norii, mai departe decât lumea (se mișcă pe jumătate).
     ctx.drawImage(atlas.imagine('soare', { paleta: SOARE, numePaleta: 'zi' }), Math.round(W * 0.78 - camX * 0.1), Math.round(3 * b - camY * 0.5));
     for (const n of NORI) {
-      const x = Math.round(((n.x * BLOC + timp * 4) * p - camX * 0.5) % (lume.latime * b));
+      const x = Math.round(((n.x * BLOC + (miscareRedusa.matches ? 0 : timp * 4)) * p - camX * 0.5) % (lume.latime * b));
       ctx.drawImage(atlas.imagine(n.id), x, Math.round(n.y * b - camY * 0.5));
     }
   }
@@ -880,10 +1032,8 @@ function deseneaza() {
         if (f !== AER) ctx.drawImage(imagineBloc(f, adanc, 0.62, c, r), x, y);
       }
       if (bloc !== AER) ctx.drawImage(imagineBloc(bloc, adanc, 0, c, r), x, y);
-      // Sclipiri violete care urcă din portal.
-      if (bloc === PORTAL && !pauza && Math.random() < 0.01) {
-        particule.emite((c + Math.random()) * BLOC, (r + Math.random()) * BLOC, Math.random() < 0.5 ? '#b55088' : '#68386c', 0, -18, 1.2);
-      }
+      // Sclipiri și scântei: violete din portal, portocalii din torțe și lavă, albastre din focul de suflete.
+      if (ambient && bloc !== AER) scantei(bloc, c, r);
     }
   }
 
@@ -948,6 +1098,28 @@ function deseneazaMinerul(camX, camY) {
   ctx.globalAlpha = 1;
 }
 
+// Pașii (sunet și un pic de praf), săritura și aterizarea după o cădere.
+function actualizeazaPasii(dt, calare) {
+  const sub = lume.get(Math.floor(jucator.centruX / BLOC), Math.floor((jucator.y + jucator.h + 1) / BLOC));
+  if (!calare && jucator.peSol && Math.abs(jucator.vx) > 20) {
+    pasTimp -= dt;
+    if (pasTimp <= 0) {
+      pasTimp = 0.3;
+      sunet.sunete.pas(materialul(sub));
+      if (sub !== AER) particule.explozie(jucator.centruX, jucator.y + jucator.h, culori[sub], 2, 20);
+    }
+  } else {
+    pasTimp = 0.08;
+  }
+  if (!calare && peSolInainte && !jucator.peSol && jucator.vy < -150) sunet.sunete.saritura();
+  if (!calare && !peSolInainte && jucator.peSol && vyInainte > 260 && sub !== AER) {
+    sunet.sunete.aterizare(materialul(sub));
+    particule.explozie(jucator.centruX, jucator.y + jucator.h, culori[sub], 8, 40);
+  }
+  peSolInainte = jucator.peSol;
+  vyInainte = jucator.vy;
+}
+
 // ---------- Bucla ----------
 let ultim = 0;
 let acumulat = 0;
@@ -988,8 +1160,14 @@ function cadru(acum) {
     actualizeazaMobi(dt);
     actualizeazaPortal(dt);
     verificaLava();
+    actualizeazaPasii(dt, calare);
+    particule.redus = miscareRedusa.matches;
     particule.actualizeaza(dt);
     actualizeazaCamera(dt);
+    // Sunetele continue: zumzetul portalului și huruitul vagonetului.
+    sunet.portal(timpPortal / TIMP_PORTAL);
+    const vagonet = mobi.find((m) => m.tip === 'vagonet' && m.ocupat);
+    sunet.vagonet(vagonet ? Math.abs(vagonet.vx) / 170 : 0);
     if (timp - ultimaSalvare > 10) salveaza();
   } else {
     intrare.pune = false;
@@ -1010,6 +1188,14 @@ export function stare() {
 
 window.addEventListener('resize', redimensioneaza);
 redimensioneaza();
+incarcaRealizari();
+let sunetSalvat = '1';
+try {
+  sunetSalvat = localStorage.getItem(SALVARE_SUNET) ?? '1';
+} catch {
+  // nimic de făcut
+}
+seteazaSunet(sunetSalvat !== '0');
 if (incarca()) {
   butonJoaca.textContent = 'Continue';
 } else {

@@ -11,17 +11,18 @@ Site cu temă de lume din blocuri (textul paginii e în engleză): cobori prin s
 - Bedrock: blocul care nu se sparge, Respawn și butonul spre joc
 
 ## Jocul (`site/play/`)
-Un joc 2D de minat, în aceeași lume: sapi de la iarbă până la bedrock, strângi blocuri și construiești. Peșterile sunt întunecate (torțe, lampa de pe cască), târnăcoapele se fac la crafting (lemn, piatră, fier, diamant), iar adânc sunt lacuri de lavă. Sub start e o mină abandonată cu un vagonet care te duce la un portal spre Nether (cubi de magma, ghaști, piglini, strideri, resturi antice pentru târnăcopul de netherite). Jocul se salvează singur în browser. Adresa: https://down-to-bedrock.pages.dev/play/
+Un joc 2D de minat, în aceeași lume: sapi de la iarbă până la bedrock, strângi blocuri și construiești. Peșterile sunt întunecate (torțe, lampa de pe cască), târnăcoapele se fac la crafting (lemn, piatră, fier, diamant), iar adânc sunt lacuri de lavă. Sub start e o mină abandonată cu un vagonet care te duce la un portal spre Nether (cubi de magma, ghaști, piglini, strideri, resturi antice pentru târnăcopul de netherite). Jocul se salvează singur în browser, are sunete create din cod (Web Audio, fără fișiere), 16 realizări și o variantă pentru mișcare redusă. Adresa: https://down-to-bedrock.pages.dev/play/
 
 - Canvas 2D și module ES (`<script type="module">`), fără build și fără biblioteci
 - `js/joc.js`: bucla (fizică la pas fix de 1/120 s), camera, săpatul, construitul, hotbar-ul, crafting-ul, salvarea, meniul
 - `js/lume.js`: generarea lumilor dintr-o sămânță: cea de sus (relief, peșteri, minereuri pe adâncimi, stratul adânc, lava, mina și portalul, copaci, bedrock) și Nether-ul (caverne, ocean de lavă, pădurea purpurie, podul fortăreței, valea sufletelor)
 - `js/corp.js`, `js/mobi.js`: corpul cu coliziuni comun și mobii (vagonet, cub de magma, ghast și mingea lui de foc, piglin, strider)
+- `js/sunet.js`: sunetele (zgomot filtrat și tonuri), plus zumzetul portalului și huruitul vagonetului
+- `js/realizari.js`: lista realizărilor, salvate separat de lume
 - `js/lumina.js`: lumina pe celule (cer, torțe, lavă), recalculată la fiecare bloc schimbat, și lampa minerului
 - `js/jucator.js`: minerul, cu gravitație, coliziuni și săritură automată pe trepte de un bloc
 - `js/control.js`: tastatură, mouse și atingere (butoane pe ecran pe telefon)
 - `js/atlas.js`: desenează sprite-urile o dată, la mărimea de pe ecran; `js/sprite.js` e generat de `unelte/pixel.ps1`
-- Etapa următoare: sunete create din cod, particule și realizări, reduced-motion
 
 Publicat automat pe Cloudflare Pages: https://down-to-bedrock.pages.dev
 

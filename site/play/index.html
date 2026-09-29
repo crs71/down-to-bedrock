@@ -78,7 +78,7 @@
   <div class="joc__meniu" role="dialog" aria-modal="true" aria-labelledby="joc-titlu">
     <section class="joc__panou joc__panou--start">
       <h1 class="joc__titlu" id="joc-titlu">Down to Bedrock</h1>
-      <p class="joc__subtitlu">The game · early version</p>
+      <p class="joc__subtitlu">The game</p>
       <p>Dig from the grass all the way down to bedrock. Caves are dark: chop trees for wood, find coal and craft torches. Better pickaxes dig faster and reach rarer ores. Watch out for lava.</p>
       <p>Deep under the start there is an abandoned mineshaft. Ride its minecart to a portal, and step into the Nether: magma cubes, ghasts, piglins and ancient debris for the best pickaxe.</p>
       <ul class="joc__taste joc__taste--mouse">
@@ -86,7 +86,7 @@
         <li><b>Hold left click</b> on a block to mine it</li>
         <li><b>Right click</b> to build, <b>1–9</b> or the wheel to pick a block</li>
         <li><b>E</b> opens crafting: torches, planks and better pickaxes</li>
-        <li><b>Esc</b> pauses the game</li>
+        <li><b>M</b> turns the sound on or off, <b>Esc</b> pauses the game</li>
       </ul>
       <ul class="joc__taste joc__taste--atingere">
         <li><b>◀ ▶</b> walk, <b>▲</b> jump (you also hop up single blocks)</li>
@@ -98,7 +98,20 @@
         <button class="joc__joaca" type="button">Play</button>
         <button class="joc__nou joc__secundar" type="button">New world</button>
       </div>
+      <div class="joc__actiuni joc__actiuni--mici">
+        <button class="joc__buton-realizari joc__secundar" type="button">Achievements</button>
+        <button class="joc__sunet joc__secundar" type="button" aria-pressed="true">Sound: on</button>
+      </div>
+      <p class="joc__statistici"></p>
       <a class="joc__inapoi" href="../">← Back to the site</a>
+    </section>
+    <section class="joc__panou joc__panou--realizari" hidden>
+      <h2 class="joc__titlu">Achievements</h2>
+      <p class="joc__numar-realizari"></p>
+      <ul class="joc__lista-realizari"></ul>
+      <div class="joc__actiuni">
+        <button class="joc__inapoi-meniu" type="button">Back</button>
+      </div>
     </section>
     <section class="joc__panou joc__panou--final" hidden>
       <h2 class="joc__titlu">You reached bedrock!</h2>

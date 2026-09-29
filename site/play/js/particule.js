@@ -4,7 +4,9 @@ export class Particule {
     this.lista = [];
   }
 
+  // Cu redus = true (prefers-reduced-motion), rămâne doar o treime din particule.
   explozie(x, y, culori, numar = 14, viteza = 70) {
+    if (this.redus) numar = Math.ceil(numar / 3);
     for (let i = 0; i < numar; i++) {
       const unghi = Math.random() * Math.PI * 2;
       const v = viteza * (0.3 + Math.random() * 0.7);
