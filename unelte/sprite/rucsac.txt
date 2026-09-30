@@ -1,0 +1,24 @@
+# Rucsacul din capatul hotbar-ului din joc (16x16): piele, clapa cu catarama si un buzunar in fata.
+id: rucsac
+k = --pamant-4
+a = --pamant-1
+b = --pamant-2
+c = --pamant-3
+g = --apus-1
+
+................
+......kkkk......
+.....k....k.....
+..kkkkkkkkkkkk..
+..kaaaaaaaaaak..
+..kbbbbbbbbbbk..
+..kccccggcccck..
+..kkkkkggkkkkk..
+..kbbbbccbbbbk..
+..kbbbbbbbbbbk..
+..kbkkkkkkkkbk..
+..kbkaaaaaakbk..
+..kbkbbbbbbkbk..
+..kbkkkkkkkkbk..
+..kcccccccccck..
+...kkkkkkkkkk...

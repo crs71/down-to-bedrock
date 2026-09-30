@@ -1,6 +1,6 @@
 // Intrările, adunate într-o singură stare pe care o citește bucla jocului.
 // - Tastatură: A/D sau săgeți pentru mers, W, săgeata sus sau Space pentru săritură, 1–9 pentru slot,
-//   E pentru crafting.
+//   E pentru crafting, I pentru rucsac.
 // - Mouse: ținta e sub cursor; click stânga ținut apăsat sapă, click dreapta pune blocul din slot.
 // - Atingere: butoanele de pe ecran pentru mers și săritură; atingi un bloc și ții apăsat ca să-l sapi.
 //   Butonul de mod trece între săpat și construit (în modul construit, o atingere pune un bloc).
@@ -26,6 +26,7 @@ export function creeazaIntrare(canvas, butoane) {
     slot: null,         // slotul ales de la tastatură (consumat de joc)
     roata: 0,           // pași de rotiță (consumați de joc)
     atelier: false,     // cerere de a deschide sau închide crafting-ul, tasta E (consumată de joc)
+    rucsac: false,      // la fel pentru rucsac, tasta I
     tactil: false,      // ultima intrare a fost o atingere
   };
 
@@ -47,6 +48,8 @@ export function creeazaIntrare(canvas, butoane) {
       stare.slot = Number(e.code.slice(5)) - 1;
     } else if (e.code === 'KeyE' && !e.repeat) {
       stare.atelier = true;
+    } else if (e.code === 'KeyI' && !e.repeat) {
+      stare.rucsac = true;
     }
   });
   window.addEventListener('keyup', (e) => {

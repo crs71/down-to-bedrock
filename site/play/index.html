@@ -46,7 +46,8 @@
   </div>
   <div class="joc__mesaje" aria-live="polite"></div>
 
-  <!-- Hotbar-ul: blocurile adunate. Un click (sau 1–9, rotița) alege blocul de construit. -->
+  <!-- Hotbar-ul: blocurile adunate. Un click (sau 1–9, rotița) alege blocul de construit.
+       Al zecelea buton, rucsacul, deschide restul inventarului și stash-ul (js/joc.js). -->
   <p class="joc__nume-slot" hidden></p>
   <div class="hotbar hotbar--vizibil" aria-label="Hotbar"></div>
 
@@ -62,7 +63,7 @@
     </div>
   </div>
 
-  <!-- Crafting: rețetele se construiesc din JS (js/joc.js), cu ce ai în hotbar. -->
+  <!-- Crafting: rețetele se construiesc din JS (js/joc.js), cu ce ai în inventar. -->
   <div class="joc__atelier" role="dialog" aria-modal="true" aria-labelledby="atelier-titlu" hidden>
     <section class="joc__panou">
       <h2 class="joc__titlu" id="atelier-titlu">Crafting</h2>
@@ -70,6 +71,32 @@
       <ul class="joc__retete"></ul>
       <div class="joc__actiuni">
         <button class="joc__inchide" type="button">Back to the game</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Rucsacul: 27 de sloturi peste cele 9 din hotbar. Ce nu mai încape ajunge în stash, de unde
+       îl iei înapoi când faci loc. Sloturile se construiesc din JS (js/joc.js). -->
+  <div class="joc__rucsac" role="dialog" aria-modal="true" aria-labelledby="rucsac-titlu" hidden>
+    <section class="joc__panou joc__panou--rucsac">
+      <h2 class="joc__titlu" id="rucsac-titlu">Backpack</h2>
+      <div class="joc__depozit" hidden>
+        <p><b>Stash</b>: <span class="joc__depozit-text"></span></p>
+        <ul class="joc__depozit-lista"></ul>
+        <div class="joc__actiuni joc__actiuni--mici">
+          <button class="joc__ia" type="button">Take items</button>
+        </div>
+      </div>
+      <p class="joc__rucsac-sfat joc__taste--mouse">Click an item, then another slot to move or swap it. <b>Shift + click</b> sends it between the backpack and the hotbar.</p>
+      <p class="joc__rucsac-sfat joc__taste--atingere">Tap an item, then tap another slot to move or swap it.</p>
+      <div class="joc__grila joc__grila--rucsac" role="group" aria-label="Backpack"></div>
+      <p class="joc__grila-eticheta" aria-hidden="true">Hotbar</p>
+      <div class="joc__grila joc__grila--hotbar" role="group" aria-label="Hotbar"></div>
+      <p class="joc__rucsac-stare" aria-live="polite"></p>
+      <div class="joc__actiuni">
+        <button class="joc__inchide-rucsac" type="button">Back to the game</button>
+        <button class="joc__arunca joc__secundar" type="button" disabled>Throw away</button>
+        <button class="joc__sorteaza joc__secundar" type="button">Sort</button>
       </div>
     </section>
   </div>
@@ -86,6 +113,7 @@
         <li><b>Hold left click</b> on a block to mine it</li>
         <li><b>Right click</b> to build, <b>1–9</b> or the wheel to pick a block</li>
         <li><b>E</b> opens crafting: torches, planks and better pickaxes</li>
+        <li><b>I</b> or the bag after the hotbar opens your backpack</li>
         <li><b>M</b> turns the sound on or off, <b>Esc</b> pauses the game</li>
       </ul>
       <ul class="joc__taste joc__taste--atingere">
@@ -93,6 +121,7 @@
         <li><b>Touch and hold</b> a block to mine it</li>
         <li>Switch to <b>Build</b>, then tap to place the block picked in the hotbar</li>
         <li><b>Craft</b> makes torches, planks and better pickaxes</li>
+        <li>The <b>bag</b> after the hotbar opens your backpack</li>
       </ul>
       <div class="joc__actiuni">
         <button class="joc__joaca" type="button">Play</button>

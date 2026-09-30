@@ -36,11 +36,22 @@ const atelier = document.querySelector('.joc__atelier');
 const listaRetete = atelier.querySelector('.joc__retete');
 const butonAtelier = document.querySelector('.joc__buton-atelier');
 const mesaje = document.querySelector('.joc__mesaje');
+const rucsac = document.querySelector('.joc__rucsac');
+const grilaRucsac = rucsac.querySelector('.joc__grila--rucsac');
+const grilaHotbar = rucsac.querySelector('.joc__grila--hotbar');
+const depozitEl = rucsac.querySelector('.joc__depozit');
+const listaDepozit = rucsac.querySelector('.joc__depozit-lista');
+const butonIa = rucsac.querySelector('.joc__ia');
+const butonArunca = rucsac.querySelector('.joc__arunca');
+const stareRucsac = rucsac.querySelector('.joc__rucsac-stare');
 
 const ATINGERE = 4.5 * BLOC;  // raza de săpat și construit, măsurată de la ochii minerului
 const PAS = 1 / 120;
 const LAMPA = 7;              // lumina lămpii de pe cască
 const TIMP_PORTAL = 1.5;      // secunde în portal până la călătorie
+const HOTBAR = 9;             // inventarul: 9 sloturi în hotbar și 27 în rucsac, câte 64 de bucăți
+const RUCSAC = 27;
+const STIVA = 64;
 const SALVARE = 'down-to-bedrock:joc:2';
 const SALVARE_REALIZARI = 'down-to-bedrock:realizari'; // rămân și după o lume nouă
 const SALVARE_SUNET = 'down-to-bedrock:sunet';
@@ -127,7 +138,12 @@ let lovit = 0;          // scurtă invulnerabilitate după ce ești împins
 let tremur = 0;         // tremuratul ecranului după o explozie
 let timpPortal = 0;
 let reapar = 0;         // cronometru pentru mobii noi din Nether
-let inventar;
+let inventar;           // 0–8 hotbar-ul, 9–35 rucsacul
+let depozit = new Map(); // stash-ul ascuns: bloc → câte bucăți n-au mai încăput în inventar
+let alesRucsac = -1;    // slotul luat în mână în rucsac; următorul slot apăsat îl primește
+let ultimAvertisment = -Infinity;
+let butonRucsac = null; // al zecelea buton din hotbar
+const sloturiRucsac = [];
 let selectat = 0;
 let unealta = 1;
 let efectFoc = 0;       // secunde de rezistență la foc
@@ -209,6 +225,8 @@ function pregatesteJocul() {
   culori = {};
   for (const [id, def] of Object.entries(BLOCURI)) culori[id] = culorileSpriteului(def.sprite, def.paleta === 'nether' ? PALETA_NETHER : undefined);
   construiesteHotbar();
+  construiesteRucsac();
+  actualizeazaDepozit();
   actualizeazaButonAtelier();
   actualizeazaCamera(0, true);
 }
@@ -219,8 +237,9 @@ function lumeNoua() {
   intraInLume('lume');
   jucator = new Jucator(0, 0);
   laStart();
-  inventar = Array.from({ length: 9 }, () => ({ bloc: AER, numar: 0 }));
+  inventar = inventarGol();
   inventar[0] = { bloc: TORTA, numar: 4 };
+  depozit = new Map();
   selectat = 0;
   unealta = 1;
   efectFoc = 0;
@@ -271,6 +290,7 @@ function salveaza() {
       x: jucator.x,
       y: jucator.y,
       inventar,
+      depozit: [...depozit],
       selectat,
       unealta,
       efectFoc,
@@ -295,13 +315,19 @@ function incarca() {
       l.blocuri.set(blocuri);
       return l;
     };
-    if (!Array.isArray(d.inventar) || d.inventar.length !== 9) return false;
+    // Salvările de dinainte de rucsac au doar cele 9 sloturi din hotbar.
+    if (!Array.isArray(d.inventar) || ![HOTBAR, HOTBAR + RUCSAC].includes(d.inventar.length)) return false;
     lumi = { lume: incarcata('lume', d.lume) };
     if (d.nether) lumi.nether = incarcata('nether', d.nether);
     mobiPe = {};
     intraInLume(d.dimensiune === 'nether' && lumi.nether ? 'nether' : 'lume');
     jucator = new Jucator(d.x, d.y);
-    inventar = d.inventar.map((s) => ({ bloc: s.bloc in BLOCURI ? s.bloc : AER, numar: s.bloc in BLOCURI ? s.numar : 0 }));
+    const valid = (bloc, n) => bloc !== AER && bloc in BLOCURI && n > 0;
+    inventar = inventarGol();
+    d.inventar.forEach((s, i) => {
+      if (valid(s.bloc, s.numar)) inventar[i] = { bloc: s.bloc, numar: Math.min(STIVA, s.numar) };
+    });
+    depozit = new Map((d.depozit || []).filter(([bloc, n]) => valid(bloc, n)));
     selectat = d.selectat || 0;
     unealta = UNELTE[d.unealta] ? d.unealta : 1;
     efectFoc = d.efectFoc || 0;
@@ -481,7 +507,7 @@ function calatoreste() {
 }
 
 // ---------- Cuferele ----------
-// O atingere pe un cufăr îl deschide: prada intră direct în hotbar, iar cufărul rămâne deschis.
+// O atingere pe un cufăr îl deschide: prada intră direct în inventar, iar cufărul rămâne deschis.
 function deschideCufar(x, y) {
   lume.set(x, y, CUFAR_DESCHIS);
   const adanc = lume.tip === 'lume' && coordonataY(y) < 0;
@@ -491,8 +517,7 @@ function deschideCufar(x, y) {
     if (Math.random() >= s) continue;
     const n = min + Math.floor(Math.random() * (max - min + 1));
     adauga(bloc, n);
-    const nume = bloc === TORTA ? (n > 1 ? 'torches' : 'torch') : BLOCURI[bloc].nume.toLowerCase();
-    gasit.push(`${n} ${nume}`);
+    gasit.push(`${n} ${numeBucati(bloc, n)}`);
   }
   if (unealta < 3 && Math.random() < 0.3) {
     unealta = 3;
@@ -607,29 +632,55 @@ function actualizeazaConstructie(tinta) {
   consuma(slot.bloc, 1, selectat);
 }
 
-// ---------- Inventarul și hotbar-ul ----------
+// ---------- Inventarul: hotbar-ul, rucsacul și stash-ul ----------
+const inventarGol = () => Array.from({ length: HOTBAR + RUCSAC }, () => ({ bloc: AER, numar: 0 }));
+
+// Pune bucățile în inventar: întâi peste stivele începute, apoi în sloturile goale (întâi hotbar-ul,
+// apoi rucsacul). Întoarce câte n-au mai încăput.
+function puneInInventar(bloc, numar, indici = inventar.keys()) {
+  const lista = [...indici];
+  for (const inSlotGol of [false, true]) {
+    for (const i of lista) {
+      const s = inventar[i];
+      if (numar <= 0) return 0;
+      if (inSlotGol ? s.numar > 0 : s.bloc !== bloc || !s.numar) continue;
+      const cat = Math.min(numar, STIVA - s.numar);
+      if (cat <= 0) continue;
+      s.bloc = bloc;
+      s.numar += cat;
+      numar -= cat;
+      actualizeazaSlot(i);
+      semnaleaza(i);
+    }
+  }
+  return numar;
+}
+
+// Slotul care a primit ceva sare puțin; pentru rucsac sare butonul lui din hotbar.
+function semnaleaza(i) {
+  const el = i < HOTBAR ? hotbar.children[i] : butonRucsac;
+  if (!el || !rucsac.hidden) return;
+  el.classList.remove('hotbar__slot--nou');
+  void el.offsetWidth; // repornește animația
+  el.classList.add('hotbar__slot--nou');
+}
+
+// Ce nu mai încape ajunge în stash, cu o avertizare (cel mult o dată la câteva secunde).
 function adauga(bloc, numar = 1) {
   if (timp - ultimObiect > 0.06) sunet.sunete.obiect();
   ultimObiect = timp;
-  for (let k = 0; k < numar; k++) {
-    let slot = inventar.find((s) => s.bloc === bloc && s.numar > 0 && s.numar < 64);
-    if (!slot) slot = inventar.find((s) => !s.numar);
-    if (!slot) {
-      mesaj('Your hotbar is full', 'plin');
-      return;
-    }
-    slot.bloc = bloc;
-    slot.numar += 1;
-    const i = inventar.indexOf(slot);
-    actualizeazaSlot(i);
-    const el = hotbar.children[i];
-    el.classList.remove('hotbar__slot--nou');
-    void el.offsetWidth; // repornește animația
-    el.classList.add('hotbar__slot--nou');
+  const rest = puneInInventar(bloc, numar);
+  if (!rest) return;
+  depozit.set(bloc, (depozit.get(bloc) || 0) + rest);
+  actualizeazaDepozit(true);
+  if (timp - ultimAvertisment > 10) {
+    ultimAvertisment = timp;
+    mesaj('Inventory full! Extra items wait in the stash: open the bag to take them', null, 'avertisment');
   }
 }
 
 const numara = (bloc) => inventar.reduce((n, s) => n + (s.bloc === bloc ? s.numar : 0), 0);
+const numarDepozit = () => [...depozit.values()].reduce((n, x) => n + x, 0);
 
 // Scoate `numar` bucăți; întâi din slotul dat (cel selectat), apoi din celelalte.
 function consuma(bloc, numar, primul = -1) {
@@ -645,15 +696,44 @@ function consuma(bloc, numar, primul = -1) {
   }
 }
 
+function slotNou(clasa = 'hotbar__slot') {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = clasa;
+  b.innerHTML = '<span class="hotbar__numar"></span>';
+  return b;
+}
+
+// Cele 9 sloturi din hotbar, apoi butonul rucsacului (cu insigna stash-ului când are ceva).
 function construiesteHotbar() {
   hotbar.replaceChildren();
-  inventar.forEach((_, i) => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'hotbar__slot';
-    b.innerHTML = '<span class="hotbar__numar"></span>';
+  for (let i = 0; i < HOTBAR; i++) {
+    const b = slotNou();
     b.addEventListener('click', () => selecteaza(i));
     hotbar.appendChild(b);
+  }
+  butonRucsac = document.createElement('button');
+  butonRucsac.type = 'button';
+  butonRucsac.className = 'hotbar__slot hotbar__rucsac';
+  butonRucsac.setAttribute('aria-haspopup', 'dialog');
+  butonRucsac.innerHTML = '<span class="hotbar__insigna" hidden></span>';
+  const icon = iconita('rucsac');
+  icon.setAttribute('aria-hidden', 'true');
+  butonRucsac.prepend(icon);
+  butonRucsac.addEventListener('click', () => (rucsac.hidden ? deschideRucsac() : inchideRucsac()));
+  hotbar.appendChild(butonRucsac);
+  for (let i = 0; i < HOTBAR; i++) actualizeazaSlot(i);
+}
+
+// Sloturile din fereastra rucsacului: cele 27 ale rucsacului, apoi o copie a hotbar-ului.
+function construiesteRucsac() {
+  grilaRucsac.replaceChildren();
+  grilaHotbar.replaceChildren();
+  inventar.forEach((_, i) => {
+    const b = slotNou('hotbar__slot joc__slot');
+    b.addEventListener('click', (e) => apasaSlotRucsac(i, e.shiftKey));
+    (i < HOTBAR ? grilaHotbar : grilaRucsac).appendChild(b);
+    sloturiRucsac[i] = b;
     actualizeazaSlot(i);
   });
 }
@@ -665,9 +745,7 @@ function iconitaBloc(bloc) {
   return iconite[bloc];
 }
 
-function actualizeazaSlot(i) {
-  const s = inventar[i];
-  const el = hotbar.children[i];
+function deseneazaSlot(el, s) {
   const vechi = el.querySelector('canvas');
   if (vechi && (Number(vechi.dataset.bloc) !== s.bloc || !s.numar)) vechi.remove();
   if (s.numar && !el.querySelector('canvas')) {
@@ -680,10 +758,179 @@ function actualizeazaSlot(i) {
     el.prepend(c);
   }
   el.querySelector('.hotbar__numar').textContent = s.numar > 1 ? String(s.numar) : '';
-  el.classList.toggle('hotbar__slot--activ', i === selectat);
   el.setAttribute('aria-label', s.numar ? `${BLOCURI[s.bloc].nume}, ${s.numar}` : 'Empty slot');
-  el.setAttribute('aria-pressed', String(i === selectat));
 }
+
+function actualizeazaSlot(i) {
+  const s = inventar[i];
+  if (i < HOTBAR) {
+    const el = hotbar.children[i];
+    deseneazaSlot(el, s);
+    el.classList.toggle('hotbar__slot--activ', i === selectat);
+    el.setAttribute('aria-pressed', String(i === selectat));
+  }
+  const el = sloturiRucsac[i];
+  if (el) {
+    deseneazaSlot(el, s);
+    el.classList.toggle('joc__slot--ales', i === alesRucsac);
+    el.setAttribute('aria-pressed', String(i === alesRucsac));
+  }
+}
+
+// ---------- Fereastra rucsacului ----------
+const numeBucati = (bloc, n) => (bloc === TORTA ? (n === 1 ? 'torch' : 'torches') : BLOCURI[bloc].nume.toLowerCase());
+
+// Un slot apăsat: primul ia stiva „în mână”, al doilea o primește (se adună peste același bloc sau
+// se schimbă locurile). Cu Shift, stiva sare direct între rucsac și hotbar.
+function apasaSlotRucsac(i, rapid) {
+  const s = inventar[i];
+  if (rapid && s.numar && alesRucsac < 0) {
+    const tinte = i < HOTBAR ? [...inventar.keys()].slice(HOTBAR) : [...inventar.keys()].slice(0, HOTBAR);
+    const bloc = s.bloc;
+    const n = s.numar;
+    s.numar = 0;
+    s.bloc = AER;
+    const rest = puneInInventar(bloc, n, tinte);
+    if (rest) {
+      s.bloc = bloc;
+      s.numar = rest;
+    }
+    actualizeazaSlot(i);
+    stareRucsac.textContent = rest === n ? `No room in the ${i < HOTBAR ? 'backpack' : 'hotbar'}` : '';
+  } else if (alesRucsac < 0) {
+    if (!s.numar) return;
+    alesRucsac = i;
+    stareRucsac.textContent = `Holding ${s.numar} ${numeBucati(s.bloc, s.numar)}: pick a slot for it`;
+  } else if (alesRucsac === i) {
+    alesRucsac = -1;
+    stareRucsac.textContent = '';
+  } else {
+    const de = alesRucsac;
+    const a = inventar[de];
+    if (s.numar && s.bloc === a.bloc) {
+      const cat = Math.min(a.numar, STIVA - s.numar);
+      s.numar += cat;
+      a.numar -= cat;
+      if (!a.numar) a.bloc = AER;
+    } else {
+      inventar[de] = s;
+      inventar[i] = a;
+    }
+    alesRucsac = -1;
+    stareRucsac.textContent = '';
+    actualizeazaSlot(de);
+    sunet.sunete.obiect();
+  }
+  actualizeazaRucsac();
+}
+
+function actualizeazaRucsac() {
+  for (let i = 0; i < inventar.length; i++) actualizeazaSlot(i);
+  butonArunca.disabled = alesRucsac < 0;
+}
+
+// Aruncă stiva luată în mână (ca să faci loc pentru ce e în stash).
+function arunca() {
+  if (alesRucsac < 0) return;
+  const s = inventar[alesRucsac];
+  stareRucsac.textContent = `Threw away ${s.numar} ${numeBucati(s.bloc, s.numar)}`;
+  s.numar = 0;
+  s.bloc = AER;
+  alesRucsac = -1;
+  actualizeazaRucsac();
+}
+
+// Adună stivele la fel din rucsac și le pune în ordine; hotbar-ul rămâne cum l-ai aranjat.
+function sorteaza() {
+  const total = new Map();
+  for (let i = HOTBAR; i < inventar.length; i++) {
+    const s = inventar[i];
+    if (s.numar) total.set(s.bloc, (total.get(s.bloc) || 0) + s.numar);
+  }
+  let i = HOTBAR;
+  for (const bloc of [...total.keys()].sort((a, b) => a - b)) {
+    for (let n = total.get(bloc); n > 0; n -= STIVA) inventar[i++] = { bloc, numar: Math.min(n, STIVA) };
+  }
+  while (i < inventar.length) inventar[i++] = { bloc: AER, numar: 0 };
+  alesRucsac = -1;
+  stareRucsac.textContent = 'Backpack sorted';
+  actualizeazaRucsac();
+}
+
+// Butonul din stash: mută în inventar tot ce încape; restul așteaptă mai departe.
+function iaDinDepozit() {
+  let luate = 0;
+  for (const [bloc, n] of depozit) {
+    const rest = puneInInventar(bloc, n);
+    luate += n - rest;
+    if (rest) depozit.set(bloc, rest);
+    else depozit.delete(bloc);
+  }
+  const ramase = numarDepozit();
+  if (!luate) stareRucsac.textContent = 'No free slot: throw something away or use it first';
+  else if (ramase) stareRucsac.textContent = `Took ${luate} ${luate === 1 ? 'item' : 'items'}; ${ramase} still in the stash`;
+  else stareRucsac.textContent = `Took ${luate} ${luate === 1 ? 'item' : 'items'}. The stash is empty`;
+  if (luate) sunet.sunete.obiect();
+  alesRucsac = -1;
+  actualizeazaRucsac();
+  actualizeazaDepozit();
+  (ramase ? butonIa : rucsac.querySelector('.joc__inchide-rucsac')).focus({ preventScroll: true });
+}
+
+// Insigna de pe butonul rucsacului și lista din fereastră.
+function actualizeazaDepozit(nou = false) {
+  const total = numarDepozit();
+  if (butonRucsac) {
+    const insigna = butonRucsac.querySelector('.hotbar__insigna');
+    insigna.hidden = !total;
+    insigna.textContent = total > 99 ? '99+' : String(total);
+    if (nou) {
+      insigna.classList.remove('hotbar__insigna--nou');
+      void insigna.offsetWidth;
+      insigna.classList.add('hotbar__insigna--nou');
+    }
+    butonRucsac.classList.toggle('hotbar__rucsac--plin', total > 0);
+    butonRucsac.setAttribute('aria-label', total ? `Backpack: ${total} ${total === 1 ? 'item waits' : 'items wait'} in the stash` : 'Backpack');
+  }
+  depozitEl.hidden = !total;
+  depozitEl.querySelector('.joc__depozit-text').textContent =
+    `${total} ${total === 1 ? 'item' : 'items'} that didn’t fit. Make room, then take them.`;
+  listaDepozit.replaceChildren();
+  for (const [bloc, n] of depozit) {
+    const li = document.createElement('li');
+    const def = BLOCURI[bloc];
+    const icon = iconita(def.sprite, def.paleta === 'nether' ? PALETA_NETHER : undefined);
+    icon.setAttribute('aria-hidden', 'true');
+    li.append(icon, `${def.nume} ×${n}`);
+    listaDepozit.append(li);
+  }
+}
+
+function deschideRucsac() {
+  if (!meniu.hidden) return;
+  atelier.hidden = true;
+  pauza = true;
+  intrare.mina = false;
+  alesRucsac = -1;
+  stareRucsac.textContent = '';
+  actualizeazaRucsac();
+  actualizeazaDepozit();
+  rucsac.hidden = false;
+  (depozit.size ? butonIa : rucsac.querySelector('.joc__inchide-rucsac')).focus({ preventScroll: true });
+}
+
+function inchideRucsac() {
+  rucsac.hidden = true;
+  alesRucsac = -1;
+  actualizeazaRucsac();
+  if (meniu.hidden) pauza = false;
+  salveaza();
+}
+
+rucsac.querySelector('.joc__inchide-rucsac').addEventListener('click', inchideRucsac);
+butonIa.addEventListener('click', iaDinDepozit);
+butonArunca.addEventListener('click', arunca);
+rucsac.querySelector('.joc__sorteaza').addEventListener('click', sorteaza);
 
 let ascundeNume = 0;
 function selecteaza(i) {
@@ -783,6 +1030,7 @@ function construiesteRetete() {
 
 function deschideAtelier() {
   if (!meniu.hidden) return;
+  if (!rucsac.hidden) inchideRucsac();
   pauza = true;
   intrare.mina = false;
   construiesteRetete();
@@ -858,13 +1106,13 @@ function construiesteListaRealizari() {
 }
 
 // ---------- Mesaje și obiective ----------
-function mesaj(text, cheie) {
+function mesaj(text, cheie, tip) {
   if (cheie) {
     if (realizari.has(cheie)) return;
     realizari.add(cheie);
   }
   const el = document.createElement('div');
-  el.className = 'joc__mesaj';
+  el.className = tip ? `joc__mesaj joc__mesaj--${tip}` : 'joc__mesaj';
   el.textContent = text;
   mesaje.appendChild(el);
   setTimeout(() => el.remove(), 3400);
@@ -931,7 +1179,7 @@ function castiga() {
   const obiecte = inventar.reduce((n, s) => n + s.numar, 0);
   const nether = realizate.has('nether') ? ', after a trip to the Nether' : '';
   panouFinal.querySelector('.joc__rezultat').textContent =
-    `You dug down to bedrock in ${durata(timp)}${nether}, with ${UNELTE[unealta].scurt} pickaxe and ${obiecte} ${obiecte === 1 ? 'item' : 'items'} in your hotbar. Achievements: ${realizate.size} of ${REALIZARI.length}.`;
+    `You dug down to bedrock in ${durata(timp)}${nether}, with ${UNELTE[unealta].scurt} pickaxe and ${obiecte} ${obiecte === 1 ? 'item' : 'items'} in your backpack. Achievements: ${realizate.size} of ${REALIZARI.length}.`;
   arataMeniu(panouFinal);
 }
 
@@ -940,6 +1188,8 @@ function arataMeniu(panou = panouStart) {
   pauza = true;
   intrare.mina = false;
   atelier.hidden = true;
+  rucsac.hidden = true;
+  alesRucsac = -1;
   if (panou === panouRealizari) construiesteListaRealizari();
   statistici.textContent = `${timp > 0 ? `Time played ${durata(timp)} · ` : ''}Achievements ${realizate.size}/${REALIZARI.length}`;
   for (const pn of [panouStart, panouFinal, panouRealizari]) pn.hidden = pn !== panou;
@@ -989,7 +1239,8 @@ window.addEventListener('keydown', (e) => {
     mesaj(sunet.esteActiv() ? 'Sound on' : 'Sound off');
   }
   if (e.code !== 'Escape') return;
-  if (!atelier.hidden) inchideAtelier();
+  if (!rucsac.hidden) inchideRucsac();
+  else if (!atelier.hidden) inchideAtelier();
   else if (meniu.hidden) arataMeniu();
   else if (!panouRealizari.hidden) arataMeniu(panouStart);
   else if (!panouStart.hidden) ascundeMeniu();
@@ -1123,7 +1374,7 @@ function deseneaza() {
 
   // Conturul blocului țintit, doar dacă e la îndemână.
   const tinta = tintaCurenta();
-  if (tinta && tinta.aproape && meniu.hidden && atelier.hidden) {
+  if (tinta && tinta.aproape && meniu.hidden && atelier.hidden && rucsac.hidden) {
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
     ctx.lineWidth = p;
     ctx.strokeRect(tinta.x * b - camX + p / 2, tinta.y * b - camY + p / 2, b - p, b - p);
@@ -1185,6 +1436,11 @@ function cadru(acum) {
     if (!atelier.hidden) inchideAtelier();
     else deschideAtelier();
   }
+  if (intrare.rucsac) {
+    intrare.rucsac = false;
+    if (!rucsac.hidden) inchideRucsac();
+    else deschideRucsac();
+  }
   if (!pauza) {
     const calare = mobi.some((m) => m.tip === 'vagonet' && m.ocupat);
     acumulat += dt;
@@ -1235,7 +1491,7 @@ function cadru(acum) {
 
 // Starea curentă, doar pentru verificări din consolă: (await import('./js/joc.js')).stare().
 export function stare() {
-  return { lume, lumi, dimensiune, jucator, mobi, camera, inventar, selectat, sapat, p, dpr, timp, pauza, unealta, lumina, efectFoc };
+  return { lume, lumi, dimensiune, jucator, mobi, camera, inventar, depozit, selectat, sapat, p, dpr, timp, pauza, unealta, lumina, efectFoc };
 }
 
 window.addEventListener('resize', redimensioneaza);
