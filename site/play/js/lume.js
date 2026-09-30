@@ -45,6 +45,8 @@ export const CIUPERCA = 30;
 export const LIANE = 31;
 export const FOC_SUFLET = 32;
 export const RAMA = 33; // rama portalului: arată ca obsidianul, dar treci prin fața ei și nu se sparge
+export const CUFAR = 34;
+export const CUFAR_DESCHIS = 35;
 // Obiecte (doar în hotbar, nu se pun în lume)
 export const CREMA = 40;
 export const LACRIMA = 41;
@@ -59,11 +61,12 @@ export const BLOCURI = {
   [PAMANT]: { nume: 'Dirt', sprite: 'bloc-pamant', duritate: 0.5, solid: true },
   [PIATRA]: { nume: 'Stone', sprite: 'bloc-piatra', duritate: 1.3, nivel: 1, solid: true },
   [PIETRIS]: { nume: 'Gravel', sprite: 'bloc-pietris', duritate: 0.6, solid: true },
-  [CARBUNE]: { nume: 'Coal ore', sprite: 'bloc-carbune', duritate: 1.7, nivel: 1, solid: true },
-  [FIER]: { nume: 'Iron ore', sprite: 'bloc-fier', duritate: 2, nivel: 2, solid: true },
-  [AUR]: { nume: 'Gold ore', sprite: 'bloc-aur', duritate: 2.2, nivel: 3, solid: true },
-  [REDSTONE]: { nume: 'Redstone ore', sprite: 'bloc-redstone', duritate: 2.2, nivel: 3, solid: true },
-  [DIAMANT]: { nume: 'Diamond ore', sprite: 'bloc-diamant', duritate: 2.6, nivel: 3, solid: true },
+  // Minereurile sclipesc slab în întuneric (lumina 3–6), ca pe site: le vezi și în peșterile neluminate.
+  [CARBUNE]: { nume: 'Coal ore', sprite: 'bloc-carbune', duritate: 1.7, nivel: 1, solid: true, lumina: 3, minereu: true },
+  [FIER]: { nume: 'Iron ore', sprite: 'bloc-fier', duritate: 2, nivel: 2, solid: true, lumina: 4, minereu: true },
+  [AUR]: { nume: 'Gold ore', sprite: 'bloc-aur', duritate: 2.2, nivel: 3, solid: true, lumina: 5, minereu: true },
+  [REDSTONE]: { nume: 'Redstone ore', sprite: 'bloc-redstone', duritate: 2.2, nivel: 3, solid: true, lumina: 6, minereu: true },
+  [DIAMANT]: { nume: 'Diamond ore', sprite: 'bloc-diamant', duritate: 2.6, nivel: 3, solid: true, lumina: 6, minereu: true },
   [BEDROCK]: { nume: 'Bedrock', sprite: 'bloc-bedrock', duritate: Infinity, solid: true },
   // Copacii sunt decor prin care treci (ca într-un joc 2D), dar se pot tăia.
   [TRUNCHI]: { nume: 'Log', sprite: 'bloc-trunchi', duritate: 0.9, solid: false },
@@ -79,8 +82,8 @@ export const BLOCURI = {
   [NETHERRACK]: { nume: 'Netherrack', sprite: 'bloc-piatra', paleta: 'nether', duritate: 0.5, nivel: 1, solid: true },
   [NYLIUM]: { nume: 'Crimson nylium', sprite: 'bloc-iarba', paleta: 'nether', duritate: 0.5, nivel: 1, solid: true, drop: NETHERRACK },
   [NISIP]: { nume: 'Soul sand', sprite: 'bloc-nisip', duritate: 0.6, solid: true, incetineste: 0.55 },
-  [CUART]: { nume: 'Nether quartz ore', sprite: 'bloc-cuart', paleta: 'nether', duritate: 1.4, nivel: 1, solid: true },
-  [RESTURI]: { nume: 'Ancient debris', sprite: 'bloc-resturi', duritate: 6, nivel: 4, solid: true },
+  [CUART]: { nume: 'Nether quartz ore', sprite: 'bloc-cuart', paleta: 'nether', duritate: 1.4, nivel: 1, solid: true, lumina: 4, minereu: true },
+  [RESTURI]: { nume: 'Ancient debris', sprite: 'bloc-resturi', duritate: 6, nivel: 4, solid: true, lumina: 4, minereu: true },
   [GLOWSTONE]: { nume: 'Glowstone', sprite: 'bloc-lumina', paleta: 'nether', duritate: 0.4, solid: true, lumina: 15 },
   [CARAMIDA]: { nume: 'Nether bricks', sprite: 'bloc-caramida', duritate: 2, nivel: 1, solid: true },
   [TULPINA]: { nume: 'Crimson stem', sprite: 'bloc-tulpina', duritate: 0.9, solid: false },
@@ -89,6 +92,9 @@ export const BLOCURI = {
   [LIANE]: { nume: 'Weeping vines', sprite: 'liane', duritate: 0.1, solid: false, drop: null },
   [FOC_SUFLET]: { nume: 'Soul fire', sprite: 'foc-suflet', duritate: 0.05, solid: false, drop: null, lumina: 10 },
   [RAMA]: { nume: 'Portal frame', sprite: 'bloc-obsidian', duritate: Infinity, solid: false, lichid: true },
+  // Cuferele din mină: o atingere le deschide (joc.js împarte prada); cel deschis se poate sparge.
+  [CUFAR]: { nume: 'Chest', sprite: 'cufar', duritate: Infinity, solid: false, cufar: true },
+  [CUFAR_DESCHIS]: { nume: 'Open chest', sprite: 'cufar-deschis', duritate: 0.8, solid: false, drop: SCANDURA },
   [CREMA]: { nume: 'Magma cream', sprite: 'crema-magma', obiect: true },
   [LACRIMA]: { nume: 'Ghast tear', sprite: 'lacrima-ghast', obiect: true },
 };
@@ -234,20 +240,29 @@ export class Lume {
       }
     }
 
-    // Minereuri și buzunare de pietriș, în vine, fiecare de la o anumită adâncime în jos.
+    // Minereuri și buzunare de pietriș, în vine, fiecare de la o anumită adâncime în jos. Aproape jumătate
+    // din vine pornesc de pe peretele unei peșteri, ca să se vadă când explorezi.
     const vine = [
-      { bloc: PIETRIS, yMax: 56, incercari: 70, marime: [4, 9] },
-      { bloc: CARBUNE, yMax: 60, incercari: 150, marime: [3, 7] },
-      { bloc: FIER, yMax: 40, incercari: 110, marime: [2, 5] },
-      { bloc: AUR, yMax: 4, incercari: 45, marime: [2, 4] },
-      { bloc: REDSTONE, yMax: -16, incercari: 45, marime: [3, 6] },
-      { bloc: DIAMANT, yMax: -40, incercari: 22, marime: [1, 3] },
+      { bloc: PIETRIS, yMax: 56, incercari: 80, marime: [4, 9] },
+      { bloc: CARBUNE, yMax: 62, incercari: 280, marime: [4, 8] },
+      { bloc: FIER, yMax: 52, incercari: 240, marime: [3, 7] },
+      { bloc: AUR, yMax: 16, incercari: 100, marime: [3, 5] },
+      { bloc: REDSTONE, yMax: -8, incercari: 90, marime: [3, 7] },
+      { bloc: DIAMANT, yMax: -32, incercari: 60, marime: [2, 4] },
     ];
+    const pePerete = (x, y) => this.get(x, y) === PIATRA
+      && (this.get(x - 1, y) === AER || this.get(x + 1, y) === AER || this.get(x, y - 1) === AER || this.get(x, y + 1) === AER);
     for (const v of vine) {
       const randMin = randul(v.yMax);
       for (let i = 0; i < v.incercari; i++) {
         let x = Math.floor(rng() * latime);
         let y = randMin + Math.floor(rng() * (inaltime - 4 - randMin));
+        if (rng() < 0.45) {
+          for (let k = 0; k < 14 && !pePerete(x, y); k++) {
+            x = Math.floor(rng() * latime);
+            y = randMin + Math.floor(rng() * (inaltime - 4 - randMin));
+          }
+        }
         const n = v.marime[0] + Math.floor(rng() * (v.marime[1] - v.marime[0] + 1));
         for (let k = 0; k < n; k++) {
           if (this.get(x, y) === PIATRA) this.set(x, y, v.bloc);
@@ -310,6 +325,8 @@ export class Lume {
       { y: randul(8), x0: 34, x1: 170, principal: true },
       { y: randul(-8 - Math.floor(rng() * 10)), x0: 8 + Math.floor(rng() * 30), lungime: 45 + Math.floor(rng() * 30) },
       { y: randul(26 + Math.floor(rng() * 8)), x0: 110 + Math.floor(rng() * 30), lungime: 35 + Math.floor(rng() * 25) },
+      { y: randul(-26 - Math.floor(rng() * 8)), x0: 95 + Math.floor(rng() * 40), lungime: 40 + Math.floor(rng() * 20) },
+      { y: randul(44 + Math.floor(rng() * 6)), x0: 10 + Math.floor(rng() * 30), lungime: 30 + Math.floor(rng() * 20) },
     ];
     for (const t of tunele) {
       const x1 = Math.min(this.latime - 3, t.x1 || t.x0 + t.lungime);
@@ -329,11 +346,18 @@ export class Lume {
         }
       }
       if (t.principal) {
-        // Camera portalului, la capătul tunelului.
+        // Camera portalului, la capătul tunelului, cu un cufăr în colț; alt cufăr la începutul șinelor.
         this.umple(x1 + 1, t.y - 5, x1 + 7, t.y, AER);
         this.umple(x1 + 1, t.y + 1, x1 + 7, t.y + 1, PIATRA);
         this.construiestePortal(x1 + 2, t.y - 4);
+        this.set(x1 + 7, t.y, CUFAR);
+        this.set(t.x0, t.y, CUFAR);
         this.vagonete.push({ x: col, y: t.y });
+      } else {
+        // Tunelurile laterale n-au vagonet: câte un cufăr la capete și, uneori, unul pe drum.
+        this.set(t.x0, t.y, CUFAR);
+        this.set(x1, t.y, CUFAR);
+        if (rng() < 0.6) this.set(t.x0 + Math.floor((x1 - t.x0) / 2) + 1, t.y, CUFAR);
       }
     }
   }

@@ -7,7 +7,7 @@ import {
   Lume, BLOC, BLOCURI, AER, SUPRAFATA, Y_ADANC, PALETA_ADANC, coordonataY, randul,
   IARBA, PAMANT, PIATRA, PIETRIS, CARBUNE, FIER, AUR, REDSTONE, DIAMANT, BEDROCK, TRUNCHI, FRUNZE, TORTA,
   SCANDURA, LAVA, SINA, PANZA, GARD, OBSIDIAN, PORTAL, RAMA, NYLIUM, NISIP, CUART, RESTURI, GLOWSTONE,
-  TULPINA, NEGI, CIUPERCA, LIANE, FOC_SUFLET, CREMA, LACRIMA,
+  TULPINA, NEGI, CIUPERCA, LIANE, FOC_SUFLET, CREMA, LACRIMA, CUFAR, CUFAR_DESCHIS,
 } from './lume.js';
 import { calculeazaLumina, luminaLampii, UMBRA } from './lumina.js';
 import { Jucator } from './jucator.js';
@@ -87,6 +87,18 @@ const RETETE = [
   { nume: 'Diamond pickaxe', unealta: 4, cere: [[DIAMANT, 3], [TRUNCHI, 1]] },
   { nume: 'Netherite pickaxe', unealta: 5, necesita: 4, cere: [[RESTURI, 2], [AUR, 2]] },
   { nume: 'Fire resistance (90 s)', icon: 'crema-magma', efect: 90, cere: [[CREMA, 2], [LACRIMA, 1]] },
+];
+
+// Prada din cuferele minei: [bloc, minim, maxim, șansă]. Fierul e mereu acolo; diamantele, mai des
+// în cuferele adânci. În plus, dacă ai o unealtă slabă, uneori găsești un târnăcop de fier.
+const PRADA = [
+  [FIER, 3, 6, 1],
+  [TORTA, 4, 8, 0.85],
+  [CARBUNE, 3, 6, 0.7],
+  [AUR, 1, 3, 0.55],
+  [REDSTONE, 2, 5, 0.45],
+  [SCANDURA, 4, 8, 0.35],
+  [DIAMANT, 1, 2, 0.25],
 ];
 
 // Ce poate da un piglin pentru un minereu de aur.
@@ -468,9 +480,46 @@ function calatoreste() {
   salveaza();
 }
 
+// ---------- Cuferele ----------
+// O atingere pe un cufăr îl deschide: prada intră direct în hotbar, iar cufărul rămâne deschis.
+function deschideCufar(x, y) {
+  lume.set(x, y, CUFAR_DESCHIS);
+  const adanc = lume.tip === 'lume' && coordonataY(y) < 0;
+  const gasit = [];
+  for (const [bloc, min, max, sansa] of PRADA) {
+    const s = bloc === DIAMANT && adanc ? sansa * 2 : sansa;
+    if (Math.random() >= s) continue;
+    const n = min + Math.floor(Math.random() * (max - min + 1));
+    adauga(bloc, n);
+    const nume = bloc === TORTA ? (n > 1 ? 'torches' : 'torch') : BLOCURI[bloc].nume.toLowerCase();
+    gasit.push(`${n} ${nume}`);
+  }
+  if (unealta < 3 && Math.random() < 0.3) {
+    unealta = 3;
+    actualizeazaButonAtelier();
+    gasit.push('an iron pickaxe!');
+    realizare('unealta-3');
+  }
+  sunet.sunete.cufar();
+  particule.explozie((x + 0.5) * BLOC, (y + 0.3) * BLOC, ['#fee761', '#feae34', '#ffffff'], 16, 45);
+  mesaj(`Chest: ${gasit.join(', ')}`);
+  realizare('cufar');
+  salveaza();
+}
+
 // ---------- Săpatul ----------
+let dupaCufar = false; // după ce deschizi un cufăr, săpatul așteaptă să ridici degetul
+
 function actualizeazaSapat(dt, tinta) {
+  if (!intrare.mina) dupaCufar = false;
   const bloc = tinta ? lume.get(tinta.x, tinta.y) : AER;
+  if (intrare.mina && tinta && tinta.aproape && BLOCURI[bloc]?.cufar) {
+    deschideCufar(tinta.x, tinta.y);
+    dupaCufar = true;
+    sapat.progres = 0;
+    return;
+  }
+  if (dupaCufar) return;
   if (!intrare.mina || !tinta || !tinta.aproape || bloc === AER || BLOCURI[bloc].lichid || tinta.y < 0
     || tinta.x < 0 || tinta.x >= lume.latime) {
     sapat.progres = 0;
@@ -969,7 +1018,10 @@ function imagineBloc(bloc, adanc, umbra, c, r) {
 
 function scantei(bloc, c, r) {
   const x = (c + 0.2 + Math.random() * 0.6) * BLOC;
-  if (bloc === PORTAL && Math.random() < 0.01) {
+  if (BLOCURI[bloc].minereu && Math.random() < 0.004) {
+    // Minereurile sclipesc din când în când.
+    particule.emite(x, (r + 0.2 + Math.random() * 0.6) * BLOC, '#ffffff', 0, -6, 0.5, 0);
+  } else if (bloc === PORTAL && Math.random() < 0.01) {
     particule.emite(x, (r + Math.random()) * BLOC, Math.random() < 0.5 ? '#b55088' : '#68386c', 0, -18, 1.2);
   } else if (bloc === TORTA && Math.random() < 0.025) {
     particule.emite(x, (r + 0.3) * BLOC, Math.random() < 0.5 ? '#feae34' : '#fee761', (Math.random() - 0.5) * 8, -22, 0.6, -10);

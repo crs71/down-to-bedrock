@@ -1,0 +1,27 @@
+# Cufar deschis: capacul ridicat, inauntru se vede o sclipire de aur.
+id: cufar-deschis
+k = --lemn-4
+a = --lemn-2
+b = --lemn-1
+c = --lemn-3
+s = --os-2
+l = --bedrock-1
+i = --obsidian-4
+g = --apus-1
+
+................
+.kkkkkkkkkkkkkk.
+.kbbbbbbbbbbbbk.
+.kcccccccccccck.
+.kkkkkkkkkkkkkk.
+.kiigiiiiiigiik.
+.kiiiiiigiiiiik.
+.kccccccsscccck.
+.kkkkkkssllkkkk.
+.kbbbbbbssbbbbk.
+.kaaaaaaaaaaaak.
+.kaaaaaaaaaaaak.
+.kaaaaaaaaaaaak.
+.kcccccccccccck.
+.kkkkkkkkkkkkkk.
+................

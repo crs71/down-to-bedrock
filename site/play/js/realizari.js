@@ -9,6 +9,7 @@ export const REALIZARI = [
   { id: 'jumatate', nume: 'Halfway down', text: 'Reach Y 0', icon: 'bloc-piatra' },
   { id: 'mina', nume: 'Old mineshaft', text: 'Find the abandoned mineshaft', icon: 'bloc-sina' },
   { id: 'vagonet', nume: 'All aboard', text: 'Ride the minecart', icon: 'vagonet' },
+  { id: 'cufar', nume: 'Treasure hunter', text: 'Open a chest in a mineshaft', icon: 'cufar' },
   { id: 'diamante', nume: 'Diamond hunter', text: 'Mine a diamond ore', icon: 'bloc-diamant' },
   { id: 'unealta-4', nume: 'Diamond edge', text: 'Craft a diamond pickaxe', unealta: 4 },
   { id: 'nether', nume: 'Through the portal', text: 'Travel to the Nether', icon: 'portal' },

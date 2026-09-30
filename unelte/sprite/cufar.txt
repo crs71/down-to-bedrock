@@ -1,0 +1,25 @@
+# Cufar inchis din mina (16x16): lada de lemn cu balama de fier.
+id: cufar
+k = --lemn-4
+a = --lemn-2
+b = --lemn-1
+c = --lemn-3
+s = --os-2
+l = --bedrock-1
+
+................
+................
+................
+.kkkkkkkkkkkkkk.
+.kbbbbbbbbbbbbk.
+.kaaaaaaaaaaaak.
+.kaaaaaaaaaaaak.
+.kccccccsscccck.
+.kkkkkkssllkkkk.
+.kbbbbbbssbbbbk.
+.kaaaaaaaaaaaak.
+.kaaaaaaaaaaaak.
+.kaaaaaaaaaaaak.
+.kcccccccccccck.
+.kkkkkkkkkkkkkk.
+................

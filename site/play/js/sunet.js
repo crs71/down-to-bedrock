@@ -160,6 +160,11 @@ export const sunete = {
   lava() {
     ton({ forma: 'sine', de: varia(140), la: varia(420), durata: 0.09, volum: 0.08 });
   },
+  cufar() {
+    // Un scârțâit de balama, apoi un clinchet.
+    zgomot({ durata: 0.25, tip: 'bandpass', frecventa: 380, pana: 900, q: 6, volum: 0.3, atac: 0.03 });
+    [784, 988, 1319].forEach((f, i) => ton({ forma: 'triangle', de: f, durata: 0.12, volum: 0.12, intarziere: 0.18 + i * 0.07 }));
+  },
   calatorie() {
     zgomot({ durata: 1.1, tip: 'bandpass', frecventa: 300, pana: 2400, q: 1.5, volum: 0.5, atac: 0.2 });
   },

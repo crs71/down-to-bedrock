@@ -11,7 +11,7 @@ Site cu temă de lume din blocuri (textul paginii e în engleză): cobori prin s
 - Bedrock: blocul care nu se sparge, Respawn și butonul spre joc
 
 ## Jocul (`site/play/`)
-Un joc 2D de minat, în aceeași lume: sapi de la iarbă până la bedrock, strângi blocuri și construiești. Peșterile sunt întunecate (torțe, lampa de pe cască), târnăcoapele se fac la crafting (lemn, piatră, fier, diamant), iar adânc sunt lacuri de lavă. Sub start e o mină abandonată cu un vagonet care te duce la un portal spre Nether (cubi de magma, ghaști, piglini, strideri, resturi antice pentru târnăcopul de netherite). Jocul se salvează singur în browser, are sunete create din cod (Web Audio, fără fișiere), 16 realizări și o variantă pentru mișcare redusă. Adresa: https://down-to-bedrock.pages.dev/play/
+Un joc 2D de minat, în aceeași lume: sapi de la iarbă până la bedrock, strângi blocuri și construiești. Peșterile sunt întunecate (torțe, lampa de pe cască), târnăcoapele se fac la crafting (lemn, piatră, fier, diamant), iar adânc sunt lacuri de lavă. Minereurile sclipesc slab în întuneric. Sub start e o mină abandonată, cu cufere pline de minereuri și torțe și cu un vagonet care te duce la un portal spre Nether (cubi de magma, ghaști, piglini, strideri, resturi antice pentru târnăcopul de netherite). Jocul se salvează singur în browser, are sunete create din cod (Web Audio, fără fișiere), 17 realizări și o variantă pentru mișcare redusă. Adresa: https://down-to-bedrock.pages.dev/play/
 
 - Canvas 2D și module ES (`<script type="module">`), fără build și fără biblioteci
 - `js/joc.js`: bucla (fizică la pas fix de 1/120 s), camera, săpatul, construitul, hotbar-ul, crafting-ul, salvarea, meniul
